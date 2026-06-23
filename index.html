@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Cardio + Sono Planner</title>
+<style>
+:root{--bg:#0f0f0f;--surface:#1a1a1a;--surface2:#222;--border:#2a2a2a;--text:#f0f0f0;--muted:#777;--green:#4ade80;--green-dim:#152b1e;--blue:#60a5fa;--blue-dim:#152038;--amber:#fbbf24;--amber-dim:#2e2008;--teal:#2dd4bf;--teal-dim:#0b2826;--purple:#a78bfa;--purple-dim:#1e1635;--red:#f87171;--r:14px;--rs:8px}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;min-height:100vh}
+.app{max-width:500px;margin:0 auto;padding-bottom:130px}
+.header{padding:20px 16px 14px;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--bg);z-index:10}
+.header h1{font-size:21px;font-weight:700;letter-spacing:-.5px}
+.header p{font-size:13px;color:var(--muted);margin-top:3px}
+.sticky-controls{position:sticky;top:65px;background:var(--bg);z-index:9;padding:10px 16px 0;border-bottom:1px solid var(--border);padding-bottom:10px}
+.search-input{width:100%;padding:11px 14px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r);color:var(--text);font-size:15px;outline:none;margin-bottom:10px}
+.search-input::placeholder{color:var(--muted)}
+.cats{display:flex;gap:7px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}
+.cats::-webkit-scrollbar{display:none}
+.cat-btn{padding:6px 13px;border-radius:20px;border:1px solid var(--border);background:var(--surface);color:var(--muted);font-size:12px;cursor:pointer;white-space:nowrap;flex-shrink:0;transition:all .15s}
+.cat-btn.active{background:var(--green-dim);border-color:var(--green);color:var(--green)}
+.section-label{padding:14px 16px 8px;font-size:11px;font-weight:600;color:var(--muted);letter-spacing:.06em;text-transform:uppercase}
+.food-list{padding:0 16px;display:flex;flex-direction:column;gap:8px}
+.food-item{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:13px;cursor:pointer;transition:all .15s;display:flex;gap:11px;align-items:flex-start}
+.food-item:active{transform:scale(.98)}
+.food-item.selected{background:var(--green-dim);border-color:var(--green)}
+.food-check{width:22px;height:22px;border-radius:50%;border:2px solid var(--border);flex-shrink:0;margin-top:1px;display:flex;align-items:center;justify-content:center;transition:all .15s}
+.food-item.selected .food-check{background:var(--green);border-color:var(--green)}
+.check-icon{display:none}
+.food-item.selected .check-icon{display:block}
+.food-body{flex:1;min-width:0}
+.food-top{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:3px}
+.food-name{font-size:15px;font-weight:600;color:var(--text);line-height:1.3}
+.food-pts{font-size:12px;font-weight:700;padding:2px 8px;border-radius:10px;background:var(--surface2);color:var(--muted);flex-shrink:0}
+.food-item.selected .food-pts{background:var(--green-dim);color:var(--green)}
+.food-cat{font-size:11px;color:var(--muted);margin-bottom:5px}
+.food-desc{font-size:13px;color:#aaa;line-height:1.5;margin-bottom:8px}
+.food-bars{display:flex;flex-direction:column;gap:5px}
+.bar-row{display:flex;align-items:center;gap:8px}
+.bar-label{font-size:11px;color:var(--muted);width:70px;flex-shrink:0}
+.bar-bg{flex:1;height:4px;background:var(--surface2);border-radius:2px;overflow:hidden}
+.bar-fill{height:4px;border-radius:2px;transition:width .3s}
+.bar-val{font-size:11px;font-weight:600;width:20px;text-align:right;flex-shrink:0}
+.b-cardio{background:var(--blue)}
+.b-energia{background:var(--amber)}
+.b-anti{background:var(--teal)}
+.b-sono{background:var(--purple)}
+.t-cardio{color:var(--blue)}
+.t-energia{color:var(--amber)}
+.t-anti{color:var(--teal)}
+.t-sono{color:var(--purple)}
+.empty{padding:40px 16px;text-align:center;color:var(--muted);font-size:14px}
+.bottom-bar{position:fixed;bottom:0;left:0;right:0;background:var(--bg);border-top:1px solid var(--border);padding:12px 16px 28px;z-index:20}
+.bottom-inner{max-width:500px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.count-info{font-size:13px;color:var(--muted)}
+.count-info span{color:var(--text);font-weight:600}
+.ver-btn{padding:13px 22px;background:var(--green);color:#000;font-size:14px;font-weight:700;border:none;border-radius:var(--r);cursor:pointer;flex-shrink:0}
+.ver-btn:disabled{background:var(--surface2);color:var(--muted)}
+.overlay{display:none;position:fixed;inset:0;z-index:30;background:var(--bg);overflow-y:auto}
+.overlay.open{display:block}
+.ov-wrap{max-width:500px;margin:0 auto;padding:20px 16px 60px}
+.ov-header{display:flex;align-items:center;gap:12px;margin-bottom:20px}
+.back-btn{width:40px;height:40px;border-radius:50%;border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.ov-header h2{font-size:18px;font-weight:700}
+.score-hero{background:var(--surface);border-radius:var(--r);padding:22px;margin-bottom:14px;text-align:center}
+.score-pct{font-size:68px;font-weight:800;letter-spacing:-3px;line-height:1}
+.score-nota{font-size:17px;font-weight:600;margin-top:4px;margin-bottom:14px}
+.score-bar-bg{height:8px;background:var(--surface2);border-radius:4px;overflow:hidden;margin-bottom:14px}
+.score-bar-fill{height:8px;border-radius:4px}
+.score-insight{font-size:13px;color:#bbb;line-height:1.6;text-align:left}
+.pillars-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.pillar-card{background:var(--surface);border-radius:var(--rs);padding:14px}
+.pillar-label{font-size:11px;color:var(--muted);margin-bottom:4px}
+.pillar-val{font-size:22px;font-weight:700;margin-bottom:6px}
+.pillar-bar-bg{height:4px;background:var(--surface2);border-radius:2px;overflow:hidden}
+.pillar-bar-fill{height:4px;border-radius:2px}
+.analysis-section{margin-bottom:14px}
+.analysis-title{font-size:13px;font-weight:600;color:var(--muted);letter-spacing:.05em;text-transform:uppercase;margin-bottom:10px}
+.analysis-card{background:var(--surface);border-radius:var(--r);padding:16px;margin-bottom:8px}
+.analysis-food-name{font-size:14px;font-weight:600;color:var(--text);margin-bottom:6px}
+.analysis-food-cat{font-size:11px;color:var(--muted);margin-bottom:6px}
+.analysis-bars{display:flex;flex-direction:column;gap:5px;margin-bottom:8px}
+.analysis-desc{font-size:13px;color:#aaa;line-height:1.5;margin-bottom:6px}
+.analysis-tip{font-size:12px;color:var(--purple);line-height:1.5;border-left:2px solid var(--purple);padding-left:8px;margin-top:6px}
+.combos-card{background:var(--surface);border-radius:var(--r);padding:16px;margin-bottom:8px}
+.combo-item{padding:8px 0;border-bottom:1px solid var(--border);font-size:13px;color:#bbb;line-height:1.5}
+.combo-item:last-child{border-bottom:none;padding-bottom:0}
+.combo-item strong{color:var(--text)}
+.gaps-card{background:var(--surface);border-radius:var(--r);padding:16px;margin-bottom:8px}
+.gap-item{display:flex;align-items:flex-start;gap:8px;padding:6px 0;border-bottom:1px solid var(--border);font-size:13px;color:#bbb}
+.gap-item:last-child{border-bottom:none}
+.gap-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:4px}
+.chips-wrap{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:14px}
+.chip{display:flex;align-items:center;gap:5px;padding:5px 10px;background:var(--surface);border:1px solid var(--border);border-radius:20px;font-size:12px}
+.chip-x{color:var(--muted);font-size:15px;cursor:pointer;line-height:1}
+.limpar-btn{width:100%;padding:14px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r);color:var(--muted);font-size:14px;cursor:pointer;margin-top:8px}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="header">
+    <h1>Cardio + Sono Planner</h1>
+    <p>monte seu dia — analise cardio, energia, antioxidante e sono</p>
+  </div>
+  <div class="sticky-controls">
+    <input class="search-input" type="search" id="search" placeholder="buscar alimento..." autocomplete="off">
+    <div class="cats" id="cats"></div>
+  </div>
+  <div class="section-label" id="listLabel">todos os alimentos</div>
+  <div class="food-list" id="foodList"></div>
+</div>
+
+<div class="bottom-bar">
+  <div class="bottom-inner">
+    <div class="count-info">selecionados: <span id="countNum">0</span></div>
+    <button class="ver-btn" id="verBtn" disabled onclick="openResult()">ver análise</button>
+  </div>
+</div>
+
+<div class="overlay" id="overlay">
+  <div class="ov-wrap">
+    <div class="ov-header">
+      <button class="back-btn" onclick="closeResult()">&#8592;</button>
+      <h2>análise do seu dia</h2>
+    </div>
+    <div id="resultContent"></div>
+  </div>
+</div>
+
+<script>
+const foods = [
+  // FRUTAS
+  {id:'banana',name:'banana',cat:'frutas',pts:8,cardio:7,energia:10,anti:5,sono:9,desc:'Potássio essencial pra contração cardíaca e triptofano que vira melatonina à noite.',tip:'Comer 1h antes de dormir potencializa a produção de melatonina.'},
+  {id:'kiwi',name:'kiwi',cat:'frutas',pts:8,cardio:7,energia:5,anti:9,sono:9,desc:'Vitamina C altíssima, melhora função plaquetária. Serotonina natural que melhora qualidade do sono.',tip:'2 kiwis 1h antes de dormir reduzem o tempo pra adormecer — efeito comprovado em estudos.'},
+  {id:'romã',name:'romã',cat:'frutas',pts:9,cardio:9,energia:5,anti:10,sono:5,desc:'Vasodilatadora potente, reduz pressão arterial e melhora circulação periférica.',tip:'Consumir no almoço ou tarde — não tem efeito direto no sono.'},
+  {id:'melancia',name:'melancia',cat:'frutas',pts:8,cardio:8,energia:7,anti:6,sono:6,desc:'Citrulina vira óxido nítrico. Hidratação + vasodilatação. Alta em água — cuidado à noite.',tip:'Evitar em grande quantidade antes de dormir pela hidratação excessiva.'},
+  {id:'morango',name:'morango',cat:'frutas',pts:7,cardio:7,energia:5,anti:9,sono:5,desc:'Antioxidante potente. Vitamina C que potencializa absorção de ferro não-heme.',tip:'Ótimo no café da manhã ou lanche da tarde.'},
+  {id:'acerola',name:'acerola',cat:'frutas',pts:9,cardio:7,energia:4,anti:10,sono:4,desc:'Uma das maiores fontes de vitamina C do mundo. Combate radicais livres pós-treino.',tip:'Melhor consumir durante o dia — vitamina C em excesso à noite pode ser estimulante.'},
+  {id:'mirtilo',name:'mirtilo',cat:'frutas',pts:9,cardio:9,energia:5,anti:10,sono:7,desc:'Antocianinas melhoram função endotelial e reduzem inflamação cardiovascular.',tip:'Antocianinas têm leve efeito calmante — pode consumir à noite sem problemas.'},
+  {id:'uva_escura',name:'uva escura',cat:'frutas',pts:8,cardio:9,energia:7,anti:9,sono:8,desc:'Resveratrol protege o coração e melhora elasticidade vascular. Melatonina natural.',tip:'Uva escura contém melatonina natural — uma das poucas frutas com esse composto.'},
+  {id:'laranja',name:'laranja',cat:'frutas',pts:7,cardio:6,energia:6,anti:8,sono:4,desc:'Vitamina C + flavonoides. Combinar com ferro vegetal aumenta absorção em até 3x.',tip:'Evitar à noite — vitamina C em alta dose pode interferir no sono de algumas pessoas.'},
+  {id:'abacate',name:'abacate',cat:'frutas',pts:9,cardio:9,energia:8,anti:7,sono:8,desc:'Gordura monoinsaturada que reduz LDL e aumenta HDL. Potássio altíssimo.',tip:'Magnésio e triptofano presentes auxiliam no relaxamento muscular e sono.'},
+  {id:'mamão',name:'mamão',cat:'frutas',pts:6,cardio:6,energia:6,anti:7,sono:5,desc:'Papaína facilita digestão. Vitamina C e beta-caroteno com ação antioxidante.',tip:'Facilita a digestão noturna quando consumido após o jantar.'},
+  {id:'maçã',name:'maçã',cat:'frutas',pts:6,cardio:6,energia:6,anti:7,sono:5,desc:'Quercetina anti-inflamatória, fibra solúvel que reduz colesterol LDL.',tip:'Neutra pro sono — pode consumir em qualquer horário.'},
+  {id:'cereja',name:'cereja',cat:'frutas',pts:9,cardio:8,energia:5,anti:9,sono:10,desc:'Uma das poucas fontes naturais de melatonina. Antocianinas anti-inflamatórias.',tip:'A melhor fruta pro sono. Suco de cereja ácida é o mais estudado — tomar 30min antes de dormir.'},
+  {id:'maracujá',name:'maracujá',cat:'frutas',pts:7,cardio:6,energia:4,anti:7,sono:10,desc:'Flavonoides calmantes que agem nos receptores GABA, semelhante à camomila.',tip:'Comer a polpa ou tomar o suco com casca passada no liquidificador antes de dormir.'},
+  {id:'ameixa',name:'ameixa seca',cat:'frutas',pts:6,cardio:6,energia:7,anti:7,sono:6,desc:'Boro que melhora absorção de magnésio. Antioxidantes e fibra solúvel.',tip:'Triptofano leve. Facilita digestão — bom no jantar moderado.'},
+  // PEIXES
+  {id:'sardinha',name:'sardinha',cat:'peixes',pts:10,cardio:10,energia:8,anti:7,sono:8,desc:'Ômega 3 EPA+DHA, ferro heme, vitamina D e B12. Combinação ideal pra saúde cardíaca.',tip:'Vitamina D e triptofano auxiliam na produção de melatonina. Ótimo no jantar.'},
+  {id:'salmão',name:'salmão',cat:'peixes',pts:10,cardio:10,energia:9,anti:8,sono:9,desc:'Maior fonte de ômega 3. Reduz triglicerídeos, inflamação e melhora ritmo cardíaco.',tip:'Ômega 3 à noite melhora qualidade do sono REM. Combinar com batata-doce é o jantar perfeito pré-corrida.'},
+  {id:'atum',name:'atum',cat:'peixes',pts:8,cardio:8,energia:9,anti:6,sono:7,desc:'Proteína magra + ômega 3 + CoQ10 que melhora eficiência mitocondrial.',tip:'Triptofano presente — boa opção no jantar, com moderação por conta do mercúrio.'},
+  {id:'cavalinha',name:'cavalinha',cat:'peixes',pts:9,cardio:9,energia:8,anti:7,sono:8,desc:'Rica em ômega 3 e selênio. Menos popular mas nutricionalmente equivalente ao salmão.',tip:'Selênio é cofator na produção de melatonina. Subestimada e mais barata que o salmão.'},
+  {id:'tilápia',name:'tilápia',cat:'peixes',pts:6,cardio:5,energia:8,anti:4,sono:5,desc:'Proteína magra acessível. Menor teor de ômega 3, mas boa fonte de B12 e fósforo.',tip:'Proteína de fácil digestão — adequada no jantar sem pesar no estômago.'},
+  // CARNES
+  {id:'frango',name:'frango (filé)',cat:'carnes',pts:7,cardio:5,energia:9,anti:4,sono:6,desc:'Proteína magra de alta qualidade. Base de recuperação muscular sem sobrecarregar o coração.',tip:'Triptofano moderado. Melhor que carne vermelha no jantar pela digestão mais leve.'},
+  {id:'peru',name:'peru',cat:'carnes',pts:8,cardio:5,energia:9,anti:4,sono:9,desc:'Proteína magra com o maior teor de triptofano entre as carnes.',tip:'A "carne do sono" — triptofano alto vira serotonina e depois melatonina. Ideal no jantar.'},
+  {id:'fígado',name:'fígado bovino',cat:'carnes',pts:9,cardio:8,energia:9,anti:6,sono:6,desc:'Ferro heme de altíssima biodisponibilidade. CoQ10, B12 e folato — diretamente na hemoglobina.',tip:'Evitar à noite pela densidade nutricional alta — melhor no almoço.'},
+  {id:'carne_magra',name:'carne bovina magra',cat:'carnes',pts:6,cardio:5,energia:8,anti:4,sono:4,desc:'Ferro heme e zinco. Prefira cortes magros como patinho ou coxão mole.',tip:'Digestão mais lenta — evitar no jantar tardio antes de dormir.'},
+  // PROTEÍNAS
+  {id:'ovo',name:'ovo',cat:'proteínas',pts:8,cardio:7,energia:8,anti:6,sono:8,desc:'Proteína completa, colina pra saúde cardíaca, vitamina D e B12. Não eleva colesterol ruim.',tip:'Melatonina natural presente na gema. Omelete no jantar é combinação comprovada pra qualidade do sono.'},
+  // GRÃOS
+  {id:'aveia',name:'aveia',cat:'grãos',pts:9,cardio:9,energia:9,anti:6,sono:7,desc:'Beta-glucana reduz LDL e melhora saúde vascular. Energia sustentada sem pico glicêmico.',tip:'Triptofano + carboidrato complexo — combinação que facilita entrada do triptofano no cérebro.'},
+  {id:'arroz_int',name:'arroz integral',cat:'grãos',pts:7,cardio:6,energia:9,anti:5,sono:7,desc:'Carboidrato complexo com magnésio e fibra. Reposição lenta de glicogênio muscular.',tip:'Carboidrato de médio IG facilita absorção do triptofano. Bom no jantar pré-corrida.'},
+  {id:'quinoa',name:'quinoa',cat:'grãos',pts:9,cardio:8,energia:9,anti:7,sono:7,desc:'Proteína completa com todos aminoácidos + magnésio + ferro. Excelente pré-treino.',tip:'Magnésio presente relaxa a musculatura e melhora qualidade do sono profundo.'},
+  {id:'pão_int',name:'pão integral',cat:'grãos',pts:6,cardio:5,energia:8,anti:4,sono:5,desc:'Fibra + carboidrato de médio IG. Melhor que o pão branco, mas aveia supera.',tip:'Neutro pro sono. Preferir versões com sementes que adicionam triptofano.'},
+  // LEGUMINOSAS
+  {id:'feijão',name:'feijão',cat:'leguminosas',pts:8,cardio:8,energia:8,anti:6,sono:6,desc:'Ferro não-heme + fibra solúvel que reduz colesterol. Potássio pra função cardíaca.',tip:'Magnésio e triptofano presentes. Evitar em grande quantidade à noite pela fermentação.'},
+  {id:'lentilha',name:'lentilha',cat:'leguminosas',pts:9,cardio:8,energia:8,anti:7,sono:7,desc:'Alta em ferro e folato. Folato reduz homocisteína — fator de risco cardiovascular.',tip:'Folato + triptofano + magnésio — boa pra quem tem dificuldade de dormir por ansiedade.'},
+  {id:'grão_bico',name:'grão-de-bico',cat:'leguminosas',pts:8,cardio:7,energia:8,anti:6,sono:6,desc:'Magnésio + potássio + fibra. Índice glicêmico baixo, energia constante por horas.',tip:'Vitamina B6 presente é cofator na produção de serotonina. Moderação no jantar.'},
+  // FOLHAS
+  {id:'espinafre',name:'espinafre',cat:'folhas',pts:9,cardio:8,energia:6,anti:9,sono:8,desc:'Ferro + nitratos naturais + vitamina K que regula calcificação arterial.',tip:'Magnésio e triptofano em quantidade relevante. Refogado levemente é ótimo no jantar.'},
+  {id:'couve',name:'couve',cat:'folhas',pts:9,cardio:8,energia:5,anti:9,sono:7,desc:'Vitamina K, C, cálcio e nitratos. Sulforafano com ação anti-inflamatória vascular.',tip:'Cálcio ajuda o cérebro a converter triptofano em melatonina.'},
+  {id:'rúcula',name:'rúcula',cat:'folhas',pts:8,cardio:8,energia:4,anti:8,sono:6,desc:'Alta concentração de nitratos. Potencializa beterraba quando consumidas juntas.',tip:'Magnésio leve. Melhor consumir no almoço pelo efeito vasodilatador.'},
+  {id:'agrião',name:'agrião',cat:'folhas',pts:7,cardio:7,energia:4,anti:8,sono:6,desc:'Isotiocianatos anti-inflamatórios, ferro e vitamina C. Ótimo aliado do coração.',tip:'Propriedades calmantes leves. Pode compor salada no jantar.'},
+  // TUBÉRCULOS
+  {id:'batata_doce',name:'batata-doce',cat:'tubérculos',pts:8,cardio:7,energia:10,anti:7,sono:8,desc:'Beta-caroteno antioxidante, potássio, energia de baixo IG. Ideal pra repor glicogênio.',tip:'Carboidrato de baixo IG + potássio + magnésio — o melhor tubérculo pra comer antes de dormir em dia de treino.'},
+  {id:'inhame',name:'inhame',cat:'tubérculos',pts:7,cardio:6,energia:9,anti:6,sono:7,desc:'Diosgenina anti-inflamatória. Potássio e vitamina B6 pra saúde vascular.',tip:'B6 é cofator na síntese de serotonina. Boa alternativa à batata-doce no jantar.'},
+  {id:'mandioca',name:'mandioca',cat:'tubérculos',pts:5,cardio:4,energia:9,anti:3,sono:4,desc:'Energia rápida, fácil digestão. Pobre em micronutrientes cardiovasculares.',tip:'Não contribui significativamente pro sono. Preferir batata-doce.'},
+  // OLEAGINOSAS
+  {id:'castanha_pa',name:'castanha-do-pará',cat:'oleaginosas',pts:9,cardio:8,energia:7,anti:8,sono:9,desc:'2-3 unidades cobrem 100% do selênio diário. Protege músculo cardíaco do estresse oxidativo.',tip:'Selênio é cofator direto na produção de melatonina. 2-3 castanhas antes de dormir fazem diferença real.'},
+  {id:'nozes',name:'nozes',cat:'oleaginosas',pts:9,cardio:9,energia:7,anti:8,sono:9,desc:'Ômega 3 vegetal, polifenóis e arginina. Reduz LDL e pressão arterial.',tip:'Melatonina natural + ômega 3 + magnésio. Uma das melhores oleaginosas pro sono.'},
+  {id:'amêndoa',name:'amêndoa',cat:'oleaginosas',pts:8,cardio:8,energia:7,anti:7,sono:8,desc:'Vitamina E antioxidante, magnésio e gordura insaturada. Protege as artérias.',tip:'Magnésio ativa o sistema nervoso parassimpático — 20-25g antes de dormir ajuda no relaxamento.'},
+  {id:'amendoim',name:'amendoim',cat:'oleaginosas',pts:7,cardio:6,energia:8,anti:6,sono:6,desc:'Resveratrol + gordura insaturada. Cuidado com versões salgadas ou torradas com óleo.',tip:'Triptofano presente mas em menor quantidade. Prefira pasta de amendoim natural.'},
+  // SEMENTES
+  {id:'chia',name:'chia',cat:'sementes',pts:9,cardio:8,energia:7,anti:8,sono:7,desc:'Ômega 3 vegetal + fibra solúvel + cálcio. Hidratação celular e redução de inflamação.',tip:'Triptofano e magnésio presentes. Pode colocar no iogurte noturno.'},
+  {id:'linhaça',name:'linhaça',cat:'sementes',pts:8,cardio:8,energia:6,anti:8,sono:7,desc:'Lignanas antioxidantes + ômega 3. Reduz pressão arterial e melhora função endotelial.',tip:'Ômega 3 vegetal melhora sono REM com uso consistente por semanas.'},
+  {id:'semente_abob',name:'semente de abóbora',cat:'sementes',pts:8,cardio:7,energia:7,anti:6,sono:9,desc:'Magnésio + zinco + ferro. Uma das melhores fontes de triptofano entre as sementes.',tip:'Alto triptofano + magnésio + zinco = combinação poderosa pro sono. Comer no lanche da tarde ou jantar.'},
+  {id:'girassol',name:'semente de girassol',cat:'sementes',pts:7,cardio:7,energia:7,anti:7,sono:6,desc:'Vitamina E em alta concentração. Selênio e gordura insaturada pra saúde vascular.',tip:'Triptofano moderado. Boa opção no lanche, mas não especialmente pro sono.'},
+  // GORDURAS / TEMPEROS
+  {id:'azeite',name:'azeite extravirgem',cat:'gorduras',pts:9,cardio:9,energia:7,anti:8,sono:7,desc:'Oleocanthal anti-inflamatório, polifenóis e ômega 9. Pilar da dieta mediterrânea.',tip:'Polifenóis têm ação anti-inflamatória que melhora indiretamente a qualidade do sono.'},
+  {id:'alho',name:'alho',cat:'temperos',pts:8,cardio:9,energia:3,anti:8,sono:6,desc:'Alicina vasodilatadora, reduz pressão e LDL. Efeito maior consumido cru ou levemente aquecido.',tip:'Alicina tem leve efeito calmante. Não interfere negativamente no sono.'},
+  {id:'cúrcuma',name:'cúrcuma',cat:'temperos',pts:8,cardio:7,energia:3,anti:10,sono:7,desc:'Curcumina potentemente anti-inflamatória. Com pimenta-preta, absorção aumenta 2000%.',tip:'Redução de inflamação sistêmica melhora a qualidade do sono indiretamente. Leite dourado à noite é prático.'},
+  {id:'gengibre',name:'gengibre',cat:'temperos',pts:8,cardio:8,energia:4,anti:9,sono:6,desc:'Gingerois reduzem inflamação e melhoram circulação. Antiagregante plaquetário natural.',tip:'Em chá quente à noite tem efeito calmante leve e melhora digestão.'},
+  {id:'canela',name:'canela',cat:'temperos',pts:7,cardio:7,energia:4,anti:8,sono:7,desc:'Regula glicemia e tem propriedades anti-inflamatórias e antimicrobianas.',tip:'Estabilização glicêmica durante o sono evita despertares noturnos por hipoglicemia.'},
+  {id:'pimenta_caiena',name:'pimenta caiena',cat:'temperos',pts:7,cardio:8,energia:4,anti:7,sono:3,desc:'Capsaicina melhora circulação, reduz pressão arterial e tem efeito termogênico.',tip:'Pode aumentar temperatura corporal e dificultar o sono se consumida à noite.'},
+  // BEBIDAS
+  {id:'suco_beterraba',name:'suco de beterraba',cat:'bebidas',pts:10,cardio:10,energia:7,anti:7,sono:4,desc:'Concentrado de nitratos. 200-500ml 60-90min antes da corrida é o protocolo mais estudado.',tip:'Melhor consumir pela manhã antes do treino — não tem benefício significativo pro sono.'},
+  {id:'água_coco',name:'água de coco',cat:'bebidas',pts:7,cardio:7,energia:6,anti:5,sono:7,desc:'Eletrólitos naturais: potássio, sódio e magnésio. Reidratação pós-treino eficiente.',tip:'Magnésio e potássio auxiliam no relaxamento muscular noturno.'},
+  {id:'chá_camomila',name:'chá de camomila',cat:'bebidas',pts:7,cardio:5,energia:2,anti:6,sono:10,desc:'Apigenina se liga a receptores GABA — efeito sedativo natural comprovado.',tip:'Tomar 30-45min antes de dormir. Uma das intervenções mais estudadas pra qualidade do sono.'},
+  {id:'chá_verde',name:'chá verde',cat:'bebidas',pts:8,cardio:8,energia:5,anti:9,sono:2,desc:'EGCG melhora função endotelial e reduz LDL oxidado. Cafeína leve melhora performance.',tip:'Evitar após 14h — cafeína interfere no sono mesmo em doses pequenas.'},
+  {id:'chá_hibisco',name:'chá de hibisco',cat:'bebidas',pts:8,cardio:9,energia:3,anti:8,sono:6,desc:'Antocianinas que reduzem pressão arterial de forma consistente.',tip:'Sem cafeína — pode tomar à noite sem problema. Leve efeito relaxante.'},
+  {id:'chá_maracujá',name:'chá de maracujá',cat:'bebidas',pts:7,cardio:5,energia:2,anti:6,sono:10,desc:'Flavonoides que agem nos receptores GABA, promovendo relaxamento e sedação leve.',tip:'Equivalente à camomila no efeito sedativo. Tomar 30min antes de dormir.'},
+  {id:'chá_valeriana',name:'chá de valeriana',cat:'bebidas',pts:6,cardio:4,energia:1,anti:5,sono:10,desc:'Valerênico inibe a quebra de GABA — efeito sedativo forte, comprovado em estudos.',tip:'O chá mais potente pro sono. Sabor forte. Tomar 1h antes de dormir.'},
+  {id:'leite_morno',name:'leite morno',cat:'bebidas',pts:6,cardio:5,energia:6,anti:4,sono:8,desc:'Triptofano + cálcio + carboidrato leve. Combinação clássica e eficaz pra indução do sono.',tip:'Aquecido aumenta a disponibilidade do triptofano. Com mel e canela potencializa o efeito.'},
+  {id:'café',name:'café',cat:'bebidas',pts:6,cardio:6,energia:8,anti:7,sono:1,desc:'Cafeína melhora performance aeróbica em 3-5%. Antioxidante. Moderação é chave.',tip:'Evitar após 14h. Meia-vida da cafeína é de 5-7h — interfere diretamente na qualidade do sono.'},
+  {id:'suco_romã',name:'suco de romã',cat:'bebidas',pts:9,cardio:9,energia:5,anti:9,sono:5,desc:'Versão concentrada dos benefícios da romã. Um dos sucos mais estudados pra saúde cardíaca.',tip:'Sem efeito significativo no sono. Consumir pela manhã ou almoço.'},
+  // LATICÍNIOS
+  {id:'iogurte',name:'iogurte natural',cat:'laticínios',pts:7,cardio:6,energia:7,anti:5,sono:8,desc:'Probióticos, cálcio e proteína. Microbioma saudável impacta diretamente a saúde cardiovascular.',tip:'Cálcio + triptofano + probióticos — excelente antes de dormir. Adicionar chia e mel potencializa.'},
+  {id:'kefir',name:'kefir',cat:'laticínios',pts:8,cardio:7,energia:6,anti:6,sono:8,desc:'Probiótico mais potente que iogurte. Reduz pressão arterial e melhora metabolismo lipídico.',tip:'Eixo intestino-cérebro: microbioma saudável produz mais serotonina, melhorando o sono.'},
+  // OUTROS
+  {id:'cacau',name:'cacau 70%+',cat:'outros',pts:8,cardio:9,energia:6,anti:9,sono:5,desc:'Flavonoides melhoram vasodilatação e reduzem pressão. Mínimo 70% de cacau puro.',tip:'Tem teobromina (estimulante leve) e pouca cafeína. Evitar em grande quantidade à noite.'},
+  {id:'mel',name:'mel',cat:'outros',pts:5,cardio:5,energia:8,anti:6,sono:7,desc:'Energia rápida de fácil absorção. Propriedades antioxidantes e anti-inflamatórias leves.',tip:'Glicose do mel estimula leve liberação de insulina que ajuda triptofano a cruzar a barreira hematoencefálica.'},
+  // SUPLEMENTOS
+  {id:'spirulina',name:'spirulina',cat:'suplementos',pts:9,cardio:8,energia:7,anti:9,sono:6,desc:'Ficocianina antioxidante, ferro + proteína completa. Reduz LDL e triglicerídeos.',tip:'Triptofano presente. Evitar tomar à noite pois pode ser levemente energizante.'},
+  {id:'beterraba_po',name:'beterraba em pó',cat:'suplementos',pts:10,cardio:10,energia:7,anti:7,sono:4,desc:'Forma concentrada de nitratos. Ideal pré-corrida. Diluir 1-2 colheres em 200ml água.',tip:'Usar pela manhã antes do treino. Não tem benefício pro sono.'},
+  {id:'omega3',name:'ômega 3 (suplemento)',cat:'suplementos',pts:9,cardio:10,energia:6,anti:8,sono:8,desc:'EPA+DHA concentrados. Opção pra quem não come peixe com frequência. 1-2g/dia.',tip:'Ômega 3 melhora qualidade do sono REM. Tomar à noite com refeição que contenha gordura.'},
+  {id:'magnésio',name:'magnésio',cat:'suplementos',pts:8,cardio:8,energia:7,anti:6,sono:10,desc:'Cofator de 300+ reações. Regula pressão arterial, ritmo cardíaco e produção de energia.',tip:'O suplemento com maior evidência pra qualidade do sono. Tomar 200-400mg 1h antes de dormir.'},
+  {id:'coq10',name:'coenzima Q10',cat:'suplementos',pts:8,cardio:9,energia:8,anti:7,sono:5,desc:'Essencial pra produção de ATP nas mitocôndrias. Melhora performance cardíaca e muscular.',tip:'Pode ser levemente energizante — preferir tomar pela manhã ou almoço.'},
+  {id:'vitamina_d',name:'vitamina D',cat:'suplementos',pts:8,cardio:7,energia:7,anti:6,sono:8,desc:'Regula função cardíaca, imunidade e produção de serotonina. Deficiência é comum.',tip:'Deficiência de vitamina D está diretamente ligada a má qualidade do sono. Tomar pela manhã.'},
+  {id:'zinco',name:'zinco',cat:'suplementos',pts:7,cardio:6,energia:7,anti:7,sono:8,desc:'Cofator na síntese de testosterona, imunidade e cicatrização. Antioxidante celular.',tip:'Zinco + magnésio antes de dormir (ZMA) é combinação clássica pra qualidade do sono e recuperação.'},
+];
+
+const cats = ['todos', ...[...new Set(foods.map(f => f.cat))].sort()];
+let activeFilter = 'todos';
+let selected = new Set();
+
+function renderCats() {
+  document.getElementById('cats').innerHTML = cats.map(c =>
+    `<button class="cat-btn${c === activeFilter ? ' active' : ''}" onclick="setFilter('${c}')">${c}</button>`
+  ).join('');
+}
+
+function setFilter(c) { activeFilter = c; renderCats(); renderFoods(); }
+
+function renderFoods() {
+  const q = document.getElementById('search').value.toLowerCase().trim();
+  const list = foods.filter(f => {
+    const mc = activeFilter === 'todos' || f.cat === activeFilter;
+    const mq = !q || f.name.includes(q) || f.cat.includes(q) || f.desc.toLowerCase().includes(q);
+    return mc && mq;
+  });
+  const label = document.getElementById('listLabel');
+  label.textContent = q ? `resultado para "${q}"` : activeFilter === 'todos' ? 'todos os alimentos' : activeFilter;
+  const el = document.getElementById('foodList');
+  if (!list.length) { el.innerHTML = '<div class="empty">nenhum alimento encontrado</div>'; return; }
+  el.innerHTML = list.map(f => {
+    const sel = selected.has(f.id);
+    return `<div class="food-item${sel ? ' selected' : ''}" onclick="toggle('${f.id}')">
+      <div class="food-check">
+        <svg class="check-icon" width="12" height="12" viewBox="0 0 12 12" fill="none">
+          <path d="M2 6l3 3 5-5" stroke="#000" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <div class="food-body">
+        <div class="food-top">
+          <div class="food-name">${f.name}</div>
+          <div class="food-pts">${f.pts}/10</div>
+        </div>
+        <div class="food-cat">${f.cat}</div>
+        <div class="food-desc">${f.desc}</div>
+        <div class="food-bars">
+          <div class="bar-row"><span class="bar-label t-cardio">cardio</span><div class="bar-bg"><div class="bar-fill b-cardio" style="width:${f.cardio*10}%"></div></div><span class="bar-val t-cardio">${f.cardio}</span></div>
+          <div class="bar-row"><span class="bar-label t-energia">energia</span><div class="bar-bg"><div class="bar-fill b-energia" style="width:${f.energia*10}%"></div></div><span class="bar-val t-energia">${f.energia}</span></div>
+          <div class="bar-row"><span class="bar-label t-anti">antioxid.</span><div class="bar-bg"><div class="bar-fill b-anti" style="width:${f.anti*10}%"></div></div><span class="bar-val t-anti">${f.anti}</span></div>
+          <div class="bar-row"><span class="bar-label t-sono">sono</span><div class="bar-bg"><div class="bar-fill b-sono" style="width:${f.sono*10}%"></div></div><span class="bar-val t-sono">${f.sono}</span></div>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function toggle(id) {
+  if (selected.has(id)) selected.delete(id); else selected.add(id);
+  renderFoods();
+  updateCount();
+}
+
+function updateCount() {
+  const n = selected.size;
+  document.getElementById('countNum').textContent = n;
+  document.getElementById('verBtn').disabled = n === 0;
+}
+
+function calcScore() {
+  const sel = [...selected].map(id => foods.find(f => f.id === id));
+  const avg = key => Math.round(sel.reduce((a, f) => a + f[key], 0) / sel.length);
+  const total = sel.reduce((a, f) => a + f.pts, 0);
+  const pct = Math.round((total / (sel.length * 10)) * 100);
+  return { sel, pct, cardio: avg('cardio'), energia: avg('energia'), anti: avg('anti'), sono: avg('sono') };
+}
+
+function getNotaInfo(pct) {
+  if (pct >= 90) return { nota: 'excelente', cor: '#4ade80' };
+  if (pct >= 75) return { nota: 'muito bom', cor: '#34d399' };
+  if (pct >= 60) return { nota: 'bom', cor: '#60a5fa' };
+  if (pct >= 40) return { nota: 'regular', cor: '#fbbf24' };
+  return { nota: 'fraco', cor: '#f87171' };
+}
+
+function getInsight(pct, cardio, energia, anti, sono, sel) {
+  const hasPeixe = sel.some(f => f.cat === 'peixes');
+  const hasSono = sel.some(f => f.sono >= 8);
+  const hasNitrato = sel.some(f => ['beterraba','rúcula','espinafre','suco_beterraba','beterraba_po'].includes(f.id));
+  const parts = [];
+  if (pct >= 90) parts.push('Dia praticamente perfeito. Consistência por 2-3 semanas e o fôlego na corrida muda visivelmente.');
+  else if (pct >= 75) parts.push('Alimentação muito sólida. Poucos ajustes pra chegar no nível ideal.');
+  else if (pct >= 60) parts.push('Base razoável com espaço pra melhorar.');
+  else if (pct >= 40) parts.push('Dá pra melhorar bastante com substituições simples.');
+  else parts.push('Pouco impacto cardiovascular e no sono. Começa com 2-3 itens de alta pontuação.');
+  if (!hasPeixe) parts.push('Nenhum peixe no dia — sardinha ou salmão no jantar seria o maior ganho único possível.');
+  if (!hasNitrato) parts.push('Sem fonte de nitrato — beterraba em pó antes da corrida é o item mais impactante pro fôlego.');
+  if (!hasSono) parts.push('Sono fraco na seleção — adiciona camomila, castanha-do-pará ou nozes pra dormir melhor antes do treino.');
+  return parts.join(' ');
+}
+
+function detectCombos(sel) {
+  const ids = sel.map(f => f.id);
+  const combos = [];
+  if (ids.includes('sardinha') && ids.includes('espinafre')) combos.push({ title: 'sardinha + espinafre', desc: 'Ferro heme (sardinha) + ferro não-heme (espinafre) + vitamina C natural = absorção máxima de ferro. Direto na capacidade de transporte de oxigênio.' });
+  if ((ids.includes('lentilha') || ids.includes('espinafre') || ids.includes('feijão')) && (ids.includes('laranja') || ids.includes('acerola') || ids.includes('morango'))) combos.push({ title: 'ferro vegetal + vitamina C', desc: 'Vitamina C presente potencializa a absorção do ferro não-heme em até 3x. Um dos combos nutricionais mais impactantes.' });
+  if (ids.includes('cúrcuma') && ids.includes('azeite')) combos.push({ title: 'cúrcuma + azeite', desc: 'Curcumina é lipossolúvel — a gordura do azeite aumenta muito sua absorção. Anti-inflamatório potente.' });
+  if ((ids.includes('castanha_pa') || ids.includes('nozes') || ids.includes('amêndoa')) && (ids.includes('chá_camomila') || ids.includes('chá_maracujá') || ids.includes('chá_valeriana'))) combos.push({ title: 'oleaginosa + chá calmante', desc: 'Magnésio/triptofano das oleaginosas + flavonoides sedativos do chá = preparação completa pro sono. Tomar 30-60min antes de dormir.' });
+  if ((ids.includes('banana') || ids.includes('uva_escura') || ids.includes('cereja')) && (ids.includes('iogurte') || ids.includes('kefir'))) combos.push({ title: 'fruta + probiótico', desc: 'Triptofano da fruta + cálcio do iogurte + probióticos = síntese de melatonina otimizada. Ótimo lanche noturno.' });
+  if (ids.includes('salmão') && ids.includes('batata_doce')) combos.push({ title: 'salmão + batata-doce', desc: 'O jantar perfeito pré-corrida. Ômega 3 à noite + carboidrato de baixo IG que abastece glicogênio lentamente durante o sono.' });
+  if (ids.includes('aveia') && (ids.includes('banana') || ids.includes('mel'))) combos.push({ title: 'aveia + banana/mel', desc: 'Carboidrato complexo + simples juntos facilitam o transporte de triptofano pro cérebro. Clássico pra indução do sono.' });
+  if (ids.includes('alho') && (ids.includes('beterraba') || ids.includes('rúcula') || ids.includes('espinafre'))) combos.push({ title: 'alho + nitratos', desc: 'Alicina + óxido nítrico = vasodilatação dupla. Circulação muito mais eficiente pra corrida.' });
+  return combos;
+}
+
+function detectGaps(sel) {
+  const ids = sel.map(f => f.id);
+  const gaps = [];
+  const hasPeixe = sel.some(f => f.cat === 'peixes');
+  const hasNitrato = sel.some(f => ['beterraba','rúcula','espinafre','suco_beterraba','beterraba_po'].includes(f.id));
+  const hasSonoAlto = sel.some(f => f.sono >= 8);
+  const hasOmega = hasPeixe || ids.includes('nozes') || ids.includes('chia') || ids.includes('linhaça') || ids.includes('omega3');
+  const hasFerro = hasPeixe || ids.includes('fígado') || ids.includes('espinafre') || ids.includes('lentilha') || ids.includes('feijão');
+  const hasMag = ids.some(id => ['amêndoa','castanha_pa','espinafre','abacate','magnésio','quinoa','semente_abob'].includes(id));
+  const hasVitC = ids.some(id => ['laranja','acerola','morango','kiwi','couve'].includes(id));
+  if (!hasPeixe) gaps.push({ cor: '#f87171', msg: 'Sem peixe no dia — perde o maior aporte de ômega 3 e ferro heme biodisponível.' });
+  if (!hasNitrato) gaps.push({ cor: '#f87171', msg: 'Sem fonte de nitrato — vasodilatação comprometida. Beterraba, rúcula ou espinafre resolvem.' });
+  if (!hasSonoAlto) gaps.push({ cor: '#fbbf24', msg: 'Sono fraco na seleção. Adicione camomila, cereja, nozes ou castanha-do-pará pra dormir melhor.' });
+  if (!hasOmega) gaps.push({ cor: '#fbbf24', msg: 'Sem ômega 3 identificado — inflamação mais alta e sono REM comprometido.' });
+  if (!hasFerro) gaps.push({ cor: '#fbbf24', msg: 'Sem fonte significativa de ferro — transporte de O₂ no sangue fica limitado.' });
+  if (!hasMag) gaps.push({ cor: '#60a5fa', msg: 'Pouco magnésio — mineral essencial pra relaxamento muscular e qualidade do sono profundo.' });
+  if (!hasVitC) gaps.push({ cor: '#60a5fa', msg: 'Sem vitamina C — absorção de ferro vegetal cai muito sem ela.' });
+  return gaps;
+}
+
+function openResult() {
+  if (!selected.size) return;
+  const { sel, pct, cardio, energia, anti, sono } = calcScore();
+  const { nota, cor } = getNotaInfo(pct);
+  const insight = getInsight(pct, cardio, energia, anti, sono, sel);
+  const combos = detectCombos(sel);
+  const gaps = detectGaps(sel);
+
+  const pillarBar = (val, c) => `<div class="pillar-bar-bg"><div class="pillar-bar-fill" style="width:${val*10}%;background:${c}"></div></div>`;
+
+  const foodCards = sel.map(f => `
+    <div class="analysis-card">
+      <div class="analysis-food-name">${f.name}</div>
+      <div class="analysis-food-cat">${f.cat}</div>
+      <div class="analysis-bars">
+        <div class="bar-row"><span class="bar-label t-cardio">cardio</span><div class="bar-bg"><div class="bar-fill b-cardio" style="width:${f.cardio*10}%"></div></div><span class="bar-val t-cardio">${f.cardio}</span></div>
+        <div class="bar-row"><span class="bar-label t-energia">energia</span><div class="bar-bg"><div class="bar-fill b-energia" style="width:${f.energia*10}%"></div></div><span class="bar-val t-energia">${f.energia}</span></div>
+        <div class="bar-row"><span class="bar-label t-anti">antioxid.</span><div class="bar-bg"><div class="bar-fill b-anti" style="width:${f.anti*10}%"></div></div><span class="bar-val t-anti">${f.anti}</span></div>
+        <div class="bar-row"><span class="bar-label t-sono">sono</span><div class="bar-bg"><div class="bar-fill b-sono" style="width:${f.sono*10}%"></div></div><span class="bar-val t-sono">${f.sono}</span></div>
+      </div>
+      <div class="analysis-desc">${f.desc}</div>
+      <div class="analysis-tip">${f.tip}</div>
+    </div>`).join('');
+
+  const combosHtml = combos.length ? combos.map(c =>
+    `<div class="combo-item"><strong>${c.title}</strong><br>${c.desc}</div>`
+  ).join('') : '<div class="combo-item">Nenhuma combinação sinérgica detectada. Experimente combinar sardinha + espinafre ou salmão + batata-doce.</div>';
+
+  const gapsHtml = gaps.length ? gaps.map(g =>
+    `<div class="gap-item"><div class="gap-dot" style="background:${g.cor}"></div><span>${g.msg}</span></div>`
+  ).join('') : '<div class="gap-item"><div class="gap-dot" style="background:#4ade80"></div><span>Nenhum gap crítico identificado. Ótima seleção.</span></div>';
+
+  const chips = sel.map(f =>
+    `<div class="chip">${f.name}<span class="chip-x" onclick="removeChip('${f.id}')">×</span></div>`
+  ).join('');
+
+  document.getElementById('resultContent').innerHTML = `
+    <div class="score-hero">
+      <div class="score-pct" style="color:${cor}">${pct}%</div>
+      <div class="score-nota" style="color:${cor}">${nota}</div>
+      <div class="score-bar-bg"><div class="score-bar-fill" style="width:${pct}%;background:${cor}"></div></div>
+      <div class="score-insight">${insight}</div>
+    </div>
+
+    <div class="pillars-grid">
+      <div class="pillar-card"><div class="pillar-label">saúde cardíaca</div><div class="pillar-val" style="color:${cor}">${cardio}<span style="font-size:13px;color:var(--muted)">/10</span></div>${pillarBar(cardio,cor)}</div>
+      <div class="pillar-card"><div class="pillar-label">energia aeróbica</div><div class="pillar-val" style="color:${cor}">${energia}<span style="font-size:13px;color:var(--muted)">/10</span></div>${pillarBar(energia,cor)}</div>
+      <div class="pillar-card"><div class="pillar-label">antioxidante</div><div class="pillar-val" style="color:${cor}">${anti}<span style="font-size:13px;color:var(--muted)">/10</span></div>${pillarBar(anti,cor)}</div>
+      <div class="pillar-card"><div class="pillar-label">qualidade do sono</div><div class="pillar-val" style="color:var(--purple)">${sono}<span style="font-size:13px;color:var(--muted)">/10</span></div>${pillarBar(sono,'var(--purple)')}</div>
+    </div>
+
+    <div class="analysis-section">
+      <div class="analysis-title">gaps e alertas</div>
+      <div class="gaps-card">${gapsHtml}</div>
+    </div>
+
+    <div class="analysis-section">
+      <div class="analysis-title">combinações sinérgicas detectadas</div>
+      <div class="combos-card">${combosHtml}</div>
+    </div>
+
+    <div class="analysis-section">
+      <div class="analysis-title">análise por alimento</div>
+      ${foodCards}
+    </div>
+
+    <div class="analysis-title">itens selecionados</div>
+    <div class="chips-wrap">${chips}</div>
+    <button class="limpar-btn" onclick="limpar()">limpar tudo e começar de novo</button>
+  `;
+
+  document.getElementById('overlay').classList.add('open');
+  document.getElementById('overlay').scrollTop = 0;
+}
+
+function removeChip(id) {
+  selected.delete(id);
+  updateCount();
+  if (!selected.size) { closeResult(); return; }
+  openResult();
+}
+
+function closeResult() {
+  document.getElementById('overlay').classList.remove('open');
+  renderFoods();
+}
+
+function limpar() {
+  selected.clear();
+  updateCount();
+  closeResult();
+}
+
+document.getElementById('search').addEventListener('input', renderFoods);
+renderCats();
+renderFoods();
+</script>
+</body>
+</html>
