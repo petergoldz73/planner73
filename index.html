@@ -3,50 +3,56 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>Cardio + Sono Planner</title>
+<title>NutriPlanner</title>
 <style>
 :root{--bg:#0f0f0f;--surface:#1a1a1a;--surface2:#222;--border:#2a2a2a;--text:#f0f0f0;--muted:#777;--green:#4ade80;--green-dim:#152b1e;--blue:#60a5fa;--blue-dim:#152038;--amber:#fbbf24;--amber-dim:#2e2008;--teal:#2dd4bf;--teal-dim:#0b2826;--purple:#a78bfa;--purple-dim:#1e1635;--orange:#fb923c;--orange-dim:#2e1a08;--red:#f87171;--red-dim:#2e1212;--r:14px;--rs:8px}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 html,body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;min-height:100vh}
-.app{max-width:500px;margin:0 auto;padding-bottom:130px}
-.header{padding:20px 16px 14px;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--bg);z-index:10}
-.header h1{font-size:21px;font-weight:700;letter-spacing:-.5px}
-.header p{font-size:13px;color:var(--muted);margin-top:3px}
-.sticky-controls{position:sticky;top:65px;background:var(--bg);z-index:9;padding:10px 16px 0;border-bottom:1px solid var(--border);padding-bottom:10px}
+.app{max-width:500px;margin:0 auto;padding-bottom:140px}
+.header{padding:18px 16px 0;position:sticky;top:0;background:var(--bg);z-index:10}
+.header h1{font-size:20px;font-weight:700;letter-spacing:-.5px}
+.tabs{display:flex;gap:8px;margin-top:12px;border-bottom:1px solid var(--border)}
+.tab{padding:10px 4px;font-size:14px;font-weight:600;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px}
+.tab.active{color:var(--text);border-bottom-color:var(--green)}
+.tab-sub{font-size:11px;color:var(--muted);font-weight:400;display:block}
+.sticky-controls{position:sticky;top:108px;background:var(--bg);z-index:9;padding:10px 16px 0}
 .search-input{width:100%;padding:11px 14px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r);color:var(--text);font-size:15px;outline:none;margin-bottom:10px}
-.search-input::placeholder{color:var(--muted)}
-.cats{display:flex;gap:7px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}
+.cats{display:flex;gap:7px;overflow-x:auto;scrollbar-width:none;padding-bottom:10px;border-bottom:1px solid var(--border)}
 .cats::-webkit-scrollbar{display:none}
-.cat-btn{padding:6px 13px;border-radius:20px;border:1px solid var(--border);background:var(--surface);color:var(--muted);font-size:12px;cursor:pointer;white-space:nowrap;flex-shrink:0;transition:all .15s}
+.cat-btn{padding:6px 13px;border-radius:20px;border:1px solid var(--border);background:var(--surface);color:var(--muted);font-size:12px;cursor:pointer;white-space:nowrap;flex-shrink:0}
 .cat-btn.active{background:var(--green-dim);border-color:var(--green);color:var(--green)}
 .section-label{padding:14px 16px 8px;font-size:11px;font-weight:600;color:var(--muted);letter-spacing:.06em;text-transform:uppercase}
 .food-list{padding:0 16px;display:flex;flex-direction:column;gap:8px}
-.food-item{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:13px;cursor:pointer;transition:all .15s;display:flex;gap:11px;align-items:flex-start}
+.food-item{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:13px;cursor:pointer;display:flex;gap:11px;align-items:flex-start}
 .food-item:active{transform:scale(.98)}
 .food-item.selected{background:var(--green-dim);border-color:var(--green)}
 .food-item.selected.negative{background:var(--red-dim);border-color:var(--red)}
-.food-check{width:22px;height:22px;border-radius:50%;border:2px solid var(--border);flex-shrink:0;margin-top:1px;display:flex;align-items:center;justify-content:center;transition:all .15s}
+.food-check{width:22px;height:22px;border-radius:50%;border:2px solid var(--border);flex-shrink:0;margin-top:1px;display:flex;align-items:center;justify-content:center}
 .food-item.selected .food-check{background:var(--green);border-color:var(--green)}
 .food-item.selected.negative .food-check{background:var(--red);border-color:var(--red)}
 .check-icon{display:none}
 .food-item.selected .check-icon{display:block}
 .food-body{flex:1;min-width:0}
 .food-top{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:3px}
-.food-name{font-size:15px;font-weight:600;color:var(--text);line-height:1.3}
+.food-name{font-size:15px;font-weight:600;line-height:1.3}
 .food-pts{font-size:12px;font-weight:700;padding:2px 8px;border-radius:10px;background:var(--surface2);color:var(--muted);flex-shrink:0}
 .food-pts.pos{background:var(--green-dim);color:var(--green)}
 .food-pts.neg{background:var(--red-dim);color:var(--red)}
 .food-cat{font-size:11px;color:var(--muted);margin-bottom:5px}
 .food-desc{font-size:13px;color:#aaa;line-height:1.5;margin-bottom:8px}
-.prep-label{font-size:11px;color:var(--muted);margin-bottom:6px;margin-top:2px}
+.prep-label,.qty-label{font-size:11px;color:var(--muted);margin-bottom:6px;margin-top:2px}
 .prep-opts{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}
-.prep-btn{padding:5px 10px;border-radius:8px;border:1px solid var(--border);background:var(--surface2);color:var(--muted);font-size:12px;cursor:pointer;transition:all .15s}
+.prep-btn{padding:5px 10px;border-radius:8px;border:1px solid var(--border);background:var(--surface2);color:var(--muted);font-size:12px;cursor:pointer}
 .prep-btn.active{background:var(--blue-dim);border-color:var(--blue);color:var(--blue)}
+.qty-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;background:var(--surface2);border-radius:8px;padding:8px 10px}
+.qty-btn{width:30px;height:30px;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:18px;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center}
+.qty-display{flex:1;text-align:center;font-size:14px;font-weight:600}
+.qty-unit{font-size:12px;color:var(--muted)}
 .food-bars{display:flex;flex-direction:column;gap:5px}
 .bar-row{display:flex;align-items:center;gap:8px}
-.bar-label{font-size:11px;width:72px;flex-shrink:0}
-.bar-bg{flex:1;height:4px;background:var(--surface2);border-radius:2px;overflow:hidden;position:relative}
-.bar-fill{height:4px;border-radius:2px;transition:width .3s}
+.bar-label{font-size:11px;width:78px;flex-shrink:0}
+.bar-bg{flex:1;height:4px;background:var(--surface2);border-radius:2px;overflow:hidden}
+.bar-fill{height:4px;border-radius:2px}
 .bar-val{font-size:11px;font-weight:600;width:24px;text-align:right;flex-shrink:0}
 .b-cardio{background:var(--blue)}.t-cardio{color:var(--blue)}
 .b-energia{background:var(--amber)}.t-energia{color:var(--amber)}
@@ -54,12 +60,25 @@ html,body{background:var(--bg);color:var(--text);font-family:-apple-system,Blink
 .b-sono{background:var(--purple)}.t-sono{color:var(--purple)}
 .b-inflam{background:var(--orange)}.t-inflam{color:var(--orange)}
 .empty{padding:40px 16px;text-align:center;color:var(--muted);font-size:14px}
-.bottom-bar{position:fixed;bottom:0;left:0;right:0;background:var(--bg);border-top:1px solid var(--border);padding:12px 16px 28px;z-index:20}
+/* juice builder */
+.juice-wrap{padding:0 16px}
+.juice-box{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:16px;margin-bottom:10px}
+.juice-box h3{font-size:14px;margin-bottom:4px}
+.juice-box p{font-size:12px;color:var(--muted);margin-bottom:12px}
+.juice-ing{display:flex;flex-wrap:wrap;gap:6px}
+.ing-btn{padding:7px 12px;border-radius:20px;border:1px solid var(--border);background:var(--surface2);color:var(--muted);font-size:13px;cursor:pointer}
+.ing-btn.active{background:var(--green-dim);border-color:var(--green);color:var(--green)}
+.sweet-opts{display:flex;flex-wrap:wrap;gap:6px}
+.add-juice-btn{width:100%;padding:13px;background:var(--green);color:#000;font-weight:700;border:none;border-radius:var(--r);font-size:14px;cursor:pointer;margin-top:4px}
+.add-juice-btn:disabled{background:var(--surface2);color:var(--muted)}
+.juice-preview{font-size:13px;color:#bbb;margin:10px 0;line-height:1.5}
+/* bottom bar */
+.bottom-bar{position:fixed;bottom:0;left:0;right:0;background:var(--bg);border-top:1px solid var(--border);padding:12px 16px 26px;z-index:20}
 .bottom-inner{max-width:500px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:12px}
-.count-info{font-size:13px;color:var(--muted)}
-.count-info span{color:var(--text);font-weight:600}
+.count-info{font-size:13px;color:var(--muted)}.count-info span{color:var(--text);font-weight:600}
 .ver-btn{padding:13px 22px;background:var(--green);color:#000;font-size:14px;font-weight:700;border:none;border-radius:var(--r);cursor:pointer;flex-shrink:0}
 .ver-btn:disabled{background:var(--surface2);color:var(--muted)}
+/* overlay */
 .overlay{display:none;position:fixed;inset:0;z-index:30;background:var(--bg);overflow-y:auto}
 .overlay.open{display:block}
 .ov-wrap{max-width:500px;margin:0 auto;padding:20px 16px 60px}
@@ -72,9 +91,12 @@ html,body{background:var(--bg);color:var(--text);font-family:-apple-system,Blink
 .score-bar-bg{height:8px;background:var(--surface2);border-radius:4px;overflow:hidden;margin-bottom:14px}
 .score-bar-fill{height:8px;border-radius:4px}
 .score-insight{font-size:13px;color:#bbb;line-height:1.6;text-align:left}
-.warn-banner{background:var(--red-dim);border:1px solid var(--red);border-radius:var(--r);padding:14px;margin-bottom:14px;display:flex;gap:10px;align-items:flex-start}
+.warn-banner{border-radius:var(--r);padding:14px;margin-bottom:14px;display:flex;gap:10px;align-items:flex-start}
+.warn-banner.red{background:var(--red-dim);border:1px solid var(--red)}
+.warn-banner.green{background:var(--green-dim);border:1px solid var(--green)}
 .warn-icon{font-size:18px;flex-shrink:0}
-.warn-text{font-size:13px;color:#f8b4b4;line-height:1.5}
+.warn-text{font-size:13px;line-height:1.5}
+.warn-banner.red .warn-text{color:#f8b4b4}.warn-banner.green .warn-text{color:#b4f8c8}
 .warn-text strong{color:#fff}
 .pillars-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
 .pillar-card{background:var(--surface);border-radius:var(--rs);padding:14px}
@@ -86,354 +108,422 @@ html,body{background:var(--bg);color:var(--text);font-family:-apple-system,Blink
 .analysis-title{font-size:13px;font-weight:600;color:var(--muted);letter-spacing:.05em;text-transform:uppercase;margin-bottom:10px}
 .analysis-card{background:var(--surface);border-radius:var(--r);padding:16px;margin-bottom:8px}
 .analysis-card.neg{border:1px solid var(--red-dim)}
-.analysis-food-name{font-size:14px;font-weight:600;color:var(--text);margin-bottom:6px}
+.analysis-food-name{font-size:14px;font-weight:600;margin-bottom:6px}
 .analysis-food-cat{font-size:11px;color:var(--muted);margin-bottom:8px}
 .analysis-desc{font-size:13px;color:#aaa;line-height:1.5;margin-bottom:6px}
 .analysis-tip{font-size:12px;line-height:1.5;border-left:2px solid var(--purple);padding-left:8px;margin-top:6px;color:var(--purple)}
 .analysis-tip.neg{border-left-color:var(--red);color:#f8b4b4}
 .combos-card,.gaps-card{background:var(--surface);border-radius:var(--r);padding:16px;margin-bottom:8px}
-.combo-item{padding:8px 0;border-bottom:1px solid var(--border);font-size:13px;color:#bbb;line-height:1.5}
-.combo-item:last-child{border-bottom:none;padding-bottom:0}
-.combo-item strong{color:var(--text)}
-.gap-item{display:flex;align-items:flex-start;gap:8px;padding:6px 0;border-bottom:1px solid var(--border);font-size:13px;color:#bbb}
+.gap-item{display:flex;align-items:flex-start;gap:8px;padding:7px 0;border-bottom:1px solid var(--border);font-size:13px;color:#bbb;line-height:1.5}
 .gap-item:last-child{border-bottom:none}
-.gap-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:4px}
+.gap-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:5px}
+.combo-item{padding:8px 0;border-bottom:1px solid var(--border);font-size:13px;color:#bbb;line-height:1.5}
+.combo-item:last-child{border-bottom:none;padding-bottom:0}.combo-item strong{color:var(--text)}
 .chips-wrap{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:14px}
 .chip{display:flex;align-items:center;gap:5px;padding:5px 10px;background:var(--surface);border:1px solid var(--border);border-radius:20px;font-size:12px}
 .chip.neg{border-color:var(--red-dim);background:var(--red-dim)}
 .chip-x{color:var(--muted);font-size:15px;cursor:pointer;line-height:1}
+.action-btns{display:flex;gap:8px;margin-bottom:8px}
+.action-btn{flex:1;padding:13px;border-radius:var(--r);font-size:13px;font-weight:600;cursor:pointer;border:1px solid var(--border);background:var(--surface);color:var(--text)}
+.action-btn.primary{background:var(--blue-dim);border-color:var(--blue);color:var(--blue)}
 .limpar-btn{width:100%;padding:14px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r);color:var(--muted);font-size:14px;cursor:pointer;margin-top:8px}
+.mode-banner{font-size:12px;padding:8px 12px;border-radius:8px;margin:10px 16px 0;text-align:center}
+.mode-banner.hoje{background:var(--green-dim);color:var(--green)}
+.mode-banner.amanha{background:var(--blue-dim);color:var(--blue)}
 </style>
 </head>
 <body>
 <div class="app">
   <div class="header">
-    <h1>Cardio + Sono Planner</h1>
-    <p>monte seu dia real — comida boa, ruim e tudo no meio</p>
+    <h1>NutriPlanner</h1>
+    <div class="tabs">
+      <div class="tab active" id="tabHoje" onclick="setMode('hoje')">Comi hoje<span class="tab-sub">avaliar o dia</span></div>
+      <div class="tab" id="tabAmanha" onclick="setMode('amanha')">Planejar<span class="tab-sub">montar cardápio</span></div>
+    </div>
   </div>
+  <div class="mode-banner hoje" id="modeBanner">Selecione tudo que você comeu hoje pra ver o veredito</div>
   <div class="sticky-controls">
     <input class="search-input" type="search" id="search" placeholder="buscar alimento..." autocomplete="off">
     <div class="cats" id="cats"></div>
   </div>
-  <div class="section-label" id="listLabel">todos os alimentos</div>
-  <div class="food-list" id="foodList"></div>
+  <div id="mainContent"></div>
 </div>
 
 <div class="bottom-bar">
   <div class="bottom-inner">
     <div class="count-info">selecionados: <span id="countNum">0</span></div>
-    <button class="ver-btn" id="verBtn" disabled onclick="openResult()">ver análise</button>
+    <button class="ver-btn" id="verBtn" disabled onclick="openResult()">ver veredito</button>
   </div>
 </div>
 
 <div class="overlay" id="overlay">
   <div class="ov-wrap">
-    <div class="ov-header">
-      <button class="back-btn" onclick="closeResult()">&#8592;</button>
-      <h2>análise do seu dia</h2>
-    </div>
+    <div class="ov-header"><button class="back-btn" onclick="closeResult()">&#8592;</button><h2 id="ovTitle">veredito do dia</h2></div>
     <div id="resultContent"></div>
   </div>
 </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script>
-// pts: pontuação geral (-10 a 10). inflam: 10 = anti-inflamatório, 0 = muito inflamatório
-// preps: variações de preparo, cada uma com deltas aplicados sobre os valores base
-const foods = [
-  // ===== FRUTAS =====
-  {id:'banana',name:'banana',cat:'frutas',pts:8,cardio:7,energia:10,anti:5,sono:9,inflam:8,desc:'Potássio pra contração cardíaca e triptofano que vira melatonina.',tip:'Comer 1h antes de dormir potencializa a melatonina.'},
-  {id:'kiwi',name:'kiwi',cat:'frutas',pts:8,cardio:7,energia:5,anti:9,sono:9,inflam:8,desc:'Vitamina C alta e serotonina natural que melhora o sono.',tip:'2 kiwis 1h antes de dormir reduzem o tempo pra adormecer.'},
-  {id:'cereja',name:'cereja',cat:'frutas',pts:9,cardio:8,energia:5,anti:9,sono:10,inflam:9,desc:'Fonte natural de melatonina, antocianinas anti-inflamatórias.',tip:'A melhor fruta pro sono. Suco de cereja ácida 30min antes de dormir.'},
-  {id:'abacate',name:'abacate',cat:'frutas',pts:9,cardio:9,energia:8,anti:7,sono:8,inflam:9,desc:'Gordura monoinsaturada que reduz LDL. Potássio altíssimo.',tip:'Magnésio e triptofano auxiliam no relaxamento muscular.'},
-  {id:'romã',name:'romã',cat:'frutas',pts:9,cardio:9,energia:5,anti:10,sono:5,inflam:9,desc:'Vasodilatadora potente, reduz pressão arterial.',tip:'Consumir no almoço ou tarde.'},
-  {id:'laranja',name:'laranja',cat:'frutas',pts:7,cardio:6,energia:6,anti:8,sono:4,inflam:7,desc:'Vitamina C + flavonoides. Potencializa absorção de ferro.',tip:'Combinar com fonte de ferro vegetal aumenta absorção em até 3x.'},
-  {id:'morango',name:'morango',cat:'frutas',pts:7,cardio:7,energia:5,anti:9,sono:5,inflam:8,desc:'Antioxidante potente, vitamina C.',tip:'Ótimo no café da manhã ou lanche.'},
-  {id:'maçã',name:'maçã',cat:'frutas',pts:6,cardio:6,energia:6,anti:7,sono:5,inflam:7,desc:'Quercetina anti-inflamatória, fibra que reduz colesterol.',tip:'Neutra pro sono, consumir em qualquer horário.'},
-  {id:'uva_escura',name:'uva escura',cat:'frutas',pts:8,cardio:9,energia:7,anti:9,sono:8,inflam:8,desc:'Resveratrol protege o coração. Melatonina natural.',tip:'Uma das poucas frutas com melatonina natural.'},
-  {id:'melancia',name:'melancia',cat:'frutas',pts:8,cardio:8,energia:7,anti:6,sono:6,inflam:7,desc:'Citrulina vira óxido nítrico. Hidratação alta.',tip:'Evitar grande quantidade antes de dormir.'},
-  {id:'mamão',name:'mamão',cat:'frutas',pts:6,cardio:6,energia:6,anti:7,sono:5,inflam:7,desc:'Papaína facilita digestão, beta-caroteno antioxidante.',tip:'Facilita a digestão noturna.'},
-  // ===== VERDURAS / LEGUMES =====
-  {id:'espinafre',name:'espinafre',cat:'verduras',pts:9,cardio:8,energia:6,anti:9,sono:8,inflam:9,desc:'Ferro + nitratos naturais + vitamina K.',tip:'Refogado levemente é ótimo no jantar.'},
-  {id:'couve',name:'couve',cat:'verduras',pts:9,cardio:8,energia:5,anti:9,sono:7,inflam:9,desc:'Vitamina K, C, cálcio e nitratos. Sulforafano anti-inflamatório.',tip:'Cálcio ajuda na conversão de triptofano em melatonina.'},
-  {id:'rúcula',name:'rúcula',cat:'verduras',pts:8,cardio:8,energia:4,anti:8,sono:6,inflam:8,desc:'Alta concentração de nitratos. Potencializa beterraba.',tip:'Melhor no almoço pelo efeito vasodilatador.'},
-  {id:'beterraba',name:'beterraba',cat:'verduras',pts:10,cardio:10,energia:8,anti:7,sono:4,inflam:8,desc:'Nitratos viram óxido nítrico, dilata vasos, mais O₂ no músculo.',tip:'60-90min antes de correr é o timing ideal.'},
-  {id:'brócolis',name:'brócolis',cat:'verduras',pts:9,cardio:8,energia:6,anti:9,sono:6,inflam:9,desc:'Sulforafano anti-inflamatório, vitamina C, fibra.',tip:'No vapor preserva mais nutrientes que fervido.'},
-  {id:'tomate',name:'tomate',cat:'verduras',pts:7,cardio:8,energia:5,anti:8,sono:5,inflam:7,desc:'Licopeno protege o coração, melhora com cocção.',tip:'Cozido com azeite aumenta a absorção do licopeno.'},
-  {id:'cenoura',name:'cenoura',cat:'verduras',pts:7,cardio:6,energia:7,anti:8,sono:5,inflam:7,desc:'Beta-caroteno, fibra, baixa caloria.',tip:'Boa crua como snack ou cozida.'},
-  // ===== TUBÉRCULOS / RAÍZES =====
-  {id:'batata_doce',name:'batata-doce',cat:'tubérculos',pts:8,cardio:7,energia:10,anti:7,sono:8,inflam:8,desc:'Carboidrato de baixo IG, beta-caroteno, potássio.',tip:'O melhor tubérculo antes de dormir em dia de treino.',
-    preps:[{n:'cozida',d:{}},{n:'assada',d:{}},{n:'frita',d:{pts:-4,inflam:-4,cardio:-3}}]},
-  {id:'mandioca',name:'mandioca / aipim',cat:'tubérculos',pts:5,cardio:4,energia:9,anti:3,sono:4,inflam:5,desc:'Energia rápida, fácil digestão. Pobre em micronutrientes.',tip:'Cozida é ok pré-treino. Frita perde muito valor.',
-    preps:[{n:'cozida',d:{}},{n:'frita',d:{pts:-5,inflam:-4,energia:1}}]},
-  {id:'batata_inglesa',name:'batata inglesa',cat:'tubérculos',pts:6,cardio:5,energia:9,anti:4,sono:5,inflam:5,desc:'Carboidrato, potássio. O preparo muda tudo.',tip:'Cozida é saudável. Frita vira alimento inflamatório.',
-    preps:[{n:'cozida',d:{}},{n:'purê (manteiga)',d:{pts:-2,inflam:-2}},{n:'frita',d:{pts:-6,inflam:-5,cardio:-3}}]},
-  {id:'inhame',name:'inhame',cat:'tubérculos',pts:7,cardio:6,energia:9,anti:6,sono:7,inflam:7,desc:'Diosgenina anti-inflamatória, potássio, B6.',tip:'Boa alternativa à batata-doce.'},
-  // ===== GRÃOS / CARBOIDRATOS =====
-  {id:'arroz_branco',name:'arroz branco',cat:'grãos',pts:5,cardio:4,energia:9,anti:2,sono:6,inflam:5,desc:'Energia rápida, base da dieta brasileira. Pouco micronutriente.',tip:'Combinado com feijão forma proteína completa.'},
-  {id:'arroz_int',name:'arroz integral',cat:'grãos',pts:7,cardio:6,energia:9,anti:5,sono:7,inflam:7,desc:'Carboidrato complexo com magnésio e fibra.',tip:'Médio IG facilita absorção de triptofano.'},
-  {id:'macarrao',name:'macarrão',cat:'grãos',pts:5,cardio:4,energia:9,anti:2,sono:6,inflam:4,desc:'Carboidrato de boa energia. Versão integral é melhor.',tip:'Ao molho de tomate é melhor que ao molho branco.',
-    preps:[{n:'ao sugo/tomate',d:{}},{n:'integral',d:{pts:2,inflam:2,anti:2}},{n:'ao branco/4 queijos',d:{pts:-3,inflam:-3,cardio:-2}}]},
-  {id:'bolonhesa',name:'macarrão à bolonhesa',cat:'grãos',pts:5,cardio:4,energia:9,anti:4,sono:6,inflam:4,desc:'Carbo + proteína + licopeno do molho. Carne adiciona ferro.',tip:'Refeição completa em energia. Modere a porção de massa.'},
-  {id:'cuscuz',name:'cuscuz (milho)',cat:'grãos',pts:6,cardio:5,energia:9,anti:3,sono:5,inflam:6,desc:'Energia de milho, comum no nordeste. Sem glúten.',tip:'Com ovo e queijo vira refeição mais completa.',
-    preps:[{n:'puro',d:{}},{n:'com ovo',d:{pts:2,energia:0}},{n:'com ovo e queijo',d:{pts:2,inflam:-1}},{n:'com manteiga',d:{pts:-1,inflam:-1}}]},
-  {id:'tapioca',name:'tapioca',cat:'grãos',pts:5,cardio:4,energia:8,anti:2,sono:5,inflam:5,desc:'Goma de mandioca, carbo puro. Recheio define a qualidade.',tip:'Com ovo e queijo melhora muito o perfil nutricional.',
-    preps:[{n:'pura',d:{}},{n:'com ovo',d:{pts:3,inflam:1}},{n:'com queijo',d:{pts:1,inflam:-1}},{n:'com queijo e ovo',d:{pts:3,inflam:0}},{n:'pasta de amendoim',d:{pts:3,inflam:1,energia:1}}]},
-  {id:'aveia',name:'aveia',cat:'grãos',pts:9,cardio:9,energia:9,anti:6,sono:7,inflam:8,desc:'Beta-glucana reduz LDL. Energia sustentada.',tip:'Triptofano + carbo complexo favorecem o sono.'},
-  {id:'quinoa',name:'quinoa',cat:'grãos',pts:9,cardio:8,energia:9,anti:7,sono:7,inflam:8,desc:'Proteína completa + magnésio + ferro.',tip:'Excelente pré-treino.'},
-  {id:'pão_frances',name:'pão francês',cat:'grãos',pts:4,cardio:3,energia:8,anti:1,sono:4,inflam:3,desc:'Farinha refinada, IG alto. Energia rápida e vazia.',tip:'Integral ou com sementes é bem melhor.',
-    preps:[{n:'puro',d:{}},{n:'com manteiga',d:{pts:-2,inflam:-2}},{n:'com ovo',d:{pts:3,inflam:1}},{n:'com queijo',d:{pts:0,inflam:-1}}]},
-  {id:'pão_int',name:'pão integral',cat:'grãos',pts:6,cardio:5,energia:8,anti:4,sono:5,inflam:6,desc:'Fibra + carbo de médio IG. Melhor que o branco.',tip:'Versões com sementes adicionam triptofano.'},
-  // ===== LEGUMINOSAS =====
-  {id:'feijão',name:'feijão',cat:'leguminosas',pts:8,cardio:8,energia:8,anti:6,sono:6,inflam:8,desc:'Ferro não-heme + fibra solúvel + potássio.',tip:'Com arroz vira proteína completa.'},
-  {id:'lentilha',name:'lentilha',cat:'leguminosas',pts:9,cardio:8,energia:8,anti:7,sono:7,inflam:8,desc:'Ferro + folato que reduz homocisteína.',tip:'Boa pra quem tem dificuldade de dormir por ansiedade.'},
-  {id:'grão_bico',name:'grão-de-bico',cat:'leguminosas',pts:8,cardio:7,energia:8,anti:6,sono:6,inflam:8,desc:'Magnésio + potássio + fibra. Baixo IG.',tip:'B6 é cofator na produção de serotonina.'},
-  // ===== OVOS =====
-  {id:'ovo',name:'ovo',cat:'ovos',pts:8,cardio:7,energia:8,anti:6,sono:8,inflam:8,desc:'Proteína completa, colina, vitamina D, B12. O preparo muda bastante o perfil.',tip:'A gema tem melatonina natural. Cozido ou no azeite são as melhores opções.',
-    preps:[
-      {n:'cozido',d:{}},
-      {n:'mexido c/ azeite',d:{cardio:1,inflam:1}},
-      {n:'inteiro no azeite',d:{cardio:1,inflam:1}},
-      {n:'mexido c/ manteiga',d:{pts:-2,inflam:-2,cardio:-1}},
-      {n:'frito óleo de soja',d:{pts:-3,inflam:-3,cardio:-2}}
-    ]},
-  // ===== PEIXES =====
-  {id:'sardinha',name:'sardinha',cat:'peixes',pts:10,cardio:10,energia:8,anti:7,sono:8,inflam:10,desc:'Ômega 3 EPA+DHA, ferro heme, vitamina D e B12.',tip:'Combinação ideal pra coração e sono.'},
-  {id:'salmão',name:'salmão',cat:'peixes',pts:10,cardio:10,energia:9,anti:8,sono:9,inflam:10,desc:'Maior fonte de ômega 3. Reduz triglicerídeos e inflamação.',tip:'Com batata-doce é o jantar perfeito pré-corrida.',
-    preps:[{n:'grelhado',d:{}},{n:'assado',d:{}},{n:'frito',d:{pts:-3,inflam:-3}}]},
-  {id:'atum',name:'atum',cat:'peixes',pts:8,cardio:8,energia:9,anti:6,sono:7,inflam:8,desc:'Proteína magra + ômega 3 + CoQ10.',tip:'Moderação pelo mercúrio.'},
-  {id:'tilápia',name:'filé de tilápia',cat:'peixes',pts:7,cardio:6,energia:8,anti:4,sono:5,inflam:7,desc:'Proteína magra acessível, fácil digestão. Pouco ômega 3.',tip:'Grelhada no jantar não pesa no estômago.',
-    preps:[{n:'grelhada',d:{}},{n:'assada',d:{}},{n:'à milanesa/frita',d:{pts:-4,inflam:-4,cardio:-2}}]},
-  // ===== CARNES =====
-  {id:'frango',name:'frango',cat:'carnes',pts:7,cardio:5,energia:9,anti:4,sono:6,inflam:7,desc:'Proteína magra de alta qualidade. Preparo define muito.',tip:'Grelhado mantém o perfil magro. Frito ou empanado degrada.',
-    preps:[{n:'grelhado',d:{}},{n:'cozido',d:{}},{n:'assado c/ pele',d:{pts:-1,inflam:-1}},{n:'frito/empanado',d:{pts:-4,inflam:-4,cardio:-2}}]},
-  {id:'peru',name:'peru',cat:'carnes',pts:8,cardio:5,energia:9,anti:4,sono:9,inflam:7,desc:'Maior teor de triptofano entre as carnes.',tip:'A "carne do sono", ideal no jantar.'},
-  {id:'bife_magro',name:'bife magro (patinho/coxão)',cat:'carnes',pts:6,cardio:5,energia:8,anti:4,sono:4,inflam:5,desc:'Ferro heme e zinco, pouca gordura saturada.',tip:'Corte magro grelhado é uma boa fonte de ferro.',
-    preps:[{n:'grelhado',d:{}},{n:'frito',d:{pts:-3,inflam:-3}}]},
-  {id:'bife_gordo',name:'bife gordo (contrafilé/picanha)',cat:'carnes',pts:3,cardio:2,energia:8,anti:3,sono:4,inflam:3,desc:'Saboroso mas alta gordura saturada. Modere a frequência.',tip:'Gordura saturada em excesso é pró-inflamatória. Ocasional.'},
-  {id:'carne_sol',name:'carne de sol',cat:'carnes',pts:4,cardio:3,energia:7,anti:3,sono:4,inflam:4,desc:'Proteína e ferro, mas teor de sódio alto pela cura.',tip:'Sódio alto pode elevar pressão. Consumo moderado.'},
-  {id:'fígado',name:'fígado bovino',cat:'carnes',pts:9,cardio:8,energia:9,anti:6,sono:6,inflam:7,desc:'Ferro heme altíssimo, CoQ10, B12, folato.',tip:'Melhor no almoço pela densidade nutricional.'},
-  {id:'linguiça',name:'linguiça / embutidos',cat:'carnes',pts:-2,cardio:-2,energia:6,anti:1,sono:3,inflam:1,desc:'Carne processada, sódio e nitritos. Pró-inflamatório.',tip:'Ultraprocessado ligado a risco cardiovascular. Ocasional.',neg:true},
-  {id:'bacon',name:'bacon',cat:'carnes',pts:-2,cardio:-3,energia:6,anti:1,sono:3,inflam:1,desc:'Gordura saturada + sódio + processamento.',tip:'Sabor alto, custo cardiovascular alto. Modere muito.',neg:true},
-  // ===== LATICÍNIOS =====
-  {id:'queijo',name:'queijo',cat:'laticínios',pts:5,cardio:4,energia:6,anti:3,sono:6,inflam:5,desc:'Cálcio e proteína. Gordura saturada pede moderação.',tip:'Versões brancas (minas, ricota) são mais leves que amarelos.',
-    preps:[{n:'branco (minas/ricota)',d:{pts:2,inflam:1}},{n:'amarelo (mussarela/prato)',d:{}},{n:'requeijão',d:{pts:-1,inflam:-1}}]},
-  {id:'iogurte',name:'iogurte natural',cat:'laticínios',pts:7,cardio:6,energia:7,anti:5,sono:8,inflam:7,desc:'Probióticos, cálcio e proteína.',tip:'Com chia e mel vira ótimo lanche noturno.'},
-  {id:'kefir',name:'kefir',cat:'laticínios',pts:8,cardio:7,energia:6,anti:6,sono:8,inflam:8,desc:'Probiótico potente, reduz pressão.',tip:'Eixo intestino-cérebro melhora produção de serotonina.'},
-  {id:'leite',name:'leite',cat:'laticínios',pts:6,cardio:5,energia:6,anti:4,sono:8,inflam:6,desc:'Triptofano + cálcio + carbo leve.',tip:'Morno com mel e canela ajuda a dormir.'},
-  // ===== OLEAGINOSAS / SEMENTES =====
-  {id:'castanha_pa',name:'castanha-do-pará',cat:'oleaginosas',pts:9,cardio:8,energia:7,anti:8,sono:9,inflam:9,desc:'2-3 cobrem 100% do selênio diário.',tip:'Selênio é cofator na produção de melatonina.'},
-  {id:'nozes',name:'nozes',cat:'oleaginosas',pts:9,cardio:9,energia:7,anti:8,sono:9,inflam:9,desc:'Ômega 3 vegetal, polifenóis, melatonina natural.',tip:'Uma das melhores oleaginosas pro sono.'},
-  {id:'amêndoa',name:'amêndoa',cat:'oleaginosas',pts:8,cardio:8,energia:7,anti:7,sono:8,inflam:8,desc:'Vitamina E, magnésio, gordura insaturada.',tip:'20-25g antes de dormir ajuda no relaxamento.'},
-  {id:'pasta_amendoim',name:'pasta de amendoim',cat:'oleaginosas',pts:6,cardio:6,energia:8,anti:5,sono:6,inflam:6,desc:'Proteína e gordura boa. Cuidado com versões açucaradas.',tip:'Escolha a integral, sem açúcar e óleo adicionados.',
-    preps:[{n:'integral (só amendoim)',d:{}},{n:'com açúcar/óleo',d:{pts:-3,inflam:-3}}]},
-  {id:'chia',name:'chia',cat:'sementes',pts:9,cardio:8,energia:7,anti:8,sono:7,inflam:9,desc:'Ômega 3 vegetal + fibra + cálcio.',tip:'Boa no iogurte noturno.'},
-  // ===== BEBIDAS =====
-  {id:'água',name:'água',cat:'bebidas',pts:8,cardio:8,energia:6,anti:5,sono:7,inflam:8,desc:'Hidratação é base de tudo. Sangue mais fluido, melhor transporte de O₂.',tip:'Acordar hidratado melhora o fôlego nos primeiros km.'},
-  {id:'água_coco',name:'água de coco',cat:'bebidas',pts:7,cardio:7,energia:6,anti:5,sono:7,inflam:7,desc:'Eletrólitos naturais: potássio, sódio, magnésio.',tip:'Boa reidratação pós-treino.'},
-  {id:'café',name:'café',cat:'bebidas',pts:6,cardio:6,energia:8,anti:7,sono:1,desc:'Cafeína melhora performance aeróbica. Antioxidante.',inflam:6,tip:'Evitar após 14h. Sem açúcar mantém o perfil saudável.',
-    preps:[{n:'puro/sem açúcar',d:{}},{n:'com açúcar',d:{pts:-2,inflam:-2}},{n:'com leite',d:{pts:-1}}]},
-  {id:'suco_beterraba',name:'suco de beterraba',cat:'bebidas',pts:10,cardio:10,energia:7,anti:7,sono:4,inflam:8,desc:'Concentrado de nitratos.',tip:'200-500ml 60-90min antes da corrida.'},
-  {id:'chá_camomila',name:'chá de camomila',cat:'bebidas',pts:7,cardio:5,energia:2,anti:6,sono:10,inflam:8,desc:'Apigenina se liga a receptores GABA, efeito calmante.',tip:'30-45min antes de dormir.'},
-  {id:'chá_verde',name:'chá verde',cat:'bebidas',pts:8,cardio:8,energia:5,anti:9,sono:2,inflam:9,desc:'EGCG melhora função endotelial, reduz LDL.',tip:'Evitar após 14h pela cafeína.'},
-  {id:'refrigerante',name:'refrigerante',cat:'bebidas',pts:-5,cardio:-4,energia:5,anti:0,sono:2,inflam:0,desc:'Açúcar líquido em alta dose. Pico glicêmico, zero nutriente.',tip:'Um dos piores itens pro perfil cardiovascular e inflamatório.',neg:true},
-  {id:'suco_caixinha',name:'suco de caixinha',cat:'bebidas',pts:-3,cardio:-2,energia:5,anti:2,sono:3,inflam:2,desc:'Muito açúcar, pouca fruta real. Marketing saudável, perfil ruim.',tip:'Prefira a fruta inteira ou suco natural sem açúcar.',neg:true},
-  {id:'cerveja',name:'cerveja',cat:'bebidas',pts:-4,cardio:-3,energia:4,anti:1,sono:2,inflam:1,desc:'Álcool desidrata, fragmenta o sono, é pró-inflamatório.',tip:'Atrapalha recuperação e qualidade do sono pré-treino.',neg:true},
-  // ===== FAST FOOD / BESTEIRA =====
-  {id:'whopper',name:'whopper / hambúrguer grande',cat:'fast food',pts:-6,cardio:-5,energia:7,anti:1,sono:3,inflam:0,desc:'Carne processada + pão refinado + molhos + alta gordura e sódio. Bomba inflamatória.',tip:'Ocasional não destrói nada, mas é o oposto do que ajuda na corrida.',neg:true},
-  {id:'batata_frita',name:'batata frita (fast food)',cat:'fast food',pts:-6,cardio:-5,energia:7,anti:0,sono:2,inflam:0,desc:'Fritura em óleo reutilizado, gordura trans, sódio alto.',tip:'Gordura trans é o pior tipo pro coração.',neg:true},
-  {id:'pizza',name:'pizza',cat:'fast food',pts:-3,cardio:-2,energia:8,anti:2,sono:4,inflam:2,desc:'Massa refinada + queijo + embutidos. Depende muito da cobertura.',tip:'Versões com vegetais e menos embutido são menos ruins.',neg:true},
-  {id:'nuggets',name:'nuggets',cat:'fast food',pts:-5,cardio:-4,energia:6,anti:0,sono:3,inflam:1,desc:'Carne reconstituída, empanado, frito. Ultraprocessado.',tip:'Pouca proteína real pra muita gordura e aditivo.',neg:true},
-  {id:'salgadinho',name:'salgadinho de pacote',cat:'fast food',pts:-5,cardio:-4,energia:5,anti:0,sono:2,inflam:0,desc:'Gordura, sódio e aditivos. Caloria vazia.',tip:'Zero valor nutricional, alto custo inflamatório.',neg:true},
-  {id:'doce_chocolate',name:'chocolate ao leite / doce',cat:'besteira',pts:-3,cardio:-2,energia:6,anti:2,sono:4,inflam:2,desc:'Açúcar alto, pouco cacau. Diferente do 70%+.',tip:'Cacau 70%+ é saudável. Ao leite é basicamente açúcar.',neg:true},
-  {id:'cacau70',name:'chocolate 70%+',cat:'besteira',pts:7,cardio:9,energia:6,anti:9,sono:5,inflam:8,desc:'Flavonoides melhoram vasodilatação e reduzem pressão.',tip:'A versão saudável do chocolate. Modere pela cafeína à noite.'},
-  {id:'biscoito_recheado',name:'biscoito recheado',cat:'besteira',pts:-5,cardio:-4,energia:5,anti:0,sono:3,inflam:0,desc:'Farinha refinada + açúcar + gordura. Ultraprocessado clássico.',tip:'Pico de açúcar seguido de queda de energia.',neg:true},
-  {id:'sorvete',name:'sorvete',cat:'besteira',pts:-2,cardio:-1,energia:6,anti:2,sono:4,inflam:3,desc:'Açúcar e gordura. Versões de fruta são menos ruins.',tip:'Ocasional. Sorbet de fruta é alternativa mais leve.',neg:true},
-  // ===== GORDURAS / TEMPEROS =====
-  {id:'azeite',name:'azeite extravirgem',cat:'gorduras',pts:9,cardio:9,energia:7,anti:8,sono:7,inflam:10,desc:'Oleocanthal anti-inflamatório, polifenóis, ômega 9.',tip:'Pilar da dieta mediterrânea. Use cru de preferência.'},
-  {id:'manteiga',name:'manteiga',cat:'gorduras',pts:3,cardio:2,energia:6,anti:2,sono:5,inflam:3,desc:'Gordura saturada. Melhor que margarina, mas use com moderação.',tip:'Prefira azeite no dia a dia.'},
-  {id:'óleo_soja',name:'óleo de soja',cat:'gorduras',pts:1,cardio:1,energia:6,anti:2,sono:4,inflam:2,desc:'Alto ômega 6, pró-inflamatório em excesso. Comum em frituras.',tip:'Equilibre com fontes de ômega 3.'},
-  {id:'alho',name:'alho',cat:'temperos',pts:8,cardio:9,energia:3,anti:8,sono:6,inflam:9,desc:'Alicina vasodilatadora, reduz pressão e LDL.',tip:'Efeito maior cru ou levemente aquecido.'},
-  {id:'cúrcuma',name:'cúrcuma',cat:'temperos',pts:8,cardio:7,energia:3,anti:10,sono:7,inflam:10,desc:'Curcumina potentemente anti-inflamatória.',tip:'Com pimenta-preta a absorção aumenta muito.'},
-  {id:'gengibre',name:'gengibre',cat:'temperos',pts:8,cardio:8,energia:4,anti:9,sono:6,inflam:10,desc:'Gingerois reduzem inflamação e melhoram circulação.',tip:'Em chá quente tem efeito calmante.'},
-  // ===== SUPLEMENTOS =====
-  {id:'beterraba_po',name:'beterraba em pó',cat:'suplementos',pts:10,cardio:10,energia:7,anti:7,sono:4,inflam:8,desc:'Forma concentrada de nitratos.',tip:'Pré-corrida. Diluir em 200ml água.'},
-  {id:'omega3',name:'ômega 3 (cápsula)',cat:'suplementos',pts:9,cardio:10,energia:6,anti:8,sono:8,inflam:10,desc:'EPA+DHA concentrados.',tip:'Pra quem não come peixe com frequência.'},
-  {id:'magnésio',name:'magnésio',cat:'suplementos',pts:8,cardio:8,energia:7,anti:6,sono:10,inflam:7,desc:'Cofator de 300+ reações. Regula pressão e ritmo cardíaco.',tip:'Maior evidência pra qualidade do sono. 200-400mg antes de dormir.'},
-  {id:'whey',name:'whey protein',cat:'suplementos',pts:7,cardio:6,energia:7,anti:4,sono:6,inflam:6,desc:'Proteína de rápida absorção pra recuperação muscular.',tip:'Prático pós-treino. Não substitui comida de verdade.'},
-  {id:'creatina',name:'creatina',cat:'suplementos',pts:8,cardio:6,energia:9,anti:5,sono:6,inflam:7,desc:'Melhora força e potência. Uma das mais estudadas e seguras.',tip:'3-5g/dia, qualquer horário. Boa pra calistenia também.'},
+const FOODS = [
+  // FRUTAS
+  {id:'banana',name:'banana',cat:'frutas',unit:'un',ref:1,pts:8,cardio:7,energia:10,anti:5,sono:9,inflam:8,desc:'Potássio e triptofano que vira melatonina.',tip:'1h antes de dormir potencializa a melatonina.'},
+  {id:'maca',name:'maçã',cat:'frutas',unit:'un',ref:1,pts:6,cardio:6,energia:6,anti:7,sono:5,inflam:7,desc:'Quercetina anti-inflamatória, fibra solúvel.',tip:'Neutra pro sono.'},
+  {id:'abacate',name:'abacate',cat:'frutas',unit:'g',ref:100,pts:9,cardio:9,energia:8,anti:7,sono:8,inflam:9,desc:'Gordura monoinsaturada, potássio alto.',tip:'Magnésio e triptofano auxiliam relaxamento.'},
+  {id:'laranja',name:'laranja',cat:'frutas',unit:'un',ref:1,pts:7,cardio:6,energia:6,anti:8,sono:4,inflam:7,desc:'Vitamina C + flavonoides.',tip:'Com ferro vegetal aumenta absorção em 3x.'},
+  {id:'mamao',name:'mamão',cat:'frutas',unit:'g',ref:150,pts:6,cardio:6,energia:6,anti:7,sono:5,inflam:7,desc:'Papaína facilita digestão.',tip:'Bom após o jantar.'},
+  {id:'cereja',name:'cereja',cat:'frutas',unit:'g',ref:80,pts:9,cardio:8,energia:5,anti:9,sono:10,inflam:9,desc:'Melatonina natural, antocianinas.',tip:'A melhor fruta pro sono.'},
+  // VERDURAS
+  {id:'espinafre',name:'espinafre',cat:'verduras',unit:'g',ref:60,pts:9,cardio:8,energia:6,anti:9,sono:8,inflam:9,desc:'Ferro + nitratos + vitamina K.',tip:'Refogado leve no jantar.'},
+  {id:'couve',name:'couve',cat:'verduras',unit:'g',ref:50,pts:9,cardio:8,energia:5,anti:9,sono:7,inflam:9,desc:'Vitamina K, C, cálcio, nitratos.',tip:'Cálcio ajuda na melatonina.'},
+  {id:'brocolis',name:'brócolis',cat:'verduras',unit:'g',ref:100,pts:9,cardio:8,energia:6,anti:9,sono:6,inflam:9,desc:'Sulforafano anti-inflamatório.',tip:'No vapor preserva nutrientes.'},
+  {id:'beterraba',name:'beterraba',cat:'verduras',unit:'g',ref:100,pts:10,cardio:10,energia:8,anti:7,sono:4,inflam:8,desc:'Nitratos viram óxido nítrico.',tip:'60-90min antes de correr.'},
+  {id:'tomate',name:'tomate',cat:'verduras',unit:'un',ref:1,pts:7,cardio:8,energia:5,anti:8,sono:5,inflam:7,desc:'Licopeno protege o coração.',tip:'Cozido com azeite absorve melhor.'},
+  // TUBÉRCULOS
+  {id:'batata_doce',name:'batata-doce',cat:'tubérculos',unit:'g',ref:150,pts:8,cardio:7,energia:10,anti:7,sono:8,inflam:8,desc:'Carbo de baixo IG, beta-caroteno.',tip:'Melhor tubérculo antes de dormir em dia de treino.',preps:[{n:'cozida',d:{}},{n:'assada',d:{}},{n:'frita',d:{pts:-4,inflam:-4,cardio:-3}}]},
+  {id:'batata_ing',name:'batata inglesa',cat:'tubérculos',unit:'g',ref:150,pts:6,cardio:5,energia:9,anti:4,sono:5,inflam:5,desc:'Carbo e potássio. Preparo muda tudo.',tip:'Cozida saudável, frita inflamatória.',preps:[{n:'cozida',d:{}},{n:'purê c/ manteiga',d:{pts:-2,inflam:-2}},{n:'frita',d:{pts:-6,inflam:-5,cardio:-3}}]},
+  {id:'mandioca',name:'mandioca / aipim',cat:'tubérculos',unit:'g',ref:150,pts:5,cardio:4,energia:9,anti:3,sono:4,inflam:5,desc:'Energia rápida, pobre em micronutrientes.',tip:'Cozida ok pré-treino.',preps:[{n:'cozida',d:{}},{n:'frita',d:{pts:-5,inflam:-4}}]},
+  {id:'inhame',name:'inhame',cat:'tubérculos',unit:'g',ref:150,pts:7,cardio:6,energia:9,anti:6,sono:7,inflam:7,desc:'Diosgenina anti-inflamatória, B6.',tip:'Alternativa à batata-doce.'},
+  // GRÃOS
+  {id:'arroz_br',name:'arroz branco',cat:'grãos',unit:'cs',ref:4,pts:5,cardio:4,energia:9,anti:2,sono:6,inflam:5,desc:'Energia rápida, base brasileira.',tip:'Com feijão vira proteína completa.'},
+  {id:'arroz_int',name:'arroz integral',cat:'grãos',unit:'cs',ref:4,pts:7,cardio:6,energia:9,anti:5,sono:7,inflam:7,desc:'Carbo complexo com magnésio e fibra.',tip:'Facilita absorção de triptofano.'},
+  {id:'macarrao',name:'macarrão',cat:'grãos',unit:'g',ref:100,pts:5,cardio:4,energia:9,anti:2,sono:6,inflam:4,desc:'Boa energia. Integral é melhor.',tip:'Ao sugo melhor que ao branco.',preps:[{n:'ao sugo',d:{}},{n:'integral',d:{pts:2,inflam:2,anti:2}},{n:'ao branco/4 queijos',d:{pts:-3,inflam:-3}}]},
+  {id:'bolonhesa',name:'macarrão à bolonhesa',cat:'grãos',unit:'g',ref:200,pts:5,cardio:4,energia:9,anti:4,sono:6,inflam:4,desc:'Carbo + proteína + licopeno do molho.',tip:'Refeição completa em energia. Modere a massa.'},
+  {id:'cuscuz',name:'cuscuz de milho',cat:'grãos',unit:'g',ref:120,pts:6,cardio:5,energia:9,anti:3,sono:5,inflam:6,desc:'Energia de milho, sem glúten.',tip:'Com ovo e queijo fica mais completo.',preps:[{n:'puro',d:{}},{n:'com ovo',d:{pts:2}},{n:'com ovo e queijo',d:{pts:2,inflam:-1}},{n:'com manteiga',d:{pts:-1,inflam:-1}}]},
+  {id:'tapioca',name:'tapioca',cat:'grãos',unit:'un',ref:1,pts:5,cardio:4,energia:8,anti:2,sono:5,inflam:5,desc:'Goma de mandioca. Recheio define qualidade.',tip:'Com ovo e queijo melhora muito.',preps:[{n:'pura',d:{}},{n:'com ovo',d:{pts:3,inflam:1}},{n:'com queijo',d:{pts:1,inflam:-1}},{n:'queijo e ovo',d:{pts:3}},{n:'pasta de amendoim',d:{pts:3,energia:1}}]},
+  {id:'aveia',name:'aveia',cat:'grãos',unit:'cs',ref:3,pts:9,cardio:9,energia:9,anti:6,sono:7,inflam:8,desc:'Beta-glucana reduz LDL.',tip:'Triptofano + carbo favorece o sono.'},
+  {id:'pao_frances',name:'pão francês',cat:'grãos',unit:'un',ref:1,pts:4,cardio:3,energia:8,anti:1,sono:4,inflam:3,desc:'Farinha refinada, IG alto.',tip:'Integral é melhor.',preps:[{n:'puro',d:{}},{n:'com manteiga',d:{pts:-2,inflam:-2}},{n:'com ovo',d:{pts:3,inflam:1}},{n:'com queijo',d:{pts:0,inflam:-1}}]},
+  {id:'pao_int',name:'pão integral',cat:'grãos',unit:'fatia',ref:2,pts:6,cardio:5,energia:8,anti:4,sono:5,inflam:6,desc:'Fibra + carbo de médio IG.',tip:'Com sementes adiciona triptofano.'},
+  {id:'bisc_agua_sal',name:'biscoito água e sal (Vitarella)',cat:'grãos',unit:'un',ref:6,pts:3,cardio:2,energia:7,anti:1,sono:4,inflam:3,desc:'Farinha refinada, óleo e sódio. Leve mas pouco nutritivo.',tip:'Melhor que recheado, mas é caloria vazia. Bom com algo proteico junto.'},
+  // LEGUMINOSAS
+  {id:'feijao',name:'feijão',cat:'leguminosas',unit:'cc_grande',ref:1,pts:8,cardio:8,energia:8,anti:6,sono:6,inflam:8,desc:'Ferro + fibra solúvel + potássio.',tip:'Com arroz vira proteína completa.'},
+  {id:'lentilha',name:'lentilha',cat:'leguminosas',unit:'g',ref:100,pts:9,cardio:8,energia:8,anti:7,sono:7,inflam:8,desc:'Ferro + folato.',tip:'Boa pra ansiedade noturna.'},
+  {id:'grao_bico',name:'grão-de-bico',cat:'leguminosas',unit:'g',ref:100,pts:8,cardio:7,energia:8,anti:6,sono:6,inflam:8,desc:'Magnésio + potássio + fibra.',tip:'B6 ajuda na serotonina.'},
+  // OVOS
+  {id:'ovo',name:'ovo',cat:'ovos',unit:'un',ref:2,pts:8,cardio:7,energia:8,anti:6,sono:8,inflam:8,desc:'Proteína completa, colina, vit D, B12.',tip:'Cozido ou no azeite são as melhores opções.',preps:[{n:'cozido',d:{}},{n:'mexido c/ azeite',d:{cardio:1,inflam:1}},{n:'inteiro no azeite',d:{cardio:1,inflam:1}},{n:'mexido c/ manteiga',d:{pts:-2,inflam:-2}},{n:'frito óleo soja',d:{pts:-3,inflam:-3,cardio:-2}}]},
+  // PEIXES
+  {id:'sardinha',name:'sardinha',cat:'peixes',unit:'g',ref:100,pts:10,cardio:10,energia:8,anti:7,sono:8,inflam:10,desc:'Ômega 3, ferro heme, vit D, B12.',tip:'Ideal pra coração e sono.'},
+  {id:'salmao',name:'salmão',cat:'peixes',unit:'g',ref:120,pts:10,cardio:10,energia:9,anti:8,sono:9,inflam:10,desc:'Maior fonte de ômega 3.',tip:'Com batata-doce é o jantar perfeito.',preps:[{n:'grelhado',d:{}},{n:'assado',d:{}},{n:'frito',d:{pts:-3,inflam:-3}}]},
+  {id:'tilapia',name:'filé de tilápia',cat:'peixes',unit:'g',ref:120,pts:7,cardio:6,energia:8,anti:4,sono:5,inflam:7,desc:'Proteína magra, fácil digestão.',tip:'Grelhada no jantar não pesa.',preps:[{n:'grelhada',d:{}},{n:'assada',d:{}},{n:'à milanesa/frita',d:{pts:-4,inflam:-4}}]},
+  {id:'atum',name:'atum',cat:'peixes',unit:'g',ref:100,pts:8,cardio:8,energia:9,anti:6,sono:7,inflam:8,desc:'Proteína magra + ômega 3.',tip:'Moderar pelo mercúrio.'},
+  // CARNES
+  {id:'frango',name:'frango',cat:'carnes',unit:'g',ref:120,pts:7,cardio:5,energia:9,anti:4,sono:6,inflam:7,desc:'Proteína magra. Preparo define muito.',tip:'Grelhado mantém magro.',preps:[{n:'grelhado',d:{}},{n:'cozido',d:{}},{n:'assado c/ pele',d:{pts:-1,inflam:-1}},{n:'frito/empanado',d:{pts:-4,inflam:-4,cardio:-2}}]},
+  {id:'peru',name:'peru',cat:'carnes',unit:'g',ref:120,pts:8,cardio:5,energia:9,anti:4,sono:9,inflam:7,desc:'Maior triptofano entre as carnes.',tip:'A carne do sono, ideal no jantar.'},
+  {id:'bife_magro',name:'bife magro (patinho/coxão)',cat:'carnes',unit:'g',ref:120,pts:6,cardio:5,energia:8,anti:4,sono:4,inflam:5,desc:'Ferro heme e zinco.',tip:'Grelhado é boa fonte de ferro.',preps:[{n:'grelhado',d:{}},{n:'frito',d:{pts:-3,inflam:-3}}]},
+  {id:'bife_gordo',name:'bife gordo (contrafilé/picanha)',cat:'carnes',unit:'g',ref:120,pts:3,cardio:2,energia:8,anti:3,sono:4,inflam:3,desc:'Saboroso, alta gordura saturada.',tip:'Pró-inflamatório, ocasional.'},
+  {id:'carne_sol',name:'carne de sol',cat:'carnes',unit:'g',ref:120,pts:4,cardio:3,energia:7,anti:3,sono:4,inflam:4,desc:'Proteína e ferro, mas sódio alto.',tip:'Consumo moderado pela pressão.'},
+  {id:'figado',name:'fígado bovino',cat:'carnes',unit:'g',ref:100,pts:9,cardio:8,energia:9,anti:6,sono:6,inflam:7,desc:'Ferro heme altíssimo, CoQ10, B12.',tip:'Melhor no almoço.'},
+  {id:'linguica',name:'linguiça / embutidos',cat:'carnes',unit:'g',ref:100,pts:-2,cardio:-2,energia:6,anti:1,sono:3,inflam:1,desc:'Processada, sódio e nitritos.',tip:'Ultraprocessado, risco cardiovascular.',neg:true},
+  {id:'bacon',name:'bacon',cat:'carnes',unit:'g',ref:40,pts:-2,cardio:-3,energia:6,anti:1,sono:3,inflam:1,desc:'Gordura saturada + sódio.',tip:'Custo cardiovascular alto.',neg:true},
+  // LATICÍNIOS
+  {id:'queijo',name:'queijo',cat:'laticínios',unit:'fatia',ref:2,pts:5,cardio:4,energia:6,anti:3,sono:6,inflam:5,desc:'Cálcio e proteína.',tip:'Brancos são mais leves que amarelos.',preps:[{n:'branco (minas/ricota)',d:{pts:2,inflam:1}},{n:'amarelo (mussarela)',d:{}},{n:'requeijão',d:{pts:-1,inflam:-1}}]},
+  {id:'iogurte',name:'iogurte natural',cat:'laticínios',unit:'g',ref:170,pts:7,cardio:6,energia:7,anti:5,sono:8,inflam:7,desc:'Probióticos, cálcio, proteína.',tip:'Com chia e mel vira ótimo lanche.'},
+  {id:'leite',name:'leite',cat:'laticínios',unit:'ml',ref:200,pts:6,cardio:5,energia:6,anti:4,sono:8,inflam:6,desc:'Triptofano + cálcio.',tip:'Morno com mel ajuda a dormir.'},
+  // OLEAGINOSAS
+  {id:'castanha_pa',name:'castanha-do-pará',cat:'oleaginosas',unit:'un',ref:3,pts:9,cardio:8,energia:7,anti:8,sono:9,inflam:9,desc:'Selênio: 2-3 cobrem o dia.',tip:'Cofator da melatonina.'},
+  {id:'nozes',name:'nozes',cat:'oleaginosas',unit:'un',ref:4,pts:9,cardio:9,energia:7,anti:8,sono:9,inflam:9,desc:'Ômega 3 vegetal, melatonina.',tip:'Das melhores pro sono.'},
+  {id:'amendoa',name:'amêndoa',cat:'oleaginosas',unit:'un',ref:12,pts:8,cardio:8,energia:7,anti:7,sono:8,inflam:8,desc:'Vitamina E, magnésio.',tip:'Antes de dormir ajuda relaxar.'},
+  {id:'pasta_amendoim',name:'pasta de amendoim',cat:'oleaginosas',unit:'cs',ref:1,pts:6,cardio:6,energia:8,anti:5,sono:6,inflam:6,desc:'Proteína e gordura boa.',tip:'Integral sem açúcar é a melhor.',preps:[{n:'integral',d:{}},{n:'com açúcar/óleo',d:{pts:-3,inflam:-3}}]},
+  {id:'pasta_ganexa',name:'pasta amendoim La Ganexa (Brigadeiro)',cat:'oleaginosas',unit:'cs',ref:1,pts:5,cardio:5,energia:8,anti:4,sono:5,inflam:5,desc:'Versão saborizada. Proteína e gordura boa, mas com adoçantes/cacau. Melhor que pastas com açúcar e óleo, ainda assim mais processada que a integral pura.',tip:'Ok como complemento de sabor. Pra dia a dia puro, a integral natural ganha.'},
+  {id:'chia',name:'chia',cat:'sementes',unit:'cs',ref:1,pts:9,cardio:8,energia:7,anti:8,sono:7,inflam:9,desc:'Ômega 3 vegetal + fibra.',tip:'Boa no iogurte noturno.'},
+  // BEBIDAS
+  {id:'agua',name:'água',cat:'bebidas',unit:'ml',ref:500,pts:8,cardio:8,energia:6,anti:5,sono:7,inflam:8,desc:'Hidratação é base de tudo.',tip:'Acordar hidratado melhora o fôlego.'},
+  {id:'agua_coco',name:'água de coco',cat:'bebidas',unit:'ml',ref:200,pts:7,cardio:7,energia:6,anti:5,sono:7,inflam:7,desc:'Eletrólitos naturais.',tip:'Boa reidratação pós-treino.'},
+  {id:'cafe',name:'café',cat:'bebidas',unit:'ml',ref:100,pts:6,cardio:6,energia:8,anti:7,sono:1,inflam:6,desc:'Cafeína melhora performance.',tip:'Evitar após 14h.',preps:[{n:'puro s/ açúcar',d:{}},{n:'com açúcar',d:{pts:-2,inflam:-2}},{n:'com leite',d:{pts:-1}}]},
+  {id:'cha_camomila',name:'chá de camomila',cat:'bebidas',unit:'ml',ref:200,pts:7,cardio:5,energia:2,anti:6,sono:10,inflam:8,desc:'Apigenina calmante (GABA).',tip:'30-45min antes de dormir.'},
+  {id:'cha_verde',name:'chá verde',cat:'bebidas',unit:'ml',ref:200,pts:8,cardio:8,energia:5,anti:9,sono:2,inflam:9,desc:'EGCG melhora função endotelial.',tip:'Evitar após 14h.'},
+  {id:'refri',name:'refrigerante',cat:'bebidas',unit:'ml',ref:350,pts:-5,cardio:-4,energia:5,anti:0,sono:2,inflam:0,desc:'Açúcar líquido, zero nutriente.',tip:'Dos piores itens pro perfil.',neg:true},
+  {id:'suco_caixinha',name:'suco de caixinha',cat:'bebidas',unit:'ml',ref:200,pts:-3,cardio:-2,energia:5,anti:2,sono:3,inflam:2,desc:'Muito açúcar, pouca fruta.',tip:'Prefira a fruta inteira.',neg:true},
+  {id:'cerveja',name:'cerveja',cat:'bebidas',unit:'ml',ref:350,pts:-4,cardio:-3,energia:4,anti:1,sono:2,inflam:1,desc:'Álcool desidrata e fragmenta o sono.',tip:'Atrapalha recuperação.',neg:true},
+  // FAST FOOD / BESTEIRA
+  {id:'whopper',name:'whopper / hambúrguer grande',cat:'fast food',unit:'un',ref:1,pts:-6,cardio:-5,energia:7,anti:1,sono:3,inflam:0,desc:'Carne processada + pão refinado + molhos.',tip:'Ocasional não destrói, mas é o oposto do que ajuda.',neg:true},
+  {id:'batata_fritaff',name:'batata frita (fast food)',cat:'fast food',unit:'g',ref:120,pts:-6,cardio:-5,energia:7,anti:0,sono:2,inflam:0,desc:'Gordura trans, sódio alto.',tip:'Gordura trans é a pior pro coração.',neg:true},
+  {id:'pizza',name:'pizza',cat:'fast food',unit:'fatia',ref:2,pts:-3,cardio:-2,energia:8,anti:2,sono:4,inflam:2,desc:'Massa refinada + queijo + embutidos.',tip:'Com vegetais e menos embutido é menos ruim.',neg:true},
+  {id:'salgadinho',name:'salgadinho de pacote',cat:'fast food',unit:'g',ref:50,pts:-5,cardio:-4,energia:5,anti:0,sono:2,inflam:0,desc:'Gordura, sódio, aditivos.',tip:'Caloria vazia, custo inflamatório.',neg:true},
+  {id:'bisc_recheado',name:'biscoito recheado',cat:'besteira',unit:'un',ref:4,pts:-5,cardio:-4,energia:5,anti:0,sono:3,inflam:0,desc:'Farinha + açúcar + gordura.',tip:'Pico de açúcar e queda.',neg:true},
+  {id:'choc_leite',name:'chocolate ao leite',cat:'besteira',unit:'g',ref:30,pts:-3,cardio:-2,energia:6,anti:2,sono:4,inflam:2,desc:'Açúcar alto, pouco cacau.',tip:'O 70% é saudável, o ao leite é açúcar.',neg:true},
+  {id:'choc70',name:'chocolate 70%+',cat:'besteira',unit:'g',ref:25,pts:7,cardio:9,energia:6,anti:9,sono:5,inflam:8,desc:'Flavonoides melhoram vasodilatação.',tip:'A versão saudável. Modere à noite pela cafeína.'},
+  {id:'sorvete',name:'sorvete',cat:'besteira',unit:'g',ref:100,pts:-2,cardio:-1,energia:6,anti:2,sono:4,inflam:3,desc:'Açúcar e gordura.',tip:'Sorbet de fruta é mais leve.',neg:true},
+  // GORDURAS / TEMPEROS
+  {id:'azeite',name:'azeite extravirgem',cat:'gorduras',unit:'cs',ref:1,pts:9,cardio:9,energia:7,anti:8,sono:7,inflam:10,desc:'Oleocanthal anti-inflamatório.',tip:'Use cru de preferência.'},
+  {id:'manteiga',name:'manteiga',cat:'gorduras',unit:'cc',ref:1,pts:3,cardio:2,energia:6,anti:2,sono:5,inflam:3,desc:'Gordura saturada.',tip:'Prefira azeite no dia a dia.'},
+  {id:'alho',name:'alho',cat:'temperos',unit:'un',ref:2,pts:8,cardio:9,energia:3,anti:8,sono:6,inflam:9,desc:'Alicina vasodilatadora.',tip:'Cru ou levemente aquecido.'},
+  {id:'curcuma',name:'cúrcuma',cat:'temperos',unit:'cc',ref:1,pts:8,cardio:7,energia:3,anti:10,sono:7,inflam:10,desc:'Curcumina anti-inflamatória.',tip:'Com pimenta-preta absorve muito mais.'},
+  {id:'gengibre',name:'gengibre',cat:'temperos',unit:'g',ref:10,pts:8,cardio:8,energia:4,anti:9,sono:6,inflam:10,desc:'Gingerois reduzem inflamação.',tip:'Em chá tem efeito calmante.'},
+  // SUPLEMENTOS
+  {id:'whey',name:'whey protein',cat:'suplementos',unit:'scoop',ref:1,pts:7,cardio:6,energia:7,anti:4,sono:6,inflam:6,desc:'Proteína de rápida absorção pra recuperação muscular.',tip:'Prático pós-treino. Não substitui comida de verdade.'},
+  {id:'supercoffee',name:'SuperCoffee Lajotinha (Caffeine Army)',cat:'suplementos',unit:'cs',ref:1,pts:5,cardio:5,energia:9,anti:5,sono:1,inflam:5,desc:'Café funcional com cafeína, TCM e blends. Energia e foco, mas tem cafeína relevante.',tip:'Ótimo pré-treino de manhã. Evitar após 14h pelo efeito no sono.'},
+  {id:'creatina',name:'creatina',cat:'suplementos',unit:'g',ref:5,pts:8,cardio:6,energia:9,anti:5,sono:6,inflam:7,desc:'Melhora força e potência. Muito estudada e segura.',tip:'3-5g/dia qualquer horário. Boa pra calistenia.'},
+  {id:'omega3_cap',name:'ômega 3 (cápsula)',cat:'suplementos',unit:'cap',ref:2,pts:9,cardio:10,energia:6,anti:8,sono:8,inflam:10,desc:'EPA+DHA concentrados.',tip:'Pra quem não come peixe sempre. Tomar com refeição com gordura.'},
+  {id:'melatonina',name:'melatonina (comprimido)',cat:'suplementos',unit:'cap',ref:1,pts:7,cardio:4,energia:3,anti:6,sono:10,inflam:6,desc:'Hormônio do sono. Ajuda a regular o ciclo, útil em fases de sono desregulado.',tip:'Dose baixa (0,5-1mg) 30-60min antes de dormir já costuma bastar. Não usar com cafeína por perto.'},
+  {id:'magnesio',name:'magnésio',cat:'suplementos',unit:'cap',ref:1,pts:8,cardio:8,energia:7,anti:6,sono:10,inflam:7,desc:'Cofator de 300+ reações. Regula pressão e sono.',tip:'200-400mg antes de dormir.'},
+  {id:'vitd',name:'vitamina D',cat:'suplementos',unit:'cap',ref:1,pts:8,cardio:7,energia:7,anti:6,sono:8,inflam:7,desc:'Regula função cardíaca, imunidade, serotonina.',tip:'Tomar pela manhã.'},
+  {id:'zma',name:'ZMA (zinco+magnésio+B6)',cat:'suplementos',unit:'cap',ref:1,pts:8,cardio:6,energia:7,anti:7,sono:9,inflam:7,desc:'Combinação clássica pra sono e recuperação.',tip:'Antes de dormir, longe de cálcio.'},
+  {id:'cafeina_cap',name:'cafeína (cápsula)',cat:'suplementos',unit:'cap',ref:1,pts:5,cardio:5,energia:9,anti:4,sono:1,inflam:5,desc:'Estimulante puro, melhora performance aeróbica.',tip:'Pré-treino. Nunca após 14h.'},
 ];
 
-const cats = ['todos', ...[...new Set(foods.map(f => f.cat))]];
+// Ingredientes pro montador de suco
+const JUICE_ING = [
+  {id:'beterraba',n:'beterraba',cardio:10,energia:7,anti:7,sono:4,inflam:8,pts:10},
+  {id:'laranja',n:'laranja',cardio:6,energia:6,anti:8,sono:4,inflam:7,pts:7},
+  {id:'abacaxi',n:'abacaxi',cardio:6,energia:7,anti:8,sono:4,inflam:8,pts:7},
+  {id:'limao',n:'limão',cardio:6,energia:4,anti:9,sono:4,inflam:8,pts:7},
+  {id:'couve',n:'couve',cardio:8,energia:5,anti:9,sono:6,inflam:9,pts:9},
+  {id:'cenoura',n:'cenoura',cardio:6,energia:7,anti:8,sono:5,inflam:7,pts:7},
+  {id:'gengibre',n:'gengibre',cardio:8,energia:4,anti:9,sono:5,inflam:10,pts:8},
+  {id:'maca',n:'maçã',cardio:6,energia:6,anti:7,sono:5,inflam:7,pts:6},
+  {id:'morango',n:'morango',cardio:7,energia:5,anti:9,sono:5,inflam:8,pts:7},
+  {id:'hortela',n:'hortelã',cardio:5,energia:3,anti:7,sono:6,inflam:8,pts:6},
+];
+const JUICE_BASE = [
+  {id:'agua',n:'água',mod:{}},
+  {id:'agua_coco',n:'água de coco',mod:{cardio:1,sono:1}},
+];
+const JUICE_SWEET = [
+  {id:'nada',n:'sem adoçar',mod:{}},
+  {id:'mel',n:'mel',mod:{pts:0,energia:1}},
+  {id:'mascavo',n:'açúcar mascavo',mod:{pts:-1}},
+  {id:'rapadura',n:'rapadura',mod:{pts:-1}},
+  {id:'refinado',n:'açúcar refinado',mod:{pts:-3,inflam:-3,cardio:-2}},
+  {id:'adocante',n:'adoçante',mod:{pts:-1,inflam:-1}},
+];
+
+let mode = 'hoje';
+const cats = ['todos','frutas','verduras','tubérculos','grãos','leguminosas','ovos','peixes','carnes','laticínios','oleaginosas','sementes','bebidas','suco (montar)','fast food','besteira','gorduras','temperos','suplementos'];
 let activeFilter = 'todos';
-let selected = new Map(); // id -> prepIndex (ou 0)
+let selected = new Map(); // id -> {prep, qty}
+let customJuices = []; // {id,name,vals,pts}
+let juiceState = {base:'agua', ings:new Set(), sweet:'nada'};
 
-function renderCats() {
-  document.getElementById('cats').innerHTML = cats.map(c =>
-    `<button class="cat-btn${c === activeFilter ? ' active' : ''}" onclick="setFilter('${c}')">${c}</button>`
-  ).join('');
-}
-function setFilter(c) { activeFilter = c; renderCats(); renderFoods(); }
+function clamp10(v){return Math.max(0,Math.min(10,v));}
+function unitLabel(u){return {g:'g',ml:'ml',un:'un',cs:'col. sopa',cc:'col. chá',cap:'cáps',scoop:'scoop',fatia:'fatia',cc_grande:'concha'}[u]||u;}
+function qtyStep(u){return {g:25,ml:50,un:1,cs:1,cc:1,cap:1,scoop:1,fatia:1,cc_grande:1}[u]||1;}
 
-function effective(f, prepIdx) {
-  const base = {pts:f.pts,cardio:f.cardio,energia:f.energia,anti:f.anti,sono:f.sono,inflam:f.inflam};
-  if (f.preps && f.preps[prepIdx]) {
-    const d = f.preps[prepIdx].d || {};
-    for (const k in d) base[k] = Math.max(-10, Math.min(10, base[k] + d[k]));
-  }
+function effective(f, prepIdx){
+  const base={pts:f.pts,cardio:f.cardio,energia:f.energia,anti:f.anti,sono:f.sono,inflam:f.inflam};
+  if(f.preps&&f.preps[prepIdx]){const d=f.preps[prepIdx].d||{};for(const k in d)base[k]=Math.max(-10,Math.min(10,base[k]+d[k]));}
   return base;
 }
-function clamp10(v){return Math.max(0,Math.min(10,v));}
+// peso do item no cálculo: proporção da qty vs ref, saturando em 2x
+function qtyWeight(f, qty){ if(!f.unit) return 1; const r=qty/f.ref; return Math.max(0.4, Math.min(2, r)); }
 
-function renderFoods() {
-  const q = document.getElementById('search').value.toLowerCase().trim();
-  const list = foods.filter(f => {
-    const mc = activeFilter === 'todos' || f.cat === activeFilter;
-    const mq = !q || f.name.includes(q) || f.cat.includes(q) || f.desc.toLowerCase().includes(q);
-    return mc && mq;
-  });
-  document.getElementById('listLabel').textContent = q ? `resultado para "${q}"` : activeFilter === 'todos' ? 'todos os alimentos' : activeFilter;
-  const el = document.getElementById('foodList');
-  if (!list.length) { el.innerHTML = '<div class="empty">nenhum alimento encontrado</div>'; return; }
-  el.innerHTML = list.map(f => {
-    const sel = selected.has(f.id);
-    const prepIdx = sel ? selected.get(f.id) : 0;
-    const e = effective(f, prepIdx);
-    const ptsClass = e.pts > 0 ? 'pos' : e.pts < 0 ? 'neg' : '';
-    const ptsTxt = e.pts > 0 ? '+'+e.pts : e.pts;
-    let prepHtml = '';
-    if (f.preps) {
-      prepHtml = `<div class="prep-label">preparo:</div><div class="prep-opts">` +
-        f.preps.map((p,i)=>`<button class="prep-btn${sel && prepIdx===i ? ' active':''}" onclick="event.stopPropagation();setPrep('${f.id}',${i})">${p.n}</button>`).join('') +
-        `</div>`;
-    }
-    return `<div class="food-item${sel ? ' selected':''}${sel && e.pts<0 ? ' negative':''}" onclick="toggle('${f.id}')">
+function setMode(m){
+  mode=m;
+  document.getElementById('tabHoje').classList.toggle('active',m==='hoje');
+  document.getElementById('tabAmanha').classList.toggle('active',m==='amanha');
+  const b=document.getElementById('modeBanner');
+  b.className='mode-banner '+(m==='hoje'?'hoje':'amanha');
+  b.textContent = m==='hoje'?'Selecione tudo que você comeu hoje pra ver o veredito':'Monte o cardápio do dia seguinte e gere um cronograma pra salvar';
+  document.getElementById('verBtn').textContent = m==='hoje'?'ver veredito':'gerar cronograma';
+  document.getElementById('ovTitle').textContent = m==='hoje'?'veredito do dia':'cronograma planejado';
+}
+
+function renderCats(){
+  document.getElementById('cats').innerHTML=cats.map(c=>`<button class="cat-btn${c===activeFilter?' active':''}" onclick="setFilter('${c}')">${c}</button>`).join('');
+}
+function setFilter(c){activeFilter=c;renderCats();render();}
+
+function render(){
+  const q=document.getElementById('search').value.toLowerCase().trim();
+  const el=document.getElementById('mainContent');
+  if(activeFilter==='suco (montar)'){ el.innerHTML=renderJuiceBuilder(); return; }
+  const list=FOODS.filter(f=>{const mc=activeFilter==='todos'||f.cat===activeFilter;const mq=!q||f.name.toLowerCase().includes(q)||f.cat.includes(q)||f.desc.toLowerCase().includes(q);return mc&&mq;});
+  let html=`<div class="section-label">${q?`resultado para "${q}"`:activeFilter==='todos'?'todos os alimentos':activeFilter}</div><div class="food-list">`;
+  // sucos customizados aparecem no topo de "todos"
+  if((activeFilter==='todos'||activeFilter==='bebidas')&&customJuices.length&&!q){
+    html+=customJuices.map(j=>{
+      const sel=selected.has(j.id);
+      return `<div class="food-item${sel?' selected':''}" onclick="toggleJuice('${j.id}')">
+        <div class="food-check"><svg class="check-icon" width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="#000" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="food-body"><div class="food-top"><div class="food-name">${j.name}</div><div class="food-pts pos">+${j.pts}</div></div><div class="food-cat">suco caseiro</div></div></div>`;
+    }).join('');
+  }
+  if(!list.length&&!customJuices.length){html+='<div class="empty">nenhum alimento encontrado</div>';}
+  html+=list.map(f=>{
+    const sel=selected.has(f.id);const st=sel?selected.get(f.id):{prep:0,qty:f.ref};
+    const e=effective(f,st.prep);const ptsClass=e.pts>0?'pos':e.pts<0?'neg':'';const ptsTxt=e.pts>0?'+'+e.pts:e.pts;
+    let prepHtml='';
+    if(f.preps){prepHtml=`<div class="prep-label">preparo:</div><div class="prep-opts">`+f.preps.map((p,i)=>`<button class="prep-btn${sel&&st.prep===i?' active':''}" onclick="event.stopPropagation();setPrep('${f.id}',${i})">${p.n}</button>`).join('')+`</div>`;}
+    let qtyHtml='';
+    if(sel&&f.unit){qtyHtml=`<div class="qty-label">quantidade:</div><div class="qty-row"><button class="qty-btn" onclick="event.stopPropagation();chgQty('${f.id}',-1)">−</button><div class="qty-display">${st.qty} <span class="qty-unit">${unitLabel(f.unit)}</span></div><button class="qty-btn" onclick="event.stopPropagation();chgQty('${f.id}',1)">+</button></div>`;}
+    return `<div class="food-item${sel?' selected':''}${sel&&e.pts<0?' negative':''}" onclick="toggle('${f.id}')">
       <div class="food-check"><svg class="check-icon" width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="#000" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-      <div class="food-body">
-        <div class="food-top"><div class="food-name">${f.name}</div><div class="food-pts ${ptsClass}">${ptsTxt}</div></div>
-        <div class="food-cat">${f.cat}</div>
-        <div class="food-desc">${f.desc}</div>
-        ${prepHtml}
-        <div class="food-bars">
-          ${barRow('cardio','cardio',clamp10(e.cardio))}
-          ${barRow('energia','energia',clamp10(e.energia))}
-          ${barRow('anti','antioxid.',clamp10(e.anti))}
-          ${barRow('inflam','anti-inflam',clamp10(e.inflam))}
-          ${barRow('sono','sono',clamp10(e.sono))}
-        </div>
-      </div>
-    </div>`;
+      <div class="food-body"><div class="food-top"><div class="food-name">${f.name}</div><div class="food-pts ${ptsClass}">${ptsTxt}</div></div>
+      <div class="food-cat">${f.cat}${f.unit?' · porção ref: '+f.ref+' '+unitLabel(f.unit):''}</div>
+      <div class="food-desc">${f.desc}</div>${prepHtml}${qtyHtml}
+      <div class="food-bars">${barRow('cardio','cardio',clamp10(e.cardio))}${barRow('energia','energia',clamp10(e.energia))}${barRow('anti','antioxid.',clamp10(e.anti))}${barRow('inflam','anti-inflam',clamp10(e.inflam))}${barRow('sono','sono',clamp10(e.sono))}</div></div></div>`;
   }).join('');
+  html+='</div>';
+  el.innerHTML=html;
 }
-function barRow(key,label,val){
-  return `<div class="bar-row"><span class="bar-label t-${key}">${label}</span><div class="bar-bg"><div class="bar-fill b-${key}" style="width:${val*10}%"></div></div><span class="bar-val t-${key}">${val}</span></div>`;
-}
-function setPrep(id, i){
-  if(!selected.has(id)) selected.set(id, i); else selected.set(id, i);
-  renderFoods(); updateCount();
-}
-function toggle(id){
-  if (selected.has(id)) selected.delete(id); else selected.set(id, 0);
-  renderFoods(); updateCount();
-}
-function updateCount(){
-  document.getElementById('countNum').textContent = selected.size;
-  document.getElementById('verBtn').disabled = selected.size === 0;
-}
+function barRow(k,l,v){return `<div class="bar-row"><span class="bar-label t-${k}">${l}</span><div class="bar-bg"><div class="bar-fill b-${k}" style="width:${v*10}%"></div></div><span class="bar-val t-${k}">${v}</span></div>`;}
 
-function calcScore() {
-  const sel = [...selected.entries()].map(([id,pi]) => ({f:foods.find(x=>x.id===id), e:effective(foods.find(x=>x.id===id),pi), pi}));
-  const n = sel.length;
-  const avgPts = sel.reduce((a,s)=>a+s.e.pts,0)/n; // -10..10
-  let pct = Math.round(((avgPts + 10) / 20) * 100); // map to 0..100
-  pct = Math.max(0, Math.min(100, pct));
-  const avg = k => clamp10(Math.round(sel.reduce((a,s)=>a+s.e[k],0)/n));
-  return { sel, pct, cardio:avg('cardio'), energia:avg('energia'), anti:avg('anti'), sono:avg('sono'), inflam:avg('inflam'),
-           negCount: sel.filter(s=>s.e.pts<0).length };
+function renderJuiceBuilder(){
+  const sweetActive=id=>juiceState.sweet===id?' active':'';
+  const baseActive=id=>juiceState.base===id?' active':'';
+  let preview='';
+  if(juiceState.ings.size){
+    const ingNames=[...juiceState.ings].map(i=>JUICE_ING.find(x=>x.id===i).n);
+    const baseN=JUICE_BASE.find(b=>b.id===juiceState.base).n;
+    const sweetN=JUICE_SWEET.find(s=>s.id===juiceState.sweet).n;
+    preview=`<div class="juice-preview"><strong>Seu suco:</strong> ${ingNames.join(' + ')}<br>base de ${baseN}${juiceState.sweet!=='nada'?' · '+sweetN:''}</div>`;
+  }
+  return `<div class="juice-wrap">
+    <div class="juice-box"><h3>Monte seu suco</h3><p>escolha os ingredientes, a base e o adoçante</p>
+      <div class="prep-label">ingredientes:</div>
+      <div class="juice-ing" style="margin-bottom:14px">${JUICE_ING.map(i=>`<button class="ing-btn${juiceState.ings.has(i.id)?' active':''}" onclick="toggleIng('${i.id}')">${i.n}</button>`).join('')}</div>
+      <div class="prep-label">base:</div>
+      <div class="juice-ing" style="margin-bottom:14px">${JUICE_BASE.map(b=>`<button class="ing-btn${baseActive(b.id)}" onclick="setJuiceBase('${b.id}')">${b.n}</button>`).join('')}</div>
+      <div class="prep-label">adoçante:</div>
+      <div class="sweet-opts" style="margin-bottom:14px">${JUICE_SWEET.map(s=>`<button class="ing-btn${sweetActive(s.id)}" onclick="setJuiceSweet('${s.id}')">${s.n}</button>`).join('')}</div>
+      ${preview}
+      <button class="add-juice-btn" ${juiceState.ings.size?'':'disabled'} onclick="addJuice()">adicionar suco ao dia</button>
+    </div>
+    ${customJuices.length?`<div class="juice-box"><h3>Sucos adicionados</h3>${customJuices.map(j=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border)"><span style="font-size:13px">${j.name} <span style="color:var(--green)">+${j.pts}</span></span><span class="chip-x" onclick="delJuice('${j.id}')" style="font-size:18px">×</span></div>`).join('')}</div>`:''}
+  </div>`;
 }
-function notaInfo(pct){
-  if(pct>=85) return {nota:'excelente',cor:'#4ade80'};
-  if(pct>=70) return {nota:'muito bom',cor:'#34d399'};
-  if(pct>=55) return {nota:'bom',cor:'#60a5fa'};
-  if(pct>=40) return {nota:'regular',cor:'#fbbf24'};
-  if(pct>=25) return {nota:'ruim',cor:'#fb923c'};
-  return {nota:'crítico',cor:'#f87171'};
+function toggleIng(id){if(juiceState.ings.has(id))juiceState.ings.delete(id);else juiceState.ings.add(id);render();}
+function setJuiceBase(id){juiceState.base=id;render();}
+function setJuiceSweet(id){juiceState.sweet=id;render();}
+function addJuice(){
+  if(!juiceState.ings.size)return;
+  const ings=[...juiceState.ings].map(i=>JUICE_ING.find(x=>x.id===i));
+  const avg=k=>Math.round(ings.reduce((a,x)=>a+x[k],0)/ings.length);
+  let v={cardio:avg('cardio'),energia:avg('energia'),anti:avg('anti'),sono:avg('sono'),inflam:avg('inflam'),pts:avg('pts')};
+  const baseMod=JUICE_BASE.find(b=>b.id===juiceState.base).mod;
+  const sweetMod=JUICE_SWEET.find(s=>s.id===juiceState.sweet).mod;
+  for(const k in baseMod)v[k]=(v[k]||0)+baseMod[k];
+  for(const k in sweetMod)v[k]=(v[k]||0)+sweetMod[k];
+  for(const k in v)v[k]=Math.max(-10,Math.min(10,v[k]));
+  const ingNames=ings.map(x=>x.n).join(' + ');
+  const sweetN=juiceState.sweet!=='nada'?' ('+JUICE_SWEET.find(s=>s.id===juiceState.sweet).n+')':'';
+  const jid='juice_'+Date.now();
+  const juice={id:jid,name:'Suco: '+ingNames+sweetN,vals:v,pts:v.pts,cat:'bebidas',isJuice:true,
+    desc:'Suco caseiro montado por você.',tip:juiceState.sweet==='refinado'?'O açúcar refinado derruba o valor. Tente mel ou sem adoçar.':'Suco natural é uma ótima escolha. Beba logo após o preparo pra preservar nutrientes.'};
+  customJuices.push(juice);
+  selected.set(jid,{prep:0,qty:1});
+  juiceState={base:'agua',ings:new Set(),sweet:'nada'};
+  updateCount();render();
 }
+function delJuice(id){customJuices=customJuices.filter(j=>j.id!==id);selected.delete(id);updateCount();render();}
+function toggleJuice(id){if(selected.has(id))selected.delete(id);else selected.set(id,{prep:0,qty:1});updateCount();render();}
 
-function detectCombos(sel){
-  const ids = sel.map(s=>s.f.id);
-  const c=[];
-  if(ids.includes('sardinha')&&ids.includes('espinafre')) c.push({t:'sardinha + espinafre',d:'Ferro heme + ferro não-heme + vitamina C = absorção máxima de ferro pro transporte de O₂.'});
-  if(ids.includes('arroz_branco')&&ids.includes('feijão')) c.push({t:'arroz + feijão',d:'A dupla clássica forma proteína completa com todos aminoácidos essenciais. Base sólida.'});
-  if(ids.includes('salmão')&&ids.includes('batata_doce')) c.push({t:'salmão + batata-doce',d:'Jantar perfeito pré-corrida: ômega 3 + carbo de baixo IG que abastece glicogênio durante o sono.'});
-  if(ids.includes('cúrcuma')&&ids.includes('azeite')) c.push({t:'cúrcuma + azeite',d:'Curcumina é lipossolúvel, a gordura do azeite multiplica sua absorção.'});
-  if(ids.includes('café')&&ids.includes('refrigerante')) c.push({t:'cafeína em excesso',d:'Café + refri num dia só é muita cafeína e açúcar. Cuidado com o efeito no sono.'});
-  return c;
+function setPrep(id,i){const st=selected.get(id)||{prep:0,qty:FOODS.find(f=>f.id===id).ref};st.prep=i;selected.set(id,st);render();updateCount();}
+function chgQty(id,dir){const f=FOODS.find(x=>x.id===id);const st=selected.get(id);if(!st)return;const step=qtyStep(f.unit);st.qty=Math.max(step,st.qty+dir*step);selected.set(id,st);render();}
+function toggle(id){const f=FOODS.find(x=>x.id===id);if(selected.has(id))selected.delete(id);else selected.set(id,{prep:0,qty:f.ref});updateCount();render();}
+function updateCount(){document.getElementById('countNum').textContent=selected.size;document.getElementById('verBtn').disabled=selected.size===0;}
+
+function getJuiceById(id){return customJuices.find(j=>j.id===id);}
+
+function calcScore(){
+  const sel=[];
+  for(const [id,st] of selected.entries()){
+    if(id.startsWith('juice_')){const j=getJuiceById(id);if(j)sel.push({f:j,e:{pts:j.vals.pts,cardio:j.vals.cardio,energia:j.vals.energia,anti:j.vals.anti,sono:j.vals.sono,inflam:j.vals.inflam},qty:1,w:1,isJuice:true});}
+    else{const f=FOODS.find(x=>x.id===id);if(!f)continue;const e=effective(f,st.prep);sel.push({f,e,st,qty:st.qty,w:qtyWeight(f,st.qty)});}
+  }
+  const totW=sel.reduce((a,s)=>a+s.w,0);
+  const wavg=k=>sel.reduce((a,s)=>a+s.e[k]*s.w,0)/totW;
+  const avgPts=wavg('pts');
+  let pct=Math.round(((avgPts+10)/20)*100);pct=Math.max(0,Math.min(100,pct));
+  const avg=k=>clamp10(Math.round(wavg(k)));
+  return {sel,pct,cardio:avg('cardio'),energia:avg('energia'),anti:avg('anti'),sono:avg('sono'),inflam:avg('inflam'),negCount:sel.filter(s=>s.e.pts<0).length};
 }
-function detectGaps(sel){
-  const ids = sel.map(s=>s.f.id);
-  const g=[];
-  const hasPeixe = sel.some(s=>s.f.cat==='peixes');
-  const hasNitrato = ids.some(id=>['beterraba','rúcula','espinafre','suco_beterraba','beterraba_po'].includes(id));
-  const hasSono = sel.some(s=>s.e.sono>=8);
-  const hasAgua = ids.includes('água')||ids.includes('água_coco');
-  const hasVeg = sel.some(s=>['verduras','leguminosas'].includes(s.f.cat));
-  const negs = sel.filter(s=>s.e.pts<0);
-  if(negs.length>=3) g.push({c:'#f87171',m:`${negs.length} alimentos negativos no dia. Um dia assim acontece, mas evite que vire padrão — impacta direto o fôlego e a recuperação.`});
-  if(!hasAgua) g.push({c:'#60a5fa',m:'Você não marcou água. Hidratação é base do desempenho — registre e garanta o consumo.'});
-  if(!hasPeixe) g.push({c:'#fbbf24',m:'Sem peixe no dia — perde o maior aporte de ômega 3 anti-inflamatório.'});
-  if(!hasNitrato) g.push({c:'#fbbf24',m:'Sem fonte de nitrato — vasodilatação comprometida. Beterraba ou folhas verdes resolvem.'});
-  if(!hasVeg) g.push({c:'#fb923c',m:'Nenhum vegetal ou leguminosa. Faltam fibras, ferro vegetal e antioxidantes.'});
-  if(!hasSono) g.push({c:'#a78bfa',m:'Nada que ajude no sono. Camomila, cereja, nozes ou magnésio melhorariam a noite antes do treino.'});
+function notaInfo(p){if(p>=85)return{nota:'excelente',cor:'#4ade80'};if(p>=70)return{nota:'muito bom',cor:'#34d399'};if(p>=55)return{nota:'bom',cor:'#60a5fa'};if(p>=40)return{nota:'regular',cor:'#fbbf24'};if(p>=25)return{nota:'ruim',cor:'#fb923c'};return{nota:'crítico',cor:'#f87171'};}
+
+// GAPS — sempre gera veredito crítico, nunca vazio
+function detectGaps(r){
+  const ids=r.sel.map(s=>s.f.id);const g=[];
+  const has=arr=>arr.some(x=>ids.includes(x));
+  const cat=c=>r.sel.some(s=>s.f.cat===c);
+  const hasJuice=r.sel.some(s=>s.isJuice);
+  const hasPeixe=cat('peixes')||ids.includes('omega3_cap');
+  const hasNitrato=has(['beterraba','rucula','espinafre','suco_beterraba','beterraba_po'])||hasJuice;
+  const hasSono=r.sel.some(s=>s.e.sono>=8);
+  const hasAgua=ids.includes('agua')||ids.includes('agua_coco');
+  const hasVeg=cat('verduras')||cat('leguminosas');
+  const hasFruta=cat('frutas')||hasJuice;
+  const hasProt=cat('peixes')||cat('carnes')||cat('ovos')||ids.includes('whey')||cat('leguminosas');
+  const hasCarbo=cat('grãos')||cat('tubérculos');
+  const negs=r.sel.filter(s=>s.e.pts<0);
+
+  // críticas negativas (vermelho)
+  if(negs.length>=4)g.push({c:'#f87171',m:`Dia pesado: ${negs.length} itens negativos. Isso derruba o fôlego, atrapalha o sono e aumenta a inflamação. Se foi um dia de exceção, tudo bem. Se virou rotina, é o primeiro ponto a atacar.`});
+  else if(negs.length>0)g.push({c:'#fb923c',m:`${negs.length} item${negs.length>1?'s':''} negativo${negs.length>1?'s':''} hoje (${negs.map(s=>s.f.name).join(', ')}). Não destrói o dia, mas equilibre com comida de verdade.`});
+
+  // pilares fracos
+  if(r.cardio<5)g.push({c:'#f87171',m:`Saúde cardíaca baixa (${r.cardio}/10). Faltam vasodilatadores e ômega 3 — beterraba, folhas verdes, peixe ou azeite mudariam isso.`});
+  if(r.inflam<5)g.push({c:'#fb923c',m:`Perfil inflamatório alto (anti-inflamatório só ${r.inflam}/10). Muito processado/frito. Cúrcuma, gengibre, azeite e peixe puxam pro outro lado.`});
+  if(r.anti<5)g.push({c:'#fbbf24',m:`Pouco antioxidante (${r.anti}/10). Frutas vermelhas, folhas e chá verde combatem o estresse oxidativo do treino.`});
+  if(r.sono<5)g.push({c:'#a78bfa',m:`Nada que ajude o sono (${r.sono}/10). Camomila, cereja, nozes, magnésio ou melatonina melhorariam a noite — e sono ruim derruba o desempenho.`});
+
+  // ausências estruturais
+  if(!hasAgua)g.push({c:'#60a5fa',m:'Você não registrou água. Hidratação é a base do fôlego — registre e garanta o consumo ao longo do dia.'});
+  if(!hasProt)g.push({c:'#fbbf24',m:'Sem fonte clara de proteína. Recuperação muscular fica comprometida — ovo, frango, peixe, feijão ou whey resolvem.'});
+  if(!hasVeg&&!hasFruta)g.push({c:'#fb923c',m:'Zero vegetais e frutas. Faltam fibras, vitaminas e antioxidantes. Esse é provavelmente o maior buraco do dia.'});
+  if(!hasCarbo)g.push({c:'#60a5fa',m:'Sem carboidrato de qualidade. Pra correr de manhã você precisa de glicogênio — batata-doce, arroz, aveia ou tubérculos.'});
+  if(!hasPeixe&&negs.length===0)g.push({c:'#fbbf24',m:'Sem ômega 3 (peixe ou cápsula). É o maior aliado anti-inflamatório que está faltando.'});
+  if(!hasNitrato)g.push({c:'#fbbf24',m:'Sem fonte de nitrato. Beterraba, rúcula ou um suco verde melhoram a vasodilatação e o fôlego direto.'});
+
+  // elogios quando merece (verde) — garante que nunca fica "sem veredito"
+  if(r.pct>=85)g.unshift({c:'#4ade80',m:'Dia muito bem montado. Cobre praticamente todos os pilares. Esse é o padrão que faz o desempenho subir ao longo das semanas.'});
+  else if(r.pct>=70&&negs.length===0)g.unshift({c:'#4ade80',m:'Dia sólido e sem furos graves. Os pontos abaixo são refinos, não problemas.'});
+
+  // fallback absoluto: nunca retorna vazio
+  if(!g.length)g.push({c:'#60a5fa',m:'Dia equilibrado, sem destaques fortes nem problemas graves. Pra subir de nível, adicione um item de alta pontuação (peixe, beterraba, folha verde).'});
   return g;
 }
+function detectCombos(sel){
+  const ids=sel.map(s=>s.f.id);const c=[];
+  if(ids.includes('sardinha')&&ids.includes('espinafre'))c.push({t:'sardinha + espinafre',d:'Ferro heme + ferro vegetal + vitamina C = absorção máxima de ferro pro transporte de O₂.'});
+  if(ids.includes('arroz_br')&&ids.includes('feijao'))c.push({t:'arroz + feijão',d:'Proteína completa com todos os aminoácidos. Base clássica e eficiente.'});
+  if(ids.includes('salmao')&&ids.includes('batata_doce'))c.push({t:'salmão + batata-doce',d:'Jantar perfeito pré-corrida: ômega 3 + carbo de baixo IG que abastece glicogênio durante o sono.'});
+  if(ids.includes('curcuma')&&ids.includes('azeite'))c.push({t:'cúrcuma + azeite',d:'Curcumina é lipossolúvel — a gordura do azeite multiplica a absorção.'});
+  if((ids.includes('cafe')||ids.includes('supercoffee')||ids.includes('cafeina_cap'))&&ids.includes('melatonina'))c.push({t:'cafeína + melatonina',d:'Cuidado: tomados perto um do outro se anulam. Cafeína de manhã, melatonina à noite.'});
+  if(ids.includes('whey')&&(ids.includes('banana')||ids.includes('aveia')))c.push({t:'whey + carbo',d:'Proteína + carboidrato pós-treino otimizam a recuperação e reposição de glicogênio.'});
+  return c;
+}
 
+let lastReport=null;
 function openResult(){
-  if(!selected.size) return;
-  const r = calcScore();
-  const {nota,cor} = notaInfo(r.pct);
-  const combos = detectCombos(r.sel);
-  const gaps = detectGaps(r.sel);
-
+  if(!selected.size)return;
+  const r=calcScore();const{nota,cor}=notaInfo(r.pct);
+  const gaps=detectGaps(r);const combos=detectCombos(r.sel);
   let insight;
-  if(r.pct>=85) insight='Dia excelente. Esse é o tipo de alimentação que faz o fôlego melhorar de verdade ao longo das semanas.';
-  else if(r.pct>=70) insight='Dia muito bom, com boa base cardiovascular. Pequenos ajustes te levam ao topo.';
-  else if(r.pct>=55) insight='Dia ok, mas com espaço claro pra melhorar. Veja os gaps abaixo.';
-  else if(r.pct>=40) insight='Dia mediano. Provavelmente faltou comida de verdade e/ou teve excesso de processados.';
-  else insight='Dia pesado em alimentos ruins. Acontece, mas se repetir com frequência vai sentir na corrida e na recuperação. Amanhã é página nova.';
-
-  const warnBanner = r.negCount>0 ? `<div class="warn-banner"><div class="warn-icon">⚠️</div><div class="warn-text"><strong>${r.negCount} ${r.negCount===1?'alimento puxou':'alimentos puxaram'} sua nota pra baixo.</strong> Estão marcados em vermelho na análise. Não precisa cortar tudo — só equilibrar com mais comida de verdade.</div></div>` : '';
-
+  if(mode==='amanha'){
+    insight=r.pct>=70?'Cardápio bem planejado pra amanhã. Siga esse plano e o dia já começa no caminho certo.':'Esse é o plano pra amanhã. Veja os ajustes sugeridos abaixo antes de fechar o cardápio.';
+  } else {
+    if(r.pct>=85)insight='Dia excelente. Esse tipo de alimentação faz o fôlego melhorar de verdade ao longo das semanas.';
+    else if(r.pct>=70)insight='Dia muito bom, boa base cardiovascular. Pequenos ajustes te levam ao topo.';
+    else if(r.pct>=55)insight='Dia ok, com espaço claro pra melhorar. Veja o veredito abaixo.';
+    else if(r.pct>=40)insight='Dia mediano. Provavelmente faltou comida de verdade e/ou sobrou processado.';
+    else insight='Dia pesado em alimentos ruins. Acontece, mas se repetir você sente na corrida. Amanhã é página nova.';
+  }
+  const warnBanner = r.negCount>0
+    ? `<div class="warn-banner red"><div class="warn-icon">⚠️</div><div class="warn-text"><strong>${r.negCount} ${r.negCount===1?'item puxou':'itens puxaram'} sua nota pra baixo.</strong> Marcados em vermelho abaixo. Equilibrar, não necessariamente cortar.</div></div>`
+    : r.pct>=70?`<div class="warn-banner green"><div class="warn-icon">✓</div><div class="warn-text"><strong>Nenhum alimento negativo hoje.</strong> Boa base — o foco agora é refinar.</div></div>`:'';
   const pillarBar=(v,c)=>`<div class="pillar-bar-bg"><div class="pillar-bar-fill" style="width:${v*10}%;background:${c}"></div></div>`;
-
-  const foodCards = r.sel.map(s=>{
-    const f=s.f, e=s.e, isNeg=e.pts<0;
-    const prepName = f.preps ? ` · ${f.preps[s.pi].n}` : '';
-    return `<div class="analysis-card${isNeg?' neg':''}">
-      <div class="analysis-food-name">${f.name}${prepName} <span style="font-weight:700;color:${isNeg?'#f87171':'#4ade80'}">${e.pts>0?'+':''}${e.pts}</span></div>
+  const foodCards=r.sel.map(s=>{
+    const f=s.f,e=s.e,isNeg=e.pts<0;
+    const prepName=f.preps?` · ${f.preps[s.st.prep].n}`:'';
+    const qtyName=(f.unit&&!s.isJuice)?` · ${s.qty} ${unitLabel(f.unit)}`:'';
+    return `<div class="analysis-card${isNeg?' neg':''}"><div class="analysis-food-name">${f.name}${prepName}${qtyName} <span style="font-weight:700;color:${isNeg?'#f87171':'#4ade80'}">${e.pts>0?'+':''}${e.pts}</span></div>
       <div class="analysis-food-cat">${f.cat}</div>
-      <div class="food-bars" style="margin-bottom:8px">
-        ${barRow('cardio','cardio',clamp10(e.cardio))}
-        ${barRow('energia','energia',clamp10(e.energia))}
-        ${barRow('anti','antioxid.',clamp10(e.anti))}
-        ${barRow('inflam','anti-inflam',clamp10(e.inflam))}
-        ${barRow('sono','sono',clamp10(e.sono))}
-      </div>
-      <div class="analysis-desc">${f.desc}</div>
-      <div class="analysis-tip${isNeg?' neg':''}">${f.tip}</div>
-    </div>`;
+      <div class="food-bars" style="margin-bottom:8px">${barRow('cardio','cardio',clamp10(e.cardio))}${barRow('energia','energia',clamp10(e.energia))}${barRow('anti','antioxid.',clamp10(e.anti))}${barRow('inflam','anti-inflam',clamp10(e.inflam))}${barRow('sono','sono',clamp10(e.sono))}</div>
+      <div class="analysis-desc">${f.desc}</div><div class="analysis-tip${isNeg?' neg':''}">${f.tip}</div></div>`;
   }).join('');
+  const gapsHtml=gaps.map(g=>`<div class="gap-item"><div class="gap-dot" style="background:${g.c}"></div><span>${g.m}</span></div>`).join('');
+  const combosHtml=combos.length?combos.map(c=>`<div class="combo-item"><strong>${c.t}</strong><br>${c.d}</div>`).join(''):'<div class="combo-item">Nenhuma combinação sinérgica detectada hoje.</div>';
+  const chips=r.sel.map(s=>`<div class="chip${s.e.pts<0?' neg':''}">${s.f.name}<span class="chip-x" onclick="removeItem('${s.f.id}')">×</span></div>`).join('');
 
-  const combosHtml = combos.length ? combos.map(c=>`<div class="combo-item"><strong>${c.t}</strong><br>${c.d}</div>`).join('') : '<div class="combo-item">Nenhuma combinação sinérgica detectada hoje.</div>';
-  const gapsHtml = gaps.length ? gaps.map(g=>`<div class="gap-item"><div class="gap-dot" style="background:${g.c}"></div><span>${g.m}</span></div>`).join('') : '<div class="gap-item"><div class="gap-dot" style="background:#4ade80"></div><span>Nenhum gap crítico. Dia muito bem montado.</span></div>';
-  const chips = r.sel.map(s=>`<div class="chip${s.e.pts<0?' neg':''}">${s.f.name}<span class="chip-x" onclick="removeChip('${s.f.id}')">×</span></div>`).join('');
+  const actionBtns = mode==='amanha'
+    ? `<div class="action-btns"><button class="action-btn primary" onclick="exportPDF()">baixar PDF</button><button class="action-btn" onclick="copyResumo()">copiar resumo</button></div>`
+    : `<div class="action-btns"><button class="action-btn" onclick="copyResumo()">copiar resumo</button></div>`;
 
-  document.getElementById('resultContent').innerHTML = `
-    <div class="score-hero">
-      <div class="score-pct" style="color:${cor}">${r.pct}%</div>
-      <div class="score-nota" style="color:${cor}">${nota}</div>
-      <div class="score-bar-bg"><div class="score-bar-fill" style="width:${r.pct}%;background:${cor}"></div></div>
-      <div class="score-insight">${insight}</div>
-    </div>
+  lastReport={r,nota,gaps,combos,insight};
+
+  document.getElementById('resultContent').innerHTML=`
+    <div class="score-hero"><div class="score-pct" style="color:${cor}">${r.pct}%</div><div class="score-nota" style="color:${cor}">${nota}</div>
+    <div class="score-bar-bg"><div class="score-bar-fill" style="width:${r.pct}%;background:${cor}"></div></div><div class="score-insight">${insight}</div></div>
     ${warnBanner}
     <div class="pillars-grid">
       <div class="pillar-card"><div class="pillar-label">saúde cardíaca</div><div class="pillar-val" style="color:${cor}">${r.cardio}<span style="font-size:13px;color:var(--muted)">/10</span></div>${pillarBar(r.cardio,cor)}</div>
@@ -441,24 +531,100 @@ function openResult(){
       <div class="pillar-card"><div class="pillar-label">antioxidante</div><div class="pillar-val" style="color:${cor}">${r.anti}<span style="font-size:13px;color:var(--muted)">/10</span></div>${pillarBar(r.anti,cor)}</div>
       <div class="pillar-card"><div class="pillar-label">anti-inflamatório</div><div class="pillar-val" style="color:var(--orange)">${r.inflam}<span style="font-size:13px;color:var(--muted)">/10</span></div>${pillarBar(r.inflam,'var(--orange)')}</div>
       <div class="pillar-card"><div class="pillar-label">qualidade do sono</div><div class="pillar-val" style="color:var(--purple)">${r.sono}<span style="font-size:13px;color:var(--muted)">/10</span></div>${pillarBar(r.sono,'var(--purple)')}</div>
-      <div class="pillar-card"><div class="pillar-label">itens no dia</div><div class="pillar-val" style="color:${cor}">${r.sel.length}</div>${pillarBar(Math.min(r.sel.length,10),cor)}</div>
+      <div class="pillar-card"><div class="pillar-label">itens</div><div class="pillar-val" style="color:${cor}">${r.sel.length}</div>${pillarBar(Math.min(r.sel.length,10),cor)}</div>
     </div>
-    <div class="analysis-section"><div class="analysis-title">gaps e alertas</div><div class="gaps-card">${gapsHtml}</div></div>
+    ${actionBtns}
+    <div class="analysis-section"><div class="analysis-title">veredito — gaps e alertas</div><div class="gaps-card">${gapsHtml}</div></div>
     <div class="analysis-section"><div class="analysis-title">combinações detectadas</div><div class="combos-card">${combosHtml}</div></div>
     <div class="analysis-section"><div class="analysis-title">análise por alimento</div>${foodCards}</div>
-    <div class="analysis-title">itens selecionados</div>
-    <div class="chips-wrap">${chips}</div>
-    <button class="limpar-btn" onclick="limpar()">limpar tudo e começar de novo</button>
-  `;
+    <div class="analysis-title">itens selecionados</div><div class="chips-wrap">${chips}</div>
+    <button class="limpar-btn" onclick="limpar()">limpar tudo</button>`;
   document.getElementById('overlay').classList.add('open');
-  document.getElementById('overlay').scrollTop = 0;
+  document.getElementById('overlay').scrollTop=0;
 }
-function removeChip(id){ selected.delete(id); updateCount(); if(!selected.size){closeResult();return;} openResult(); }
-function closeResult(){ document.getElementById('overlay').classList.remove('open'); renderFoods(); }
-function limpar(){ selected.clear(); updateCount(); closeResult(); }
+function removeItem(id){selected.delete(id);updateCount();if(!selected.size){closeResult();render();return;}openResult();}
+function closeResult(){document.getElementById('overlay').classList.remove('open');render();}
+function limpar(){selected.clear();customJuices=[];updateCount();closeResult();}
 
-document.getElementById('search').addEventListener('input', renderFoods);
-renderCats(); renderFoods();
+function buildResumoText(){
+  if(!lastReport)return'';
+  const{r,nota,gaps,insight}=lastReport;
+  const titulo=mode==='amanha'?'CRONOGRAMA PLANEJADO':'RESUMO DO DIA';
+  let t=`${titulo} — NutriPlanner\n\n`;
+  t+=`NOTA GERAL: ${r.pct}% (${nota})\n\n`;
+  t+=`PILARES:\n- Saúde cardíaca: ${r.cardio}/10\n- Energia aeróbica: ${r.energia}/10\n- Antioxidante: ${r.anti}/10\n- Anti-inflamatório: ${r.inflam}/10\n- Qualidade do sono: ${r.sono}/10\n\n`;
+  t+=`ALIMENTOS:\n`;
+  r.sel.forEach(s=>{const f=s.f;const prep=f.preps?' ('+f.preps[s.st.prep].n+')':'';const qty=(f.unit&&!s.isJuice)?' - '+s.qty+' '+unitLabel(f.unit):'';t+=`- ${f.name}${prep}${qty} [${s.e.pts>0?'+':''}${s.e.pts}]\n`;});
+  t+=`\nVEREDITO:\n`;gaps.forEach(g=>{t+=`• ${g.m}\n`;});
+  t+=`\n${insight}\n`;
+  return t;
+}
+function copyResumo(){
+  const t=buildResumoText();
+  // tenta clipboard moderno
+  if(navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(t).then(()=>alert('Resumo copiado! Cole onde quiser.')).catch(()=>fallbackCopy(t));
+  } else { fallbackCopy(t); }
+}
+function fallbackCopy(t){
+  // método antigo
+  try{
+    const ta=document.createElement('textarea');ta.value=t;ta.style.position='fixed';ta.style.top='0';ta.style.left='0';ta.style.opacity='0';
+    document.body.appendChild(ta);ta.focus();ta.select();ta.setSelectionRange(0,t.length);
+    const ok=document.execCommand('copy');document.body.removeChild(ta);
+    if(ok){alert('Resumo copiado!');return;}
+  }catch(e){}
+  // último recurso: mostra o texto numa tela pra copiar manualmente
+  showTextModal(t);
+}
+function showTextModal(t){
+  const m=document.createElement('div');
+  m.style.cssText='position:fixed;inset:0;z-index:99;background:rgba(0,0,0,.85);display:flex;flex-direction:column;padding:16px';
+  m.innerHTML=`<div style="color:#fff;font-size:14px;margin-bottom:10px;font-weight:600">Selecione e copie o texto abaixo:</div>
+    <textarea readonly style="flex:1;width:100%;background:#1a1a1a;color:#f0f0f0;border:1px solid #2a2a2a;border-radius:12px;padding:14px;font-size:13px;line-height:1.5">${t.replace(/</g,'&lt;')}</textarea>
+    <button style="margin-top:12px;padding:14px;background:#4ade80;color:#000;font-weight:700;border:none;border-radius:12px;font-size:15px">fechar</button>`;
+  m.querySelector('button').onclick=()=>document.body.removeChild(m);
+  m.querySelector('textarea').onclick=function(){this.select();};
+  document.body.appendChild(m);
+}
+function exportPDF(){
+  if(!lastReport){alert('Monte seu dia primeiro.');return;}
+  // se o jsPDF não carregou, cai pro resumo em texto
+  if(!window.jspdf||!window.jspdf.jsPDF){
+    alert('O gerador de PDF não carregou (pode ser a conexão). Vou abrir o resumo em texto pra você copiar.');
+    showTextModal(buildResumoText());
+    return;
+  }
+  const{r,nota,gaps,combos,insight}=lastReport;
+  const{jsPDF}=window.jspdf;const doc=new jsPDF({unit:'mm',format:'a4'});
+  let y=18;const L=16;const W=178;
+  doc.setFontSize(18);doc.setFont(undefined,'bold');doc.text(mode==='amanha'?'Cronograma Planejado':'Resumo do Dia',L,y);y+=6;
+  doc.setFontSize(10);doc.setFont(undefined,'normal');doc.setTextColor(120);doc.text('NutriPlanner · '+new Date().toLocaleDateString('pt-BR'),L,y);y+=10;
+  doc.setTextColor(20);doc.setFontSize(14);doc.setFont(undefined,'bold');doc.text(`Nota geral: ${r.pct}% (${nota})`,L,y);y+=9;
+  doc.setFontSize(11);doc.setFont(undefined,'bold');doc.text('Pilares',L,y);y+=6;
+  doc.setFont(undefined,'normal');doc.setFontSize(10);
+  [['Saúde cardíaca',r.cardio],['Energia aeróbica',r.energia],['Antioxidante',r.anti],['Anti-inflamatório',r.inflam],['Qualidade do sono',r.sono]].forEach(p=>{doc.text(`${p[0]}: ${p[1]}/10`,L+2,y);y+=5;});
+  y+=4;doc.setFontSize(11);doc.setFont(undefined,'bold');doc.text('Alimentos',L,y);y+=6;doc.setFont(undefined,'normal');doc.setFontSize(10);
+  r.sel.forEach(s=>{const f=s.f;const prep=f.preps?' ('+f.preps[s.st.prep].n+')':'';const qty=(f.unit&&!s.isJuice)?' - '+s.qty+' '+unitLabel(f.unit):'';const line=`• ${f.name}${prep}${qty}  [${s.e.pts>0?'+':''}${s.e.pts}]`;const split=doc.splitTextToSize(line,W);doc.text(split,L+2,y);y+=5*split.length;if(y>275){doc.addPage();y=18;}});
+  y+=4;if(y>250){doc.addPage();y=18;}
+  doc.setFontSize(11);doc.setFont(undefined,'bold');doc.text('Veredito',L,y);y+=6;doc.setFont(undefined,'normal');doc.setFontSize(10);
+  gaps.forEach(g=>{const split=doc.splitTextToSize('• '+g.m,W);doc.text(split,L+2,y);y+=5*split.length+1;if(y>275){doc.addPage();y=18;}});
+  y+=3;if(y>260){doc.addPage();y=18;}
+  doc.setFont(undefined,'italic');const insSplit=doc.splitTextToSize(insight,W);doc.text(insSplit,L,y);
+  try{
+    doc.save((mode==='amanha'?'cronograma':'resumo')+'_nutriplanner.pdf');
+  }catch(e){
+    // alguns navegadores iOS bloqueiam o save direto; abre em nova aba como fallback
+    try{
+      const blob=doc.output('blob');const url=URL.createObjectURL(blob);window.open(url,'_blank');
+    }catch(e2){
+      alert('Não foi possível salvar o PDF neste navegador. Use "copiar resumo".');
+    }
+  }
+}
+
+document.getElementById('search').addEventListener('input',render);
+renderCats();render();setMode('hoje');
 </script>
 </body>
 </html>
