@@ -171,6 +171,11 @@ html,body{background:var(--bg);color:var(--text);font-family:var(--font-mono);mi
 .prova-result h3{font-size:12px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin:16px 0 6px}
 .prova-result ul{margin:0 0 4px 18px}
 .prova-fases li{margin-bottom:8px}
+.cardapio-block{margin-top:6px;padding:8px 0 2px 10px;border-left:2px solid var(--border);font-size:12.5px}
+.cardapio-nota{color:var(--muted);font-style:italic;margin-bottom:4px}
+.cardapio-linha{margin-bottom:3px}
+.cardapio-extras ul{margin:3px 0 0 16px}
+.cardapio-extras li{margin-bottom:3px}
 </style>
 </head>
 <body>
@@ -470,9 +475,110 @@ function buildFasesTimeline(daysUntil, raceDate){
   }
   for(let o=detailWindow;o>=0;o--){
     const ph=classifyOffset(o,daysUntil);
-    items.push({kind:'dia',phase:ph,label:FASE_LABEL[ph],focus:FASE_FOCO[ph],date:fmt(dateFor(o))});
+    items.push({kind:'dia',phase:ph,label:FASE_LABEL[ph],focus:FASE_FOCO[ph],date:fmt(dateFor(o)),offset:o});
   }
   return items;
+}
+
+// ---- PARTE 2: montagem do cardápio de cada dia, por refeição ----
+// pools de candidatos por papel na refeição (ids existentes em FOODS)
+const MEAL_POOLS = {
+  cafeCarbo: ['aveia','tapioca','pao_int','cuscuz'],
+  cafeFruta: ['banana','mamao','maca'],
+  almocoProteina: ['frango','tilapia','atum','bife_magro','ovo','lentilha'],
+  almocoCarbo: ['arroz_int','batata_doce','inhame','arroz_br'],
+  almocoVegetal: ['brocolis','couve','espinafre','tomate'],
+  jantarProteina: ['salmao','sardinha','peru','frango'],
+  jantarCarbo: ['batata_doce','arroz_int','cuscuz'],
+  jantarVegetal: ['espinafre','brocolis','couve'],
+  lanchePreTreino: ['banana','tapioca','maca'],
+  lanchePosTreino: ['iogurte','castanha_pa','pasta_amendoim','whey'],
+  antiInflamBooster: ['azeite','curcuma','gengibre'],
+  proteinaAntiInflam: ['salmao','sardinha'],
+};
+function foodById(id){ return FOODS.find(f=>f.id===id); }
+function mealItem(food){ return food?{id:food.id,name:food.name}:null; }
+
+// roda o pool (embaralhado uma vez por plano+papel) e escolhe pelo offset — garante que dias
+// vizinhos (offset e offset+1) quase sempre caem em itens diferentes, e o ciclo se repete só
+// depois de passar por todo o pool (ex: segunda aveia, terça tapioca, quarta pão integral...).
+function rotatePick(poolKey, offset){
+  const pool=MEAL_POOLS[poolKey];
+  if(!pool||!pool.length) return null;
+  const shuffled=shuffleSeeded(pool, seededRandom('planoRefeicao_'+poolKey));
+  const i=((offset%shuffled.length)+shuffled.length)%shuffled.length;
+  return foodById(shuffled[i]);
+}
+
+// camada extra: suplementação e timing, fora das refeições
+function buildExtras(phase, niveis){
+  const extras=[];
+  if(phase==='prova'){
+    extras.push({item:'Beterraba (suco ou em pó)',timing:'60-90min antes da largada',motivo:'o nitrato vira óxido nítrico, ajuda na vasodilatação e na eficiência do oxigênio.'});
+    extras.push({item:'Cafeína (café ou cápsula)',timing:'30-60min antes da largada',motivo:'melhora a percepção de esforço e a performance — só se você já é acostumado a treinar com cafeína.'});
+  }
+  if(phase==='abastecimento'){
+    extras.push({item:'Água de coco ou isotônico',timing:'ao longo do dia',motivo:'eletrólitos pra acompanhar o carboidrato extra e maximizar a reposição de glicogênio.'});
+  }
+  if(niveis.sono==='alto'||phase==='base'){
+    extras.push({item:'Magnésio ou chá de camomila',timing:'30-60min antes de dormir',motivo:'relaxamento e qualidade do sono — é dormindo que boa parte da recuperação acontece.'});
+  }
+  if(niveis.antiinflamatorio==='alto'||phase==='base'){
+    extras.push({item:'Ômega 3 (cápsula ou peixe)',timing:'junto de uma refeição com gordura',motivo:'é lipossolúvel — tomado isolado, o corpo aproveita bem menos.'});
+  }
+  if(phase==='vespera'){
+    extras.push({item:'Nada de novo hoje',timing:'o dia todo',motivo:'teste de alimento é coisa de treino, não de véspera de prova.'});
+  }
+  return extras;
+}
+
+// monta o cardápio de UM dia (café, almoço, jantar, lanches) respeitando o foco da fase
+function buildCardapioDia(item, niveis){
+  const {phase,offset}=item;
+
+  if(phase==='prova'){
+    const preTreino=rotatePick('lanchePreTreino',offset);
+    return {
+      cafe:[mealItem(preTreino)].filter(Boolean),
+      almoco:[],jantar:[],lanches:[],
+      extras:buildExtras(phase,niveis),
+      nota:'Dia da prova: só o pré-treino importa. Carboidrato leve e de fácil digestão — nada pesado, nada novo.',
+    };
+  }
+  if(phase==='vespera'){
+    return {
+      cafe:[mealItem(foodById('pao_int')),mealItem(foodById('banana'))].filter(Boolean),
+      almoco:[mealItem(foodById('frango')),mealItem(foodById('arroz_br')),mealItem(foodById('batata_doce'))].filter(Boolean),
+      jantar:[mealItem(foodById('macarrao')),mealItem(foodById('frango'))].filter(Boolean),
+      lanches:[mealItem(foodById('banana'))].filter(Boolean),
+      extras:buildExtras(phase,niveis),
+      nota:'Véspera: comida leve, testada e sem novidade — nada de fibra em excesso, fritura ou tempero pesado.',
+    };
+  }
+
+  const carboBoost=phase==='abastecimento';
+  const antiInflamBoost=phase==='base';
+
+  const cafe=[mealItem(rotatePick('cafeCarbo',offset)),mealItem(rotatePick('cafeFruta',offset))].filter(Boolean);
+  if(antiInflamBoost) cafe.push(mealItem(foodById('ovo')));
+
+  const almoco=[
+    mealItem(antiInflamBoost?(rotatePick('proteinaAntiInflam',offset)||rotatePick('almocoProteina',offset)):rotatePick('almocoProteina',offset)),
+    mealItem(rotatePick('almocoCarbo',offset)),
+    mealItem(rotatePick('almocoVegetal',offset)),
+  ].filter(Boolean);
+  if(antiInflamBoost) almoco.push(mealItem(rotatePick('antiInflamBooster',offset)));
+
+  const jantar=[
+    mealItem(rotatePick('jantarProteina',offset)),
+    mealItem(rotatePick('jantarCarbo',offset)),
+    mealItem(rotatePick('jantarVegetal',offset)),
+  ].filter(Boolean);
+  if(carboBoost) jantar.push(mealItem(rotatePick('almocoCarbo',offset+1)));
+
+  const lanches=[mealItem(rotatePick('lanchePreTreino',offset)),mealItem(rotatePick('lanchePosTreino',offset))].filter(Boolean);
+
+  return {cafe,almoco,jantar,lanches,extras:buildExtras(phase,niveis)};
 }
 
 // função principal do motor — recebe distância(km), pace(min/km), data da prova (YYYY-MM-DD) e peso(kg)
@@ -501,7 +607,10 @@ function calcRacePlan(distanceKm, paceMinKm, raceDateStr, weightKg){
   const raceDate=new Date(raceDateStr+'T00:00:00');
   const daysUntil=Math.round((raceDate-today)/86400000);
   let fases=[];
-  if(!isNaN(daysUntil)&&daysUntil>=0) fases=buildFasesTimeline(daysUntil,raceDate);
+  if(!isNaN(daysUntil)&&daysUntil>=0){
+    fases=buildFasesTimeline(daysUntil,raceDate);
+    fases.forEach(item=>{ if(item.kind==='dia') item.cardapio=buildCardapioDia(item,niveis); });
+  }
 
   return {distancia:distanceKm,pace:paceMinKm,peso:weightKg,distCat,paceCat,intensidade,niveis,daysUntil,fases};
 }
@@ -519,6 +628,20 @@ function calcularProva(){
   provaState.peso=parseFloat(document.getElementById('provaPeso').value)||0;
   provaState.resultado=calcRacePlan(provaState.distancia,provaState.pace,provaState.data,provaState.peso);
   render();
+}
+
+function renderCardapioDia(c){
+  if(!c) return '';
+  const linha=(rotulo,arr)=>arr&&arr.length?`<div class="cardapio-linha"><strong>${rotulo}:</strong> ${arr.map(x=>x.name).join(', ')}</div>`:'';
+  const extras=c.extras&&c.extras.length?`<div class="cardapio-linha cardapio-extras"><strong>Extras do dia:</strong><ul>${c.extras.map(e=>`<li>${e.item} — ${e.timing}. <span style="color:var(--muted)">${e.motivo}</span></li>`).join('')}</ul></div>`:'';
+  return `<div class="cardapio-block">
+    ${c.nota?`<div class="cardapio-nota">${c.nota}</div>`:''}
+    ${linha('Café da manhã',c.cafe)}
+    ${linha('Almoço',c.almoco)}
+    ${linha('Jantar',c.jantar)}
+    ${linha('Lanches',c.lanches)}
+    ${extras}
+  </div>`;
 }
 
 function renderProva(){
@@ -552,7 +675,7 @@ function renderProva(){
         <ul class="prova-fases">
           ${r.fases.map(f=>f.kind==='bloco'
             ?`<li><strong>${f.label}</strong> — ${f.numDays} dias (${f.dateRange})<br>${f.focus}</li>`
-            :`<li><strong>${f.date} — ${f.label}</strong><br>${f.focus}</li>`
+            :`<li><strong>${f.date} — ${f.label}</strong><br>${f.focus}${renderCardapioDia(f.cardapio)}</li>`
           ).join('')}
         </ul>
       </div>`;
