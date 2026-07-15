@@ -148,6 +148,29 @@ html,body{background:var(--bg);color:var(--text);font-family:var(--font-mono);mi
 .mode-banner{font-size:12px;padding:10px 14px;border-radius:var(--r);margin:14px 16px 0;text-align:left;background:var(--surface);border:1px solid var(--border);border-left:3px solid transparent}
 .mode-banner.hoje{border-left-color:var(--green);color:var(--text)}
 .mode-banner.amanha{border-left-color:var(--blue);color:var(--text)}
+/* feed (aba início) */
+.feed-list{padding:0 16px;display:flex;flex-direction:column;gap:10px}
+.feed-cta{background:var(--border-strong);color:var(--bg);border-radius:var(--r);padding:18px;cursor:pointer}
+.feed-cta-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;opacity:.65;margin-bottom:6px}
+.feed-cta-title{font-family:var(--font-display);font-size:18px;font-weight:700}
+.feed-card{background:var(--surface);border:1px solid var(--border-strong);border-radius:var(--r);padding:16px}
+.feed-tag{display:inline-block;font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;padding:3px 9px;margin-bottom:10px;border-radius:var(--r)}
+.feed-tag.dica{background:var(--blue-dim);color:var(--blue)}
+.feed-tag.curiosidade{background:var(--teal-dim);color:var(--teal)}
+.feed-tag.combinacao{background:var(--purple-dim);color:var(--purple)}
+.feed-tag.timing{background:var(--orange-dim);color:var(--orange)}
+.feed-title{font-family:var(--font-display);font-size:16px;font-weight:700;margin-bottom:8px;line-height:1.3}
+.feed-body{font-size:13.5px;line-height:1.6;color:var(--muted)}
+/* prova (parte 1 — só teste da lógica, sem UI final) */
+.prova-note{padding:0 16px 10px;font-size:12px;color:var(--muted);line-height:1.5}
+.prova-form{padding:0 16px;display:flex;flex-direction:column;gap:10px;margin-bottom:16px}
+.prova-form label{display:flex;flex-direction:column;gap:4px;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.03em}
+.prova-form input{font-family:var(--font-mono);font-size:14px;padding:9px 10px;border:1px solid var(--border-strong);border-radius:var(--r);background:var(--surface);color:var(--text)}
+.prova-form button{font-family:var(--font-mono);font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;padding:12px;border:1px solid var(--border-strong);background:var(--border-strong);color:var(--bg);cursor:pointer;border-radius:var(--r)}
+.prova-result{padding:0 16px 24px;font-size:13.5px;line-height:1.6}
+.prova-result h3{font-size:12px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin:16px 0 6px}
+.prova-result ul{margin:0 0 4px 18px}
+.prova-fases li{margin-bottom:8px}
 </style>
 </head>
 <body>
@@ -155,19 +178,21 @@ html,body{background:var(--bg);color:var(--text);font-family:var(--font-mono);mi
   <div class="header">
     <h1>NutriPlanner</h1>
     <div class="tabs">
-      <div class="tab active" id="tabHoje" onclick="setMode('hoje')">Comi hoje<span class="tab-sub">avaliar o dia</span></div>
+      <div class="tab active" id="tabInicio" onclick="setMode('inicio')">Início<span class="tab-sub">dicas do dia</span></div>
+      <div class="tab" id="tabHoje" onclick="setMode('hoje')">Comi hoje<span class="tab-sub">avaliar o dia</span></div>
       <div class="tab" id="tabAmanha" onclick="setMode('amanha')">Planejar<span class="tab-sub">montar cardápio</span></div>
+      <div class="tab" id="tabProva" onclick="setMode('prova')">Prova<span class="tab-sub">plano da corrida</span></div>
     </div>
   </div>
-  <div class="mode-banner hoje" id="modeBanner">Selecione tudo que você comeu hoje pra ver o veredito</div>
-  <div class="sticky-controls">
+  <div class="mode-banner hoje" id="modeBanner" style="display:none">Selecione tudo que você comeu hoje pra ver o veredito</div>
+  <div class="sticky-controls" id="stickyControls" style="display:none">
     <input class="search-input" type="search" id="search" placeholder="buscar alimento..." autocomplete="off">
     <div class="cats" id="cats"></div>
   </div>
   <div id="mainContent"></div>
 </div>
 
-<div class="bottom-bar">
+<div class="bottom-bar" id="bottomBar" style="display:none">
   <div class="bottom-inner">
     <div class="count-info">selecionados: <span id="countNum">0</span></div>
     <button class="ver-btn" id="verBtn" disabled onclick="openResult()">ver veredito</button>
@@ -306,7 +331,237 @@ const JUICE_SWEET = [
   {id:'adocante',n:'adoçante',mod:{pts:-1,inflam:-1}},
 ];
 
-let mode = 'hoje';
+// banco de conteúdo do feed (aba Início) — dica rápida, curiosidade, combinação e timing
+const FEED_CARDS = [
+  {type:'dica',title:'Hidrate antes de sentir sede',body:'Quem espera a sede chegar pra beber água já está desidratado. Beba ao longo do dia, não só durante o treino.'},
+  {type:'dica',title:'Cafeína 30-60min antes',body:'Café ou cafeína pura antes do treino melhora a percepção de esforço e a performance. Evite depois das 14h se você dorme cedo.'},
+  {type:'dica',title:'Carboidrato não é vilão',body:'Antes de correr, carboidrato de baixo IG (batata-doce, aveia) é combustível, não motivo de culpa.'},
+  {type:'dica',title:'Ferro + vitamina C',body:'Corredores têm risco maior de anemia leve. Combine ferro vegetal (feijão, lentilha) com vitamina C (laranja, limão) pra absorver até 3x mais.'},
+  {type:'dica',title:'Eletrólitos em treinos longos',body:'Depois de 60-90min de corrida, água sozinha não repõe o sódio perdido no suor. Água de coco ou isotônico ajudam mais.'},
+  {type:'dica',title:'Fibra demais antes de correr, problema',body:'Excesso de fibra ou gordura 1-2h antes do treino aumenta o risco de desconforto intestinal durante a corrida.'},
+  {type:'dica',title:'Sono também é treino',body:'Boa parte da recuperação muscular acontece dormindo. Cafeína tarde, álcool e telas atrapalham exatamente a fase que você mais precisa.'},
+  {type:'curiosidade',title:"Beterraba e o 'efeito boost'",body:'O nitrato da beterraba vira óxido nítrico no corpo, que dilata vasos sanguíneos e pode melhorar a eficiência do oxigênio em até 5%.'},
+  {type:'curiosidade',title:'Banana verde vs. madura',body:'Banana mais verde tem mais amido resistente (digestão lenta). Mais madura tem mais açúcar simples (energia rápida). Escolha conforme o momento.'},
+  {type:'curiosidade',title:'Cúrcuma sozinha quase não é absorvida',body:'A curcumina tem baixíssima biodisponibilidade sozinha. A piperina da pimenta-preta multiplica a absorção em até 2000%.'},
+  {type:'curiosidade',title:'Cereja de verdade tem melatonina',body:'A cereja, principalmente a azeda, é uma das poucas fontes alimentares naturais de melatonina, o hormônio do sono.'},
+  {type:'curiosidade',title:'Café não desidrata quem bebe sempre',body:'O mito de que café desidrata não se sustenta em quem consome com regularidade — o efeito diurético é pequeno e o corpo se adapta.'},
+  {type:'curiosidade',title:'Ovo é referência de proteína',body:'O ovo tem quase todos os aminoácidos essenciais na proporção ideal, por isso é usado como referência de comparação em estudos de qualidade proteica.'},
+  {type:'curiosidade',title:'Selênio da castanha-do-pará',body:'2-3 castanhas-do-pará já cobrem a necessidade diária de selênio, mineral que é cofator na produção de melatonina.'},
+  {type:'combinacao',title:'Arroz + feijão = proteína completa',body:'Separados, nenhum tem todos os aminoácidos essenciais. Juntos, se complementam e formam uma proteína completa clássica.'},
+  {type:'combinacao',title:'Ferro vegetal + vitamina C',body:'Feijão ou lentilha (ferro não-heme) absorvem até 3x mais quando combinados com laranja, limão ou tomate na mesma refeição.'},
+  {type:'combinacao',title:'Cúrcuma + pimenta-preta + azeite',body:'A gordura do azeite ajuda a solubilizar a curcumina, e a piperina da pimenta bloqueia sua degradação no fígado. Os três juntos multiplicam o efeito.'},
+  {type:'combinacao',title:'Salmão + batata-doce',body:'Ômega 3 anti-inflamatório e carboidrato de baixo IG pra repor glicogênio — um dos jantares mais eficientes pra quem treina forte.'},
+  {type:'combinacao',title:'Aveia + iogurte + chia',body:'Carboidrato de digestão lenta, proteína e ômega 3 vegetal num prato só. Bom café da manhã ou lanche antes de um treino longo.'},
+  {type:'combinacao',title:'Café + melatonina não combinam',body:'Tomados perto um do outro, se anulam. Cafeína de manhã, melatonina só à noite.'},
+  {type:'combinacao',title:'Sardinha + espinafre',body:'Ferro heme (sardinha) + ferro vegetal + vitamina C (espinafre) = absorção máxima de ferro pro transporte de oxigênio no sangue.'},
+  {type:'timing',title:'1-2h antes: carboidrato e pouca gordura',body:'Batata-doce, banana ou aveia dão energia sem pesar o estômago durante a corrida.'},
+  {type:'timing',title:'30-60min antes: algo bem leve',body:'Se for comer perto do horário do treino, prefira algo pequeno e de digestão rápida, como uma banana ou tapioca simples.'},
+  {type:'timing',title:'Até 30min depois: janela de reposição',body:'Proteína + carboidrato logo após o treino longo ajuda a repor glicogênio e iniciar a recuperação muscular.'},
+  {type:'timing',title:'Treino em jejum: cuidado com a intensidade',body:'Pode funcionar pra treinos leves, mas em treinos longos ou intensos aumenta o risco de hipoglicemia.'},
+  {type:'timing',title:'Depois do treino longo: hidrate com eletrólitos',body:'Suor perdido em treinos de mais de 1h costuma levar sódio junto. Água de coco ou isotônico ajudam mais que só água.'},
+  {type:'timing',title:'Jantar leve em dia de treino de manhã cedo',body:'Jantar pesado ou muito tarde pode atrapalhar o sono, que é onde boa parte da recuperação acontece.'},
+];
+
+// PRNG determinístico simples (mulberry32) seedado pela data, pra rotacionar o feed por dia
+function seededRandom(seed){
+  let h=1779033703^seed.length;
+  for(let i=0;i<seed.length;i++){h=Math.imul(h^seed.charCodeAt(i),3432918353);h=(h<<13)|(h>>>19);}
+  return function(){h=Math.imul(h^(h>>>16),2246822507);h=Math.imul(h^(h>>>13),3266489909);h^=h>>>16;return (h>>>0)/4294967296;};
+}
+function shuffleSeeded(arr,rnd){
+  const a=arr.slice();
+  for(let i=a.length-1;i>0;i--){const j=Math.floor(rnd()*(i+1));[a[i],a[j]]=[a[j],a[i]];}
+  return a;
+}
+function todaySeed(){const d=new Date();return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate();}
+function getFeedSelection(){
+  const rnd=seededRandom(todaySeed());
+  return shuffleSeeded(FEED_CARDS,rnd).slice(0,10);
+}
+const FEED_TYPE_LABEL={dica:'dica rápida',curiosidade:'curiosidade',combinacao:'combinação',timing:'timing'};
+function renderFeed(){
+  const cards=getFeedSelection();
+  let html=`<div class="feed-list">
+    <div class="feed-cta" onclick="setMode('hoje')">
+      <div class="feed-cta-label">pronto pra começar?</div>
+      <div class="feed-cta-title">Registre o que comeu hoje →</div>
+    </div>`;
+  html+=`<div class="section-label">feed de hoje pra você</div>`;
+  html+=cards.map(c=>`<div class="feed-card">
+      <span class="feed-tag ${c.type}">${FEED_TYPE_LABEL[c.type]||c.type}</span>
+      <div class="feed-title">${c.title}</div>
+      <div class="feed-body">${c.body}</div>
+    </div>`).join('');
+  html+='</div>';
+  return html;
+}
+
+// ============================================================
+// PARTE 1 — motor de cálculo do plano de alimentação pra prova
+// (só a lógica + exibição simples pra validar; UI final vem depois)
+// ============================================================
+
+function classifyDistancia(km){ return km<=10?'curta':km<=21.5?'media':km<=42.5?'longa':'ultra'; }
+function classifyPace(paceMinKm){ return paceMinKm>=6.5?'tranquilo':paceMinKm>=5.25?'moderado':paceMinKm>=4.25?'forte':'muitoForte'; }
+
+// combina distância x pace numa classificação de intensidade da prova.
+// pace "forte" pesa desproporcionalmente mais que um degrau (não é uma progressão linear:
+// correr forte é bem mais exigente que só "mais rápido que moderado") — por isso o salto de
+// peso de moderado(1) pra forte(3). ex: 5k tranquilo → soma 0 → leve. 21k forte → soma 4 → muito exigente.
+const DIST_INDEX = {curta:0, media:1, longa:2, ultra:3};
+const PACE_INDEX = {tranquilo:0, moderado:1, forte:3, muitoForte:4};
+function classifyIntensidade(distCat, paceCat){
+  const sum=DIST_INDEX[distCat]+PACE_INDEX[paceCat];
+  if(sum===0) return 'leve';
+  if(sum<=2) return 'moderada';
+  if(sum===3) return 'exigente';
+  return 'muito exigente';
+}
+const INTENSITY_INDEX = {leve:0,moderada:1,exigente:2,'muito exigente':3};
+
+function nivel(score){ return score<1.2?'baixo':score<2.4?'médio':'alto'; }
+
+// classifica cada dia (offset = dias antes da prova; 0 = dia da prova) numa fase
+function classifyOffset(offset, daysUntil){
+  if(offset===0) return 'prova';
+  if(offset===1) return 'vespera';
+  if(offset===2||offset===3) return 'abastecimento';
+  const remaining=daysUntil-3;
+  const construcaoDays=Math.ceil(remaining/2);
+  const construcaoEnd=3+construcaoDays;
+  return offset<=construcaoEnd ? 'construcao' : 'base';
+}
+
+const FASE_LABEL = {
+  prova:'Dia da prova', vespera:'Véspera', abastecimento:'Abastecimento / carbo-loading',
+  construcao:'Fase de construção', base:'Fase de base',
+};
+const FASE_FOCO = {
+  prova:'Pré-treino específico: carboidrato leve e de fácil digestão, além de beterraba/cafeína pra vasodilatação e foco. Nada novo — só o que você já testou em treino.',
+  vespera:'Carboidrato + hidratação + comida leve e segura. Evite fibra em excesso, frituras e pratos novos.',
+  abastecimento:'Abastecimento (carbo-loading): foco alto em carboidrato e hidratação pra maximizar o glicogênio muscular.',
+  construcao:'Equilíbrio geral entre os pilares — consistência, sem exageros nem restrições.',
+  base:'Fase de base: foco em proteína (recuperação muscular) e anti-inflamatório (treinar sem acumular lesão).',
+};
+
+// monta a linha do tempo: dias individuais perto da prova (~7 dias), fases macro (data-range) pros dias distantes
+function buildFasesTimeline(daysUntil, raceDate){
+  const dayMs=86400000;
+  const dateFor=offset=>new Date(raceDate.getTime()-offset*dayMs);
+  const fmt=d=>d.toLocaleDateString('pt-BR');
+  const items=[];
+  const detailWindow=Math.min(daysUntil,6);
+
+  if(daysUntil>6){
+    let groups=[],curPhase=null,curStart=null,curEnd=null;
+    for(let o=daysUntil;o>=7;o--){
+      const ph=classifyOffset(o,daysUntil);
+      if(ph!==curPhase){
+        if(curPhase) groups.push({phase:curPhase,startOffset:curStart,endOffset:curEnd});
+        curPhase=ph;curStart=o;curEnd=o;
+      } else { curEnd=o; }
+    }
+    if(curPhase) groups.push({phase:curPhase,startOffset:curStart,endOffset:curEnd});
+    groups.forEach(g=>{
+      const dFar=dateFor(g.startOffset), dNear=dateFor(g.endOffset);
+      items.push({kind:'bloco',phase:g.phase,label:FASE_LABEL[g.phase],focus:FASE_FOCO[g.phase],
+        dateRange:`${fmt(dFar)} a ${fmt(dNear)}`,numDays:g.startOffset-g.endOffset+1});
+    });
+  }
+  for(let o=detailWindow;o>=0;o--){
+    const ph=classifyOffset(o,daysUntil);
+    items.push({kind:'dia',phase:ph,label:FASE_LABEL[ph],focus:FASE_FOCO[ph],date:fmt(dateFor(o))});
+  }
+  return items;
+}
+
+// função principal do motor — recebe distância(km), pace(min/km), data da prova (YYYY-MM-DD) e peso(kg)
+function calcRacePlan(distanceKm, paceMinKm, raceDateStr, weightKg){
+  const distCat=classifyDistancia(distanceKm);
+  const paceCat=classifyPace(paceMinKm);
+  const intensidade=classifyIntensidade(distCat,paceCat);
+  const idx=INTENSITY_INDEX[intensidade];
+  const weightFactor=Math.max(0.85,Math.min(1.25,weightKg/70));
+
+  const rawCarbo=idx*1.2;
+  const rawProt=idx*0.9+0.3;
+  const rawHidra=idx*1.1+(distanceKm>15?0.5:0);
+  const rawAnti=idx*1.0+0.4;
+  const rawSono=idx*0.8+0.5;
+
+  const niveis={
+    carboidrato:nivel(rawCarbo*weightFactor),
+    proteina:nivel(rawProt*weightFactor),
+    hidratacao:nivel(rawHidra*weightFactor),
+    antiinflamatorio:nivel(rawAnti*weightFactor),
+    sono:nivel(rawSono*weightFactor),
+  };
+
+  const today=new Date(); today.setHours(0,0,0,0);
+  const raceDate=new Date(raceDateStr+'T00:00:00');
+  const daysUntil=Math.round((raceDate-today)/86400000);
+  let fases=[];
+  if(!isNaN(daysUntil)&&daysUntil>=0) fases=buildFasesTimeline(daysUntil,raceDate);
+
+  return {distancia:distanceKm,pace:paceMinKm,peso:weightKg,distCat,paceCat,intensidade,niveis,daysUntil,fases};
+}
+
+// estado + exibição simples (parte 1: só validar a lógica, não é a UI final)
+let provaState = (function(){
+  const d=new Date(); d.setDate(d.getDate()+7);
+  return {distancia:5,pace:6,data:d.toISOString().slice(0,10),peso:70,resultado:null};
+})();
+
+function calcularProva(){
+  provaState.distancia=parseFloat(document.getElementById('provaDist').value)||0;
+  provaState.pace=parseFloat(document.getElementById('provaPace').value)||0;
+  provaState.data=document.getElementById('provaData').value;
+  provaState.peso=parseFloat(document.getElementById('provaPeso').value)||0;
+  provaState.resultado=calcRacePlan(provaState.distancia,provaState.pace,provaState.data,provaState.peso);
+  render();
+}
+
+function renderProva(){
+  const s=provaState;
+  let html=`<div class="section-label">motor de cálculo — parte 1 (teste)</div>
+    <div class="prova-note">Só a lógica por enquanto: intensidade, níveis por pilar e fases até a prova. Cardápio e UI final vêm depois.</div>
+    <div class="prova-form">
+      <label>Distância (km)<input type="number" id="provaDist" value="${s.distancia}" step="0.1" min="0"></label>
+      <label>Pace (min/km)<input type="number" id="provaPace" value="${s.pace}" step="0.1" min="0"></label>
+      <label>Data da prova<input type="date" id="provaData" value="${s.data}"></label>
+      <label>Peso (kg)<input type="number" id="provaPeso" value="${s.peso}" step="1" min="0"></label>
+      <button onclick="calcularProva()">calcular</button>
+    </div>`;
+  if(s.resultado){
+    const r=s.resultado;
+    if(r.daysUntil<0){
+      html+=`<div class="prova-result">Data da prova já passou — ajuste a data acima.</div>`;
+    } else {
+      html+=`<div class="prova-result">
+        <p><strong>Intensidade da prova:</strong> ${r.intensidade} <span style="color:var(--muted)">(${r.distCat} · pace ${r.paceCat})</span></p>
+        <p><strong>Dias até a prova:</strong> ${r.daysUntil}</p>
+        <h3>Necessidades por pilar</h3>
+        <ul>
+          <li>Carboidrato: <strong>${r.niveis.carboidrato}</strong></li>
+          <li>Proteína: <strong>${r.niveis.proteina}</strong></li>
+          <li>Hidratação: <strong>${r.niveis.hidratacao}</strong></li>
+          <li>Anti-inflamatório: <strong>${r.niveis.antiinflamatorio}</strong></li>
+          <li>Foco no sono: <strong>${r.niveis.sono}</strong></li>
+        </ul>
+        <h3>Linha do tempo (fases até a prova)</h3>
+        <ul class="prova-fases">
+          ${r.fases.map(f=>f.kind==='bloco'
+            ?`<li><strong>${f.label}</strong> — ${f.numDays} dias (${f.dateRange})<br>${f.focus}</li>`
+            :`<li><strong>${f.date} — ${f.label}</strong><br>${f.focus}</li>`
+          ).join('')}
+        </ul>
+      </div>`;
+    }
+  }
+  return html;
+}
+
+let mode = 'inicio';
 const cats = ['todos','frutas','verduras','tubérculos','grãos','leguminosas','ovos','peixes','carnes','laticínios','oleaginosas','sementes','bebidas','suco (montar)','fast food','besteira','gorduras','temperos','suplementos'];
 let activeFilter = 'todos';
 let selected = new Map(); // id -> {prep, qty}
@@ -314,6 +569,7 @@ let customJuices = []; // {id,name,vals,pts}
 let juiceState = {base:'agua', ings:new Set(), sweet:'nada'};
 
 function clamp10(v){return Math.max(0,Math.min(10,v));}
+function normalize(s){return s.normalize('NFD').replace(/[\u0300-\u036f]/g,'');}
 function unitLabel(u){return {g:'g',ml:'ml',un:'un',cs:'col. sopa',cc:'col. chá',cap:'cáps',scoop:'scoop',fatia:'fatia',cc_grande:'concha'}[u]||u;}
 function qtyStep(u){return {g:25,ml:50,un:1,cs:1,cc:1,cap:1,scoop:1,fatia:1,cc_grande:1}[u]||1;}
 
@@ -327,13 +583,27 @@ function qtyWeight(f, qty){ if(!f.unit) return 1; const r=qty/f.ref; return Math
 
 function setMode(m){
   mode=m;
+  document.getElementById('tabInicio').classList.toggle('active',m==='inicio');
   document.getElementById('tabHoje').classList.toggle('active',m==='hoje');
   document.getElementById('tabAmanha').classList.toggle('active',m==='amanha');
+  document.getElementById('tabProva').classList.toggle('active',m==='prova');
   const b=document.getElementById('modeBanner');
-  b.className='mode-banner '+(m==='hoje'?'hoje':'amanha');
-  b.textContent = m==='hoje'?'Selecione tudo que você comeu hoje pra ver o veredito':'Monte o cardápio do dia seguinte e gere um cronograma pra salvar';
-  document.getElementById('verBtn').textContent = m==='hoje'?'ver veredito':'gerar cronograma';
-  document.getElementById('ovTitle').textContent = m==='hoje'?'veredito do dia':'cronograma planejado';
+  const sc=document.getElementById('stickyControls');
+  const bb=document.getElementById('bottomBar');
+  if(m==='inicio'||m==='prova'){
+    b.style.display='none';
+    sc.style.display='none';
+    bb.style.display='none';
+  } else {
+    b.style.display='';
+    sc.style.display='';
+    bb.style.display='';
+    b.className='mode-banner '+(m==='hoje'?'hoje':'amanha');
+    b.textContent = m==='hoje'?'Selecione tudo que você comeu hoje pra ver o veredito':'Monte o cardápio do dia seguinte e gere um cronograma pra salvar';
+    document.getElementById('verBtn').textContent = m==='hoje'?'ver veredito':'gerar cronograma';
+    document.getElementById('ovTitle').textContent = m==='hoje'?'veredito do dia':'cronograma planejado';
+  }
+  render();
 }
 
 function renderCats(){
@@ -342,10 +612,12 @@ function renderCats(){
 function setFilter(c){activeFilter=c;renderCats();render();}
 
 function render(){
-  const q=document.getElementById('search').value.toLowerCase().trim();
   const el=document.getElementById('mainContent');
+  if(mode==='inicio'){ el.innerHTML=renderFeed(); return; }
+  if(mode==='prova'){ el.innerHTML=renderProva(); return; }
+  const q=normalize(document.getElementById('search').value.toLowerCase().trim());
   if(activeFilter==='suco (montar)'){ el.innerHTML=renderJuiceBuilder(); return; }
-  const list=FOODS.filter(f=>{const mc=activeFilter==='todos'||f.cat===activeFilter;const mq=!q||f.name.toLowerCase().includes(q)||f.cat.includes(q)||f.desc.toLowerCase().includes(q);return mc&&mq;});
+  const list=FOODS.filter(f=>{const mc=activeFilter==='todos'||f.cat===activeFilter;const mq=!q||normalize(f.name.toLowerCase()).includes(q)||normalize(f.cat).includes(q)||normalize(f.desc.toLowerCase()).includes(q);return mc&&mq;});
   let html=`<div class="section-label">${q?`resultado para "${q}"`:activeFilter==='todos'?'todos os alimentos':activeFilter}</div><div class="food-list">`;
   // sucos customizados aparecem no topo de "todos"
   if((activeFilter==='todos'||activeFilter==='bebidas')&&customJuices.length&&!q){
@@ -687,7 +959,7 @@ function exportPDF(){
 }
 
 document.getElementById('search').addEventListener('input',render);
-renderCats();render();setMode('hoje');
+renderCats();setMode('inicio');
 </script>
 </body>
 </html>
