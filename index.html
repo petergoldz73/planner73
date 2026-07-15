@@ -4,56 +4,74 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>NutriPlanner</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#0f0f0f;--surface:#1a1a1a;--surface2:#222;--border:#2a2a2a;--text:#f0f0f0;--muted:#777;--green:#4ade80;--green-dim:#152b1e;--blue:#60a5fa;--blue-dim:#152038;--amber:#fbbf24;--amber-dim:#2e2008;--teal:#2dd4bf;--teal-dim:#0b2826;--purple:#a78bfa;--purple-dim:#1e1635;--orange:#fb923c;--orange-dim:#2e1a08;--red:#f87171;--red-dim:#2e1212;--r:14px;--rs:8px}
+:root{
+  --bg:oklch(0.96 0.01 80);--surface:oklch(0.985 0.005 80);--surface2:oklch(0.93 0.01 75);
+  --border:oklch(0.18 0.01 60 / 0.2);--border-strong:oklch(0.18 0.01 60);
+  --text:oklch(0.18 0.01 60);--muted:oklch(0.18 0.01 60 / 0.55);
+  --terracota:oklch(0.62 0.19 41);--terracota-dim:oklch(0.62 0.19 41 / 0.12);
+  --green:oklch(0.55 0.15 152);--green-dim:oklch(0.55 0.15 152 / 0.12);
+  --blue:oklch(0.55 0.14 250);--blue-dim:oklch(0.55 0.14 250 / 0.12);
+  --amber:oklch(0.7 0.15 85);--amber-dim:oklch(0.7 0.15 85 / 0.18);
+  --teal:oklch(0.6 0.13 195);--teal-dim:oklch(0.6 0.13 195 / 0.12);
+  --purple:oklch(0.55 0.14 310);--purple-dim:oklch(0.55 0.14 310 / 0.12);
+  --orange:oklch(0.62 0.16 55);--orange-dim:oklch(0.62 0.16 55 / 0.14);
+  --red:oklch(0.55 0.19 29);--red-dim:oklch(0.55 0.19 29 / 0.12);
+  --r:0px;--rs:0px;--font-mono:'Space Mono',monospace;--font-display:'Space Grotesk',sans-serif;
+}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-html,body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;min-height:100vh}
+::selection{background:var(--terracota);color:#fff}
+html,body{background:var(--bg);color:var(--text);font-family:var(--font-mono);min-height:100vh}
 .app{max-width:500px;margin:0 auto;padding-bottom:140px}
 .header{padding:18px 16px 0;position:sticky;top:0;background:var(--bg);z-index:10}
-.header h1{font-size:20px;font-weight:700;letter-spacing:-.5px}
-.tabs{display:flex;gap:8px;margin-top:12px;border-bottom:1px solid var(--border)}
-.tab{padding:10px 4px;font-size:14px;font-weight:600;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px}
-.tab.active{color:var(--text);border-bottom-color:var(--green)}
-.tab-sub{font-size:11px;color:var(--muted);font-weight:400;display:block}
-.sticky-controls{position:sticky;top:108px;background:var(--bg);z-index:9;padding:10px 16px 0}
-.search-input{width:100%;padding:11px 14px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r);color:var(--text);font-size:15px;outline:none;margin-bottom:10px}
+.header h1{font-family:var(--font-display);font-size:19px;font-weight:700;letter-spacing:.02em;text-transform:uppercase;display:flex;align-items:center;gap:9px}
+.header h1::before{content:'';width:9px;height:9px;background:var(--terracota);display:inline-block;flex-shrink:0}
+.tabs{display:flex;border:1px solid var(--border-strong);width:fit-content;margin-top:14px}
+.tab{padding:10px 18px;font-size:12px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--text);cursor:pointer;background:transparent}
+.tab.active{background:var(--border-strong);color:var(--bg)}
+.tab-sub{font-size:10px;font-weight:400;display:block;opacity:.65;text-transform:none;letter-spacing:0;margin-top:2px}
+.sticky-controls{position:sticky;top:120px;background:var(--bg);z-index:9;padding:14px 16px 0}
+.search-input{width:100%;padding:11px 14px;background:var(--surface);border:1px solid var(--border-strong);border-radius:var(--r);color:var(--text);font-family:var(--font-mono);font-size:14px;outline:none;margin-bottom:10px}
 .cats{display:flex;gap:7px;overflow-x:auto;scrollbar-width:none;padding-bottom:10px;border-bottom:1px solid var(--border)}
 .cats::-webkit-scrollbar{display:none}
-.cat-btn{padding:6px 13px;border-radius:20px;border:1px solid var(--border);background:var(--surface);color:var(--muted);font-size:12px;cursor:pointer;white-space:nowrap;flex-shrink:0}
-.cat-btn.active{background:var(--green-dim);border-color:var(--green);color:var(--green)}
-.section-label{padding:14px 16px 8px;font-size:11px;font-weight:600;color:var(--muted);letter-spacing:.06em;text-transform:uppercase}
+.cat-btn{padding:7px 13px;border-radius:var(--r);border:1px solid var(--border);background:var(--surface);color:var(--muted);font-family:var(--font-mono);font-size:11px;text-transform:uppercase;letter-spacing:.03em;cursor:pointer;white-space:nowrap;flex-shrink:0}
+.cat-btn.active{background:var(--border-strong);border-color:var(--border-strong);color:var(--bg)}
+.section-label{padding:14px 16px 8px;font-size:12px;font-weight:700;color:var(--terracota);letter-spacing:.07em;text-transform:uppercase}
 .food-list{padding:0 16px;display:flex;flex-direction:column;gap:8px}
-.food-item{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:13px;cursor:pointer;display:flex;gap:11px;align-items:flex-start}
+.food-item{background:var(--surface);border:1px solid var(--border-strong);border-radius:var(--r);padding:13px;cursor:pointer;display:flex;gap:11px;align-items:flex-start}
 .food-item:active{transform:scale(.98)}
 .food-item.selected{background:var(--green-dim);border-color:var(--green)}
 .food-item.selected.negative{background:var(--red-dim);border-color:var(--red)}
-.food-check{width:22px;height:22px;border-radius:50%;border:2px solid var(--border);flex-shrink:0;margin-top:1px;display:flex;align-items:center;justify-content:center}
+.food-check{width:20px;height:20px;border-radius:var(--r);border:2px solid var(--border-strong);flex-shrink:0;margin-top:1px;display:flex;align-items:center;justify-content:center}
 .food-item.selected .food-check{background:var(--green);border-color:var(--green)}
 .food-item.selected.negative .food-check{background:var(--red);border-color:var(--red)}
 .check-icon{display:none}
 .food-item.selected .check-icon{display:block}
 .food-body{flex:1;min-width:0}
 .food-top{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:3px}
-.food-name{font-size:15px;font-weight:600;line-height:1.3}
-.food-pts{font-size:12px;font-weight:700;padding:2px 8px;border-radius:10px;background:var(--surface2);color:var(--muted);flex-shrink:0}
+.food-name{font-size:15px;font-weight:700;line-height:1.3}
+.food-pts{font-size:12px;font-weight:700;padding:2px 8px;border-radius:var(--r);background:var(--surface2);color:var(--muted);flex-shrink:0}
 .food-pts.pos{background:var(--green-dim);color:var(--green)}
 .food-pts.neg{background:var(--red-dim);color:var(--red)}
-.food-cat{font-size:11px;color:var(--muted);margin-bottom:5px}
-.food-desc{font-size:13px;color:#aaa;line-height:1.5;margin-bottom:8px}
-.prep-label,.qty-label{font-size:11px;color:var(--muted);margin-bottom:6px;margin-top:2px}
+.food-cat{font-size:11px;color:var(--muted);margin-bottom:5px;text-transform:uppercase;letter-spacing:.03em}
+.food-desc{font-size:13px;color:var(--muted);line-height:1.5;margin-bottom:8px}
+.prep-label,.qty-label{font-size:11px;color:var(--muted);margin-bottom:6px;margin-top:2px;text-transform:uppercase;letter-spacing:.03em}
 .prep-opts{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}
-.prep-btn{padding:5px 10px;border-radius:8px;border:1px solid var(--border);background:var(--surface2);color:var(--muted);font-size:12px;cursor:pointer}
-.prep-btn.active{background:var(--blue-dim);border-color:var(--blue);color:var(--blue)}
-.qty-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;background:var(--surface2);border-radius:8px;padding:8px 10px}
-.qty-btn{width:30px;height:30px;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:18px;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center}
-.qty-display{flex:1;text-align:center;font-size:14px;font-weight:600}
+.prep-btn{padding:5px 10px;border-radius:var(--r);border:1px solid var(--border-strong);background:var(--surface2);color:var(--muted);font-family:var(--font-mono);font-size:12px;cursor:pointer}
+.prep-btn.active{background:var(--border-strong);border-color:var(--border-strong);color:var(--bg)}
+.qty-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--r);padding:8px 10px}
+.qty-btn{width:28px;height:28px;border-radius:var(--r);border:1px solid var(--border-strong);background:var(--surface);color:var(--text);font-size:16px;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center}
+.qty-display{flex:1;text-align:center;font-size:14px;font-weight:700}
 .qty-unit{font-size:12px;color:var(--muted)}
 .food-bars{display:flex;flex-direction:column;gap:5px}
 .bar-row{display:flex;align-items:center;gap:8px}
-.bar-label{font-size:11px;width:78px;flex-shrink:0}
-.bar-bg{flex:1;height:4px;background:var(--surface2);border-radius:2px;overflow:hidden}
-.bar-fill{height:4px;border-radius:2px}
-.bar-val{font-size:11px;font-weight:600;width:24px;text-align:right;flex-shrink:0}
+.bar-label{font-size:10.5px;width:78px;flex-shrink:0;text-transform:uppercase;letter-spacing:.02em}
+.bar-bg{flex:1;height:5px;background:var(--surface2);border-radius:var(--r);overflow:hidden}
+.bar-fill{height:5px;border-radius:var(--r)}
+.bar-val{font-size:11px;font-weight:700;width:24px;text-align:right;flex-shrink:0}
 .b-cardio{background:var(--blue)}.t-cardio{color:var(--blue)}
 .b-energia{background:var(--amber)}.t-energia{color:var(--amber)}
 .b-anti{background:var(--teal)}.t-anti{color:var(--teal)}
@@ -62,74 +80,74 @@ html,body{background:var(--bg);color:var(--text);font-family:-apple-system,Blink
 .empty{padding:40px 16px;text-align:center;color:var(--muted);font-size:14px}
 /* juice builder */
 .juice-wrap{padding:0 16px}
-.juice-box{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:16px;margin-bottom:10px}
-.juice-box h3{font-size:14px;margin-bottom:4px}
+.juice-box{background:var(--surface);border:1px solid var(--border-strong);border-radius:var(--r);padding:16px;margin-bottom:10px}
+.juice-box h3{font-family:var(--font-display);font-size:16px;font-weight:700;margin-bottom:4px;text-transform:uppercase;letter-spacing:.01em}
 .juice-box p{font-size:12px;color:var(--muted);margin-bottom:12px}
 .juice-ing{display:flex;flex-wrap:wrap;gap:6px}
-.ing-btn{padding:7px 12px;border-radius:20px;border:1px solid var(--border);background:var(--surface2);color:var(--muted);font-size:13px;cursor:pointer}
-.ing-btn.active{background:var(--green-dim);border-color:var(--green);color:var(--green)}
+.ing-btn{padding:7px 12px;border-radius:var(--r);border:1px solid var(--border-strong);background:var(--surface2);color:var(--muted);font-family:var(--font-mono);font-size:12.5px;cursor:pointer}
+.ing-btn.active{background:var(--border-strong);border-color:var(--border-strong);color:var(--bg)}
 .sweet-opts{display:flex;flex-wrap:wrap;gap:6px}
-.add-juice-btn{width:100%;padding:13px;background:var(--green);color:#000;font-weight:700;border:none;border-radius:var(--r);font-size:14px;cursor:pointer;margin-top:4px}
+.add-juice-btn{width:100%;padding:13px;background:var(--terracota);color:#fff;font-weight:700;font-family:var(--font-mono);border:none;border-radius:var(--r);font-size:13px;text-transform:uppercase;letter-spacing:.04em;cursor:pointer;margin-top:4px}
 .add-juice-btn:disabled{background:var(--surface2);color:var(--muted)}
-.juice-preview{font-size:13px;color:#bbb;margin:10px 0;line-height:1.5}
+.juice-preview{font-size:13px;color:var(--muted);margin:10px 0;line-height:1.5}
 /* bottom bar */
-.bottom-bar{position:fixed;bottom:0;left:0;right:0;background:var(--bg);border-top:1px solid var(--border);padding:12px 16px 26px;z-index:20}
+.bottom-bar{position:fixed;bottom:0;left:0;right:0;background:var(--bg);border-top:1px solid var(--border-strong);padding:12px 16px 26px;z-index:20}
 .bottom-inner{max-width:500px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:12px}
-.count-info{font-size:13px;color:var(--muted)}.count-info span{color:var(--text);font-weight:600}
-.ver-btn{padding:13px 22px;background:var(--green);color:#000;font-size:14px;font-weight:700;border:none;border-radius:var(--r);cursor:pointer;flex-shrink:0}
+.count-info{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.03em}.count-info span{color:var(--text);font-weight:700}
+.ver-btn{padding:13px 22px;background:var(--border-strong);color:var(--bg);font-family:var(--font-mono);font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;border:none;border-radius:var(--r);cursor:pointer;flex-shrink:0}
 .ver-btn:disabled{background:var(--surface2);color:var(--muted)}
 /* overlay */
 .overlay{display:none;position:fixed;inset:0;z-index:30;background:var(--bg);overflow-y:auto}
 .overlay.open{display:block}
 .ov-wrap{max-width:500px;margin:0 auto;padding:20px 16px 60px}
 .ov-header{display:flex;align-items:center;gap:12px;margin-bottom:20px}
-.back-btn{width:40px;height:40px;border-radius:50%;border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.ov-header h2{font-size:18px;font-weight:700}
-.score-hero{background:var(--surface);border-radius:var(--r);padding:22px;margin-bottom:14px;text-align:center}
-.score-pct{font-size:68px;font-weight:800;letter-spacing:-3px;line-height:1}
-.score-nota{font-size:17px;font-weight:600;margin-top:4px;margin-bottom:14px}
-.score-bar-bg{height:8px;background:var(--surface2);border-radius:4px;overflow:hidden;margin-bottom:14px}
-.score-bar-fill{height:8px;border-radius:4px}
-.score-insight{font-size:13px;color:#bbb;line-height:1.6;text-align:left}
-.warn-banner{border-radius:var(--r);padding:14px;margin-bottom:14px;display:flex;gap:10px;align-items:flex-start}
-.warn-banner.red{background:var(--red-dim);border:1px solid var(--red)}
-.warn-banner.green{background:var(--green-dim);border:1px solid var(--green)}
-.warn-icon{font-size:18px;flex-shrink:0}
-.warn-text{font-size:13px;line-height:1.5}
-.warn-banner.red .warn-text{color:#f8b4b4}.warn-banner.green .warn-text{color:#b4f8c8}
-.warn-text strong{color:#fff}
+.back-btn{width:38px;height:38px;border-radius:var(--r);border:1px solid var(--border-strong);background:var(--surface);color:var(--text);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.ov-header h2{font-family:var(--font-display);font-size:19px;font-weight:700;text-transform:uppercase;letter-spacing:.01em}
+.score-hero{background:var(--surface);border:1px solid var(--border-strong);border-radius:var(--r);padding:24px;margin-bottom:14px;text-align:center}
+.score-pct{font-family:var(--font-display);font-size:62px;font-weight:700;letter-spacing:-.02em;line-height:1}
+.score-nota{font-size:14px;font-weight:700;margin-top:6px;margin-bottom:14px;text-transform:uppercase;letter-spacing:.05em}
+.score-bar-bg{height:6px;background:var(--surface2);border-radius:var(--r);overflow:hidden;margin-bottom:14px}
+.score-bar-fill{height:6px;border-radius:var(--r)}
+.score-insight{font-size:13px;color:var(--muted);line-height:1.6;text-align:left}
+.warn-banner{border-radius:var(--r);padding:14px 16px;margin-bottom:14px;display:flex;gap:10px;align-items:flex-start;background:var(--surface);border:1px solid var(--border);border-left:3px solid transparent}
+.warn-banner.red{border-left-color:var(--red)}
+.warn-banner.green{border-left-color:var(--green)}
+.warn-icon{font-size:16px;flex-shrink:0}
+.warn-text{font-size:13px;line-height:1.5;color:var(--text)}
+.warn-banner.red .warn-text strong{color:var(--red)}.warn-banner.green .warn-text strong{color:var(--green)}
+.warn-text strong{color:var(--text)}
 .pillars-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
-.pillar-card{background:var(--surface);border-radius:var(--rs);padding:14px}
-.pillar-label{font-size:11px;color:var(--muted);margin-bottom:4px}
-.pillar-val{font-size:22px;font-weight:700;margin-bottom:6px}
-.pillar-bar-bg{height:4px;background:var(--surface2);border-radius:2px;overflow:hidden}
-.pillar-bar-fill{height:4px;border-radius:2px}
+.pillar-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--rs);padding:14px}
+.pillar-label{font-size:10.5px;color:var(--muted);margin-bottom:4px;text-transform:uppercase;letter-spacing:.03em}
+.pillar-val{font-family:var(--font-display);font-size:23px;font-weight:700;margin-bottom:6px}
+.pillar-bar-bg{height:4px;background:var(--surface2);border-radius:var(--rs);overflow:hidden}
+.pillar-bar-fill{height:4px;border-radius:var(--rs)}
 .analysis-section{margin-bottom:14px}
-.analysis-title{font-size:13px;font-weight:600;color:var(--muted);letter-spacing:.05em;text-transform:uppercase;margin-bottom:10px}
-.analysis-card{background:var(--surface);border-radius:var(--r);padding:16px;margin-bottom:8px}
-.analysis-card.neg{border:1px solid var(--red-dim)}
-.analysis-food-name{font-size:14px;font-weight:600;margin-bottom:6px}
-.analysis-food-cat{font-size:11px;color:var(--muted);margin-bottom:8px}
-.analysis-desc{font-size:13px;color:#aaa;line-height:1.5;margin-bottom:6px}
-.analysis-tip{font-size:12px;line-height:1.5;border-left:2px solid var(--purple);padding-left:8px;margin-top:6px;color:var(--purple)}
-.analysis-tip.neg{border-left-color:var(--red);color:#f8b4b4}
-.combos-card,.gaps-card{background:var(--surface);border-radius:var(--r);padding:16px;margin-bottom:8px}
-.gap-item{display:flex;align-items:flex-start;gap:8px;padding:7px 0;border-bottom:1px solid var(--border);font-size:13px;color:#bbb;line-height:1.5}
+.analysis-title{font-size:12px;font-weight:700;color:var(--terracota);letter-spacing:.06em;text-transform:uppercase;margin-bottom:10px}
+.analysis-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:16px;margin-bottom:8px}
+.analysis-card.neg{border-color:var(--red)}
+.analysis-food-name{font-size:14px;font-weight:700;margin-bottom:6px}
+.analysis-food-cat{font-size:11px;color:var(--muted);margin-bottom:8px;text-transform:uppercase;letter-spacing:.03em}
+.analysis-desc{font-size:13px;color:var(--muted);line-height:1.5;margin-bottom:6px}
+.analysis-tip{font-size:12px;line-height:1.5;border-left:2px solid var(--purple);padding-left:8px;margin-top:6px;color:var(--muted)}
+.analysis-tip.neg{border-left-color:var(--red)}
+.combos-card,.gaps-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:16px;margin-bottom:8px}
+.gap-item{display:flex;align-items:flex-start;gap:8px;padding:7px 0;border-bottom:1px dashed var(--border);font-size:13px;color:var(--text);line-height:1.5}
 .gap-item:last-child{border-bottom:none}
-.gap-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:5px}
-.combo-item{padding:8px 0;border-bottom:1px solid var(--border);font-size:13px;color:#bbb;line-height:1.5}
+.gap-dot{width:8px;height:8px;border-radius:var(--r);flex-shrink:0;margin-top:5px}
+.combo-item{padding:8px 0;border-bottom:1px dashed var(--border);font-size:13px;color:var(--muted);line-height:1.5}
 .combo-item:last-child{border-bottom:none;padding-bottom:0}.combo-item strong{color:var(--text)}
 .chips-wrap{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:14px}
-.chip{display:flex;align-items:center;gap:5px;padding:5px 10px;background:var(--surface);border:1px solid var(--border);border-radius:20px;font-size:12px}
-.chip.neg{border-color:var(--red-dim);background:var(--red-dim)}
+.chip{display:flex;align-items:center;gap:5px;padding:5px 10px;background:var(--surface);border:1px solid var(--border-strong);border-radius:var(--r);font-size:12px}
+.chip.neg{border-color:var(--red);background:var(--red-dim)}
 .chip-x{color:var(--muted);font-size:15px;cursor:pointer;line-height:1}
 .action-btns{display:flex;gap:8px;margin-bottom:8px}
-.action-btn{flex:1;padding:13px;border-radius:var(--r);font-size:13px;font-weight:600;cursor:pointer;border:1px solid var(--border);background:var(--surface);color:var(--text)}
-.action-btn.primary{background:var(--blue-dim);border-color:var(--blue);color:var(--blue)}
-.limpar-btn{width:100%;padding:14px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r);color:var(--muted);font-size:14px;cursor:pointer;margin-top:8px}
-.mode-banner{font-size:12px;padding:8px 12px;border-radius:8px;margin:10px 16px 0;text-align:center}
-.mode-banner.hoje{background:var(--green-dim);color:var(--green)}
-.mode-banner.amanha{background:var(--blue-dim);color:var(--blue)}
+.action-btn{flex:1;padding:13px;border-radius:var(--r);font-family:var(--font-mono);font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.03em;cursor:pointer;border:1px solid var(--border-strong);background:var(--surface);color:var(--text)}
+.action-btn.primary{background:var(--border-strong);border-color:var(--border-strong);color:var(--bg)}
+.limpar-btn{width:100%;padding:14px;background:transparent;border:1px solid var(--border);border-radius:var(--r);color:var(--muted);font-family:var(--font-mono);font-size:12.5px;text-transform:uppercase;letter-spacing:.03em;cursor:pointer;margin-top:8px}
+.mode-banner{font-size:12px;padding:10px 14px;border-radius:var(--r);margin:14px 16px 0;text-align:left;background:var(--surface);border:1px solid var(--border);border-left:3px solid transparent}
+.mode-banner.hoje{border-left-color:var(--green);color:var(--text)}
+.mode-banner.amanha{border-left-color:var(--blue);color:var(--text)}
 </style>
 </head>
 <body>
@@ -415,6 +433,31 @@ function updateCount(){document.getElementById('countNum').textContent=selected.
 
 function getJuiceById(id){return customJuices.find(j=>j.id===id);}
 
+// completude: cobre os 5 grupos essenciais? cada grupo vale 20 pontos.
+// penaliza dias com poucos itens (ex: 1 item nunca enche a completude, mesmo cobrindo 1 grupo).
+function groupsInfo(sel){
+  const cat=c=>sel.some(s=>s.f.cat===c);
+  const ids=sel.map(s=>s.f.id);
+  const hasJuice=sel.some(s=>s.isJuice);
+  const hasProt=cat('peixes')||cat('carnes')||cat('ovos')||cat('leguminosas')||ids.includes('whey');
+  const hasCarbo=cat('grãos')||cat('tubérculos');
+  const hasVegFruta=cat('verduras')||cat('frutas')||hasJuice;
+  const hasHidratacao=ids.includes('agua')||ids.includes('agua_coco')||ids.includes('cha_camomila')||ids.includes('cha_verde')||hasJuice;
+  const hasGordura=cat('oleaginosas')||cat('sementes')||ids.includes('azeite')||ids.includes('abacate')||ids.includes('omega3_cap')||ids.includes('pasta_amendoim')||ids.includes('pasta_ganexa');
+  const groups=[
+    {label:'proteína',ok:hasProt},
+    {label:'carboidrato',ok:hasCarbo},
+    {label:'vegetal/fruta',ok:hasVegFruta},
+    {label:'hidratação',ok:hasHidratacao},
+    {label:'gordura boa',ok:hasGordura},
+  ];
+  const coveredCount=groups.filter(g=>g.ok).length;
+  const missing=groups.filter(g=>!g.ok).map(g=>g.label);
+  const groupScore=coveredCount*20;
+  const itemFactor=Math.min(1,sel.length/4);
+  const completude=Math.max(0,Math.min(100,Math.round(groupScore*itemFactor)));
+  return {coveredCount,missing,completude};
+}
 function calcScore(){
   const sel=[];
   for(const [id,st] of selected.entries()){
@@ -424,11 +467,16 @@ function calcScore(){
   const totW=sel.reduce((a,s)=>a+s.w,0);
   const wavg=k=>sel.reduce((a,s)=>a+s.e[k]*s.w,0)/totW;
   const avgPts=wavg('pts');
-  let pct=Math.round(((avgPts+10)/20)*100);pct=Math.max(0,Math.min(100,pct));
+  let qualidade=Math.round(((avgPts+10)/20)*100);qualidade=Math.max(0,Math.min(100,qualidade));
   const avg=k=>clamp10(Math.round(wavg(k)));
-  return {sel,pct,cardio:avg('cardio'),energia:avg('energia'),anti:avg('anti'),sono:avg('sono'),inflam:avg('inflam'),negCount:sel.filter(s=>s.e.pts<0).length};
+  const gi=groupsInfo(sel);
+  // nota final combina qualidade média (35%) e completude do dia (65%) — completude pesa mais
+  // pra evitar que 1 item muito bom (ex: banana sozinha) pareça um dia excelente.
+  let pct=Math.round(qualidade*0.35+gi.completude*0.65);pct=Math.max(0,Math.min(100,pct));
+  return {sel,pct,qualidade,completude:gi.completude,groupsCovered:gi.coveredCount,groupsMissing:gi.missing,itemCount:sel.length,
+    cardio:avg('cardio'),energia:avg('energia'),anti:avg('anti'),sono:avg('sono'),inflam:avg('inflam'),negCount:sel.filter(s=>s.e.pts<0).length};
 }
-function notaInfo(p){if(p>=85)return{nota:'excelente',cor:'#4ade80'};if(p>=70)return{nota:'muito bom',cor:'#34d399'};if(p>=55)return{nota:'bom',cor:'#60a5fa'};if(p>=40)return{nota:'regular',cor:'#fbbf24'};if(p>=25)return{nota:'ruim',cor:'#fb923c'};return{nota:'crítico',cor:'#f87171'};}
+function notaInfo(p){if(p>=85)return{nota:'excelente',cor:'oklch(0.5 0.16 152)'};if(p>=70)return{nota:'muito bom',cor:'oklch(0.62 0.13 152)'};if(p>=55)return{nota:'bom',cor:'oklch(0.55 0.14 250)'};if(p>=40)return{nota:'regular',cor:'oklch(0.7 0.15 85)'};if(p>=25)return{nota:'insuficiente',cor:'oklch(0.62 0.16 55)'};return{nota:'crítico',cor:'oklch(0.55 0.19 29)'};}
 
 // GAPS — sempre gera veredito crítico, nunca vazio
 function detectGaps(r){
@@ -447,29 +495,37 @@ function detectGaps(r){
   const negs=r.sel.filter(s=>s.e.pts<0);
 
   // críticas negativas (vermelho)
-  if(negs.length>=4)g.push({c:'#f87171',m:`Dia pesado: ${negs.length} itens negativos. Isso derruba o fôlego, atrapalha o sono e aumenta a inflamação. Se foi um dia de exceção, tudo bem. Se virou rotina, é o primeiro ponto a atacar.`});
-  else if(negs.length>0)g.push({c:'#fb923c',m:`${negs.length} item${negs.length>1?'s':''} negativo${negs.length>1?'s':''} hoje (${negs.map(s=>s.f.name).join(', ')}). Não destrói o dia, mas equilibre com comida de verdade.`});
+  if(negs.length>=4)g.push({c:'oklch(0.55 0.19 29)',m:`Dia pesado: ${negs.length} itens negativos. Isso derruba o fôlego, atrapalha o sono e aumenta a inflamação. Se foi um dia de exceção, tudo bem. Se virou rotina, é o primeiro ponto a atacar.`});
+  else if(negs.length>0)g.push({c:'oklch(0.62 0.16 55)',m:`${negs.length} item${negs.length>1?'s':''} negativo${negs.length>1?'s':''} hoje (${negs.map(s=>s.f.name).join(', ')}). Não destrói o dia, mas equilibre com comida de verdade.`});
 
   // pilares fracos
-  if(r.cardio<5)g.push({c:'#f87171',m:`Saúde cardíaca baixa (${r.cardio}/10). Faltam vasodilatadores e ômega 3 — beterraba, folhas verdes, peixe ou azeite mudariam isso.`});
-  if(r.inflam<5)g.push({c:'#fb923c',m:`Perfil inflamatório alto (anti-inflamatório só ${r.inflam}/10). Muito processado/frito. Cúrcuma, gengibre, azeite e peixe puxam pro outro lado.`});
-  if(r.anti<5)g.push({c:'#fbbf24',m:`Pouco antioxidante (${r.anti}/10). Frutas vermelhas, folhas e chá verde combatem o estresse oxidativo do treino.`});
-  if(r.sono<5)g.push({c:'#a78bfa',m:`Nada que ajude o sono (${r.sono}/10). Camomila, cereja, nozes, magnésio ou melatonina melhorariam a noite — e sono ruim derruba o desempenho.`});
+  if(r.cardio<5)g.push({c:'oklch(0.55 0.19 29)',m:`Saúde cardíaca baixa (${r.cardio}/10). Faltam vasodilatadores e ômega 3 — beterraba, folhas verdes, peixe ou azeite mudariam isso.`});
+  if(r.inflam<5)g.push({c:'oklch(0.62 0.16 55)',m:`Perfil inflamatório alto (anti-inflamatório só ${r.inflam}/10). Muito processado/frito. Cúrcuma, gengibre, azeite e peixe puxam pro outro lado.`});
+  if(r.anti<5)g.push({c:'oklch(0.7 0.15 85)',m:`Pouco antioxidante (${r.anti}/10). Frutas vermelhas, folhas e chá verde combatem o estresse oxidativo do treino.`});
+  if(r.sono<5)g.push({c:'oklch(0.55 0.14 310)',m:`Nada que ajude o sono (${r.sono}/10). Camomila, cereja, nozes, magnésio ou melatonina melhorariam a noite — e sono ruim derruba o desempenho.`});
 
   // ausências estruturais
-  if(!hasAgua)g.push({c:'#60a5fa',m:'Você não registrou água. Hidratação é a base do fôlego — registre e garanta o consumo ao longo do dia.'});
-  if(!hasProt)g.push({c:'#fbbf24',m:'Sem fonte clara de proteína. Recuperação muscular fica comprometida — ovo, frango, peixe, feijão ou whey resolvem.'});
-  if(!hasVeg&&!hasFruta)g.push({c:'#fb923c',m:'Zero vegetais e frutas. Faltam fibras, vitaminas e antioxidantes. Esse é provavelmente o maior buraco do dia.'});
-  if(!hasCarbo)g.push({c:'#60a5fa',m:'Sem carboidrato de qualidade. Pra correr de manhã você precisa de glicogênio — batata-doce, arroz, aveia ou tubérculos.'});
-  if(!hasPeixe&&negs.length===0)g.push({c:'#fbbf24',m:'Sem ômega 3 (peixe ou cápsula). É o maior aliado anti-inflamatório que está faltando.'});
-  if(!hasNitrato)g.push({c:'#fbbf24',m:'Sem fonte de nitrato. Beterraba, rúcula ou um suco verde melhoram a vasodilatação e o fôlego direto.'});
+  if(!hasAgua)g.push({c:'oklch(0.55 0.14 250)',m:'Você não registrou água. Hidratação é a base do fôlego — registre e garanta o consumo ao longo do dia.'});
+  if(!hasProt)g.push({c:'oklch(0.7 0.15 85)',m:'Sem fonte clara de proteína. Recuperação muscular fica comprometida — ovo, frango, peixe, feijão ou whey resolvem.'});
+  if(!hasVeg&&!hasFruta)g.push({c:'oklch(0.62 0.16 55)',m:'Zero vegetais e frutas. Faltam fibras, vitaminas e antioxidantes. Esse é provavelmente o maior buraco do dia.'});
+  if(!hasCarbo)g.push({c:'oklch(0.55 0.14 250)',m:'Sem carboidrato de qualidade. Pra correr de manhã você precisa de glicogênio — batata-doce, arroz, aveia ou tubérculos.'});
+  if(!hasPeixe&&negs.length===0)g.push({c:'oklch(0.7 0.15 85)',m:'Sem ômega 3 (peixe ou cápsula). É o maior aliado anti-inflamatório que está faltando.'});
+  if(!hasNitrato)g.push({c:'oklch(0.7 0.15 85)',m:'Sem fonte de nitrato. Beterraba, rúcula ou um suco verde melhoram a vasodilatação e o fôlego direto.'});
+  if(r.groupsMissing.includes('gordura boa'))g.push({c:'oklch(0.7 0.15 85)',m:'Sem gordura boa (azeite, abacate, oleaginosas ou ômega 3). Ela ajuda a absorver vitaminas e reduz a inflamação.'});
 
-  // elogios quando merece (verde) — garante que nunca fica "sem veredito"
-  if(r.pct>=85)g.unshift({c:'#4ade80',m:'Dia muito bem montado. Cobre praticamente todos os pilares. Esse é o padrão que faz o desempenho subir ao longo das semanas.'});
-  else if(r.pct>=70&&negs.length===0)g.unshift({c:'#4ade80',m:'Dia sólido e sem furos graves. Os pontos abaixo são refinos, não problemas.'});
+  // elogios quando merece (verde) — só quando o dia é de fato completo (não só de boa qualidade)
+  if(r.completude>=80&&r.pct>=85)g.unshift({c:'oklch(0.55 0.15 152)',m:'Dia muito bem montado. Cobre praticamente todos os grupos essenciais e ainda é de alta qualidade. Esse é o padrão que faz o desempenho subir ao longo das semanas.'});
+  else if(r.completude>=80&&r.pct>=70&&negs.length===0)g.unshift({c:'oklch(0.55 0.15 152)',m:'Dia sólido, cobre os grupos essenciais e sem furos graves. Os pontos abaixo são refinos, não problemas.'});
+
+  // headline de completude — quando faltam vários grupos, isso é mais importante que qualquer elogio de qualidade
+  if(r.groupsMissing.length>=3){
+    g.unshift({c:'oklch(0.55 0.19 29)',m:`Isso parece um lanche, não um dia completo. Cobre só ${r.groupsCovered} de 5 grupos essenciais (faltam: ${r.groupsMissing.join(', ')}). A qualidade do que foi escolhido até pode ser boa, mas completude é baixa (${r.completude}/100) — isso não sustenta um dia inteiro de treino.`});
+  } else if(r.groupsMissing.length>0){
+    g.push({c:'oklch(0.7 0.15 85)',m:`Faltam grupos essenciais pra fechar o dia: ${r.groupsMissing.join(', ')}. Completude atual: ${r.completude}/100.`});
+  }
 
   // fallback absoluto: nunca retorna vazio
-  if(!g.length)g.push({c:'#60a5fa',m:'Dia equilibrado, sem destaques fortes nem problemas graves. Pra subir de nível, adicione um item de alta pontuação (peixe, beterraba, folha verde).'});
+  if(!g.length)g.push({c:'oklch(0.55 0.14 250)',m:'Dia equilibrado, sem destaques fortes nem problemas graves. Pra subir de nível, adicione um item de alta pontuação (peixe, beterraba, folha verde).'});
   return g;
 }
 function detectCombos(sel){
@@ -490,9 +546,11 @@ function openResult(){
   const gaps=detectGaps(r);const combos=detectCombos(r.sel);
   let insight;
   if(mode==='amanha'){
-    insight=r.pct>=70?'Cardápio bem planejado pra amanhã. Siga esse plano e o dia já começa no caminho certo.':'Esse é o plano pra amanhã. Veja os ajustes sugeridos abaixo antes de fechar o cardápio.';
+    if(r.completude<60)insight='Esse cardápio ainda não fecha um dia completo — faltam grupos essenciais inteiros, não é só questão de qualidade. Veja os ajustes abaixo antes de fechar o plano.';
+    else insight=r.pct>=70?'Cardápio bem planejado pra amanhã. Siga esse plano e o dia já começa no caminho certo.':'Esse é o plano pra amanhã. Veja os ajustes sugeridos abaixo antes de fechar o cardápio.';
   } else {
-    if(r.pct>=85)insight='Dia excelente. Esse tipo de alimentação faz o fôlego melhorar de verdade ao longo das semanas.';
+    if(r.completude<60)insight='Isso cobre poucos grupos essenciais pra ser um dia completo — mais parece um lanche isolado do que uma alimentação do dia inteiro. A qualidade do que foi escolhido até pode ser boa, mas faltam grupos inteiros.';
+    else if(r.pct>=85)insight='Dia excelente. Esse tipo de alimentação faz o fôlego melhorar de verdade ao longo das semanas.';
     else if(r.pct>=70)insight='Dia muito bom, boa base cardiovascular. Pequenos ajustes te levam ao topo.';
     else if(r.pct>=55)insight='Dia ok, com espaço claro pra melhorar. Veja o veredito abaixo.';
     else if(r.pct>=40)insight='Dia mediano. Provavelmente faltou comida de verdade e/ou sobrou processado.';
@@ -506,7 +564,7 @@ function openResult(){
     const f=s.f,e=s.e,isNeg=e.pts<0;
     const prepName=f.preps?` · ${f.preps[s.st.prep].n}`:'';
     const qtyName=(f.unit&&!s.isJuice)?` · ${s.qty} ${unitLabel(f.unit)}`:'';
-    return `<div class="analysis-card${isNeg?' neg':''}"><div class="analysis-food-name">${f.name}${prepName}${qtyName} <span style="font-weight:700;color:${isNeg?'#f87171':'#4ade80'}">${e.pts>0?'+':''}${e.pts}</span></div>
+    return `<div class="analysis-card${isNeg?' neg':''}"><div class="analysis-food-name">${f.name}${prepName}${qtyName} <span style="font-weight:700;color:${isNeg?'oklch(0.55 0.19 29)':'oklch(0.55 0.15 152)'}">${e.pts>0?'+':''}${e.pts}</span></div>
       <div class="analysis-food-cat">${f.cat}</div>
       <div class="food-bars" style="margin-bottom:8px">${barRow('cardio','cardio',clamp10(e.cardio))}${barRow('energia','energia',clamp10(e.energia))}${barRow('anti','antioxid.',clamp10(e.anti))}${barRow('inflam','anti-inflam',clamp10(e.inflam))}${barRow('sono','sono',clamp10(e.sono))}</div>
       <div class="analysis-desc">${f.desc}</div><div class="analysis-tip${isNeg?' neg':''}">${f.tip}</div></div>`;
@@ -523,9 +581,12 @@ function openResult(){
 
   document.getElementById('resultContent').innerHTML=`
     <div class="score-hero"><div class="score-pct" style="color:${cor}">${r.pct}%</div><div class="score-nota" style="color:${cor}">${nota}</div>
-    <div class="score-bar-bg"><div class="score-bar-fill" style="width:${r.pct}%;background:${cor}"></div></div><div class="score-insight">${insight}</div></div>
+    <div class="score-bar-bg"><div class="score-bar-fill" style="width:${r.pct}%;background:${cor}"></div></div>
+    <div style="font-size:12px;color:var(--muted);margin-bottom:10px">qualidade ${r.qualidade}% · completude ${r.completude}/100 (${r.groupsCovered}/5 grupos, ${r.itemCount} ${r.itemCount===1?'item':'itens'})</div>
+    <div class="score-insight">${insight}</div></div>
     ${warnBanner}
     <div class="pillars-grid">
+      <div class="pillar-card"><div class="pillar-label">completude do dia</div><div class="pillar-val" style="color:${cor}">${r.completude}<span style="font-size:13px;color:var(--muted)">/100</span></div><div class="pillar-bar-bg"><div class="pillar-bar-fill" style="width:${r.completude}%;background:${cor}"></div></div></div>
       <div class="pillar-card"><div class="pillar-label">saúde cardíaca</div><div class="pillar-val" style="color:${cor}">${r.cardio}<span style="font-size:13px;color:var(--muted)">/10</span></div>${pillarBar(r.cardio,cor)}</div>
       <div class="pillar-card"><div class="pillar-label">energia aeróbica</div><div class="pillar-val" style="color:${cor}">${r.energia}<span style="font-size:13px;color:var(--muted)">/10</span></div>${pillarBar(r.energia,cor)}</div>
       <div class="pillar-card"><div class="pillar-label">antioxidante</div><div class="pillar-val" style="color:${cor}">${r.anti}<span style="font-size:13px;color:var(--muted)">/10</span></div>${pillarBar(r.anti,cor)}</div>
@@ -551,7 +612,8 @@ function buildResumoText(){
   const{r,nota,gaps,insight}=lastReport;
   const titulo=mode==='amanha'?'CRONOGRAMA PLANEJADO':'RESUMO DO DIA';
   let t=`${titulo} — NutriPlanner\n\n`;
-  t+=`NOTA GERAL: ${r.pct}% (${nota})\n\n`;
+  t+=`NOTA GERAL: ${r.pct}% (${nota})\n`;
+  t+=`Qualidade: ${r.qualidade}% · Completude: ${r.completude}/100 (${r.groupsCovered}/5 grupos essenciais, ${r.itemCount} itens)\n\n`;
   t+=`PILARES:\n- Saúde cardíaca: ${r.cardio}/10\n- Energia aeróbica: ${r.energia}/10\n- Antioxidante: ${r.anti}/10\n- Anti-inflamatório: ${r.inflam}/10\n- Qualidade do sono: ${r.sono}/10\n\n`;
   t+=`ALIMENTOS:\n`;
   r.sel.forEach(s=>{const f=s.f;const prep=f.preps?' ('+f.preps[s.st.prep].n+')':'';const qty=(f.unit&&!s.isJuice)?' - '+s.qty+' '+unitLabel(f.unit):'';t+=`- ${f.name}${prep}${qty} [${s.e.pts>0?'+':''}${s.e.pts}]\n`;});
@@ -579,10 +641,10 @@ function fallbackCopy(t){
 }
 function showTextModal(t){
   const m=document.createElement('div');
-  m.style.cssText='position:fixed;inset:0;z-index:99;background:rgba(0,0,0,.85);display:flex;flex-direction:column;padding:16px';
-  m.innerHTML=`<div style="color:#fff;font-size:14px;margin-bottom:10px;font-weight:600">Selecione e copie o texto abaixo:</div>
-    <textarea readonly style="flex:1;width:100%;background:#1a1a1a;color:#f0f0f0;border:1px solid #2a2a2a;border-radius:12px;padding:14px;font-size:13px;line-height:1.5">${t.replace(/</g,'&lt;')}</textarea>
-    <button style="margin-top:12px;padding:14px;background:#4ade80;color:#000;font-weight:700;border:none;border-radius:12px;font-size:15px">fechar</button>`;
+  m.style.cssText='position:fixed;inset:0;z-index:99;background:rgba(0,0,0,.6);display:flex;flex-direction:column;padding:16px';
+  m.innerHTML=`<div style="color:#fff;font-family:'Space Mono',monospace;font-size:14px;margin-bottom:10px;font-weight:700">Selecione e copie o texto abaixo:</div>
+    <textarea readonly style="flex:1;width:100%;background:var(--surface);color:var(--text);border:1px solid var(--border-strong);border-radius:var(--r);padding:14px;font-family:'Space Mono',monospace;font-size:13px;line-height:1.5">${t.replace(/</g,'&lt;')}</textarea>
+    <button style="margin-top:12px;padding:14px;background:var(--terracota);color:#fff;font-weight:700;font-family:'Space Mono',monospace;text-transform:uppercase;letter-spacing:.04em;border:none;border-radius:var(--r);font-size:14px">fechar</button>`;
   m.querySelector('button').onclick=()=>document.body.removeChild(m);
   m.querySelector('textarea').onclick=function(){this.select();};
   document.body.appendChild(m);
@@ -600,7 +662,8 @@ function exportPDF(){
   let y=18;const L=16;const W=178;
   doc.setFontSize(18);doc.setFont(undefined,'bold');doc.text(mode==='amanha'?'Cronograma Planejado':'Resumo do Dia',L,y);y+=6;
   doc.setFontSize(10);doc.setFont(undefined,'normal');doc.setTextColor(120);doc.text('NutriPlanner · '+new Date().toLocaleDateString('pt-BR'),L,y);y+=10;
-  doc.setTextColor(20);doc.setFontSize(14);doc.setFont(undefined,'bold');doc.text(`Nota geral: ${r.pct}% (${nota})`,L,y);y+=9;
+  doc.setTextColor(20);doc.setFontSize(14);doc.setFont(undefined,'bold');doc.text(`Nota geral: ${r.pct}% (${nota})`,L,y);y+=7;
+  doc.setFontSize(10);doc.setFont(undefined,'normal');doc.setTextColor(90);doc.text(`Qualidade: ${r.qualidade}% · Completude: ${r.completude}/100 (${r.groupsCovered}/5 grupos, ${r.itemCount} itens)`,L,y);y+=8;doc.setTextColor(20);
   doc.setFontSize(11);doc.setFont(undefined,'bold');doc.text('Pilares',L,y);y+=6;
   doc.setFont(undefined,'normal');doc.setFontSize(10);
   [['Saúde cardíaca',r.cardio],['Energia aeróbica',r.energia],['Antioxidante',r.anti],['Anti-inflamatório',r.inflam],['Qualidade do sono',r.sono]].forEach(p=>{doc.text(`${p[0]}: ${p[1]}/10`,L+2,y);y+=5;});
