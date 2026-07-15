@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    body { margin: 0; background: oklch(0.96 0.01 80); }
+    * { box-sizing: border-box; }
+    ::selection { background: oklch(0.62 0.19 41); color: white; }
+    input[type=number]::-webkit-inner-spin-button { opacity: 1; }
+    @keyframes marquee-scroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+    @media print {
+      #site-nav, #hero, .marquee-strip, #how-it-works, #pillars-section, #differentiators, #modes-section, #cta-final, #site-footer, #catalog-col { display: none !important; }
+    }
+  </style>
+</helmet>
+
+<div style="font-family: 'Space Mono', monospace; background: oklch(0.96 0.01 80); color: oklch(0.18 0.01 60); min-height: 100vh; overflow-x: hidden;">
+
+  <!-- NAV -->
+  <div id="site-nav" style="display:flex; align-items:center; justify-content:space-between; padding: 28px 56px; border-bottom: 1px solid oklch(0.18 0.01 60 / 0.15); position: sticky; top:0; background: oklch(0.96 0.01 80 / 0.92); backdrop-filter: blur(6px); z-index: 10;">
+    <div style="display:flex; align-items:center; gap:10px; font-weight:700; font-size:18px; letter-spacing: 0.02em;">
+      <span style="width:10px;height:10px;background: oklch(0.62 0.19 41); display:inline-block;"></span>
+      NUTRIPLANNER
+    </div>
+    <div style="display:flex; gap:36px; font-size:13px; letter-spacing:0.05em; text-transform:uppercase; color: oklch(0.18 0.01 60 / 0.65);">
+      <a href="#how-it-works" style="color:inherit; text-decoration:none;">Como funciona</a>
+      <a href="#pillars-section" style="color:inherit; text-decoration:none;">Pilares</a>
+      <a href="#differentiators" style="color:inherit; text-decoration:none;">Diferenciais</a>
+    </div>
+    <a href="#app" style="font-size:12px; border:1px solid oklch(0.18 0.01 60); padding:9px 18px; letter-spacing:0.05em; text-transform:uppercase; color:inherit; text-decoration:none;">Testar agora</a>
+  </div>
+
+  <!-- HERO -->
+  <div id="hero" style="padding: 90px 56px 100px; max-width:1240px; margin:0 auto; display:grid; grid-template-columns:1.15fr 0.85fr; gap:64px; align-items:end;">
+    <div>
+      <div style="font-size:13px; letter-spacing:0.12em; text-transform:uppercase; color: oklch(0.62 0.19 41); margin-bottom:22px; font-weight:700;">
+        [ 001 / SISTEMA DE PLANEJAMENTO NUTRICIONAL ]
+      </div>
+      <h1 style="font-family:'Space Grotesk', sans-serif; font-size:clamp(46px,6.5vw,84px); line-height:0.98; font-weight:700; margin:0 0 28px; letter-spacing:-0.01em;">
+        SUA DIETA<br>TEM NOTA.<br><span style="color: oklch(0.62 0.19 41);">E VEREDITO.</span>
+      </h1>
+      <p style="font-size:18px; line-height:1.6; max-width:520px; color: oklch(0.18 0.01 60 / 0.78); margin:0 0 36px;">
+        Registre o que você comeu — ou o que vai comer. O sistema avalia o dia e devolve uma nota
+        e um diagnóstico direto do que está sabotando seu desempenho. Sem elogio fácil.
+      </p>
+      <div style="display:flex; gap:16px; align-items:center;">
+        <a href="#app" style="background: oklch(0.18 0.01 60); color: oklch(0.96 0.01 80); padding:16px 30px; font-size:14px; letter-spacing:0.05em; text-transform:uppercase; font-weight:700; text-decoration:none;">
+          Avaliar meu dia →
+        </a>
+        <a href="#how-it-works" style="font-size:13px; letter-spacing:0.05em; text-transform:uppercase; color: oklch(0.18 0.01 60 / 0.55); text-decoration:underline;">
+          Ver como funciona
+        </a>
+      </div>
+    </div>
+
+    <div style="border:1px solid oklch(0.18 0.01 60 / 0.25); background: oklch(0.985 0.005 80); padding:28px;">
+      <div style="display:flex; justify-content:space-between; align-items:baseline; border-bottom:1px dashed oklch(0.18 0.01 60 / 0.3); padding-bottom:16px; margin-bottom:20px;">
+        <span style="font-size:12px; letter-spacing:0.08em; text-transform:uppercase; color: oklch(0.18 0.01 60 / 0.55);">Relatório do dia — Ter, 14/07</span>
+        <span style="font-size:12px; color: oklch(0.62 0.19 41); font-weight:700;">04 / 12 refeições</span>
+      </div>
+      <div style="display:flex; align-items:baseline; gap:14px; margin-bottom:18px;">
+        <span style="font-family:'Space Grotesk', sans-serif; font-size:64px; font-weight:700; line-height:1;">4.1</span>
+        <span style="font-size:14px; color: oklch(0.55 0.19 29); font-weight:700; text-transform:uppercase; letter-spacing:0.04em;">Insuficiente</span>
+      </div>
+      <div style="font-size:14px; line-height:1.6; color: oklch(0.18 0.01 60 / 0.8); border-left:3px solid oklch(0.55 0.19 29); padding-left:14px; margin-bottom:20px;">
+        "Zero fonte de antioxidante até agora. O whopper da noite anulou o ganho do
+        café da manhã. Amanhã tem treino longo — assim você não recupera."
+      </div>
+      <div style="display:flex; flex-direction:column; gap:10px;">
+        <div style="display:flex; justify-content:space-between; font-size:12px; align-items:center;">
+          <span style="text-transform:uppercase; letter-spacing:0.04em; color:oklch(0.18 0.01 60/0.65);">Saúde cardíaca</span>
+          <span style="width:120px; height:6px; background:oklch(0.18 0.01 60/0.12); position:relative;"><span style="position:absolute;inset:0; width:62%; background:oklch(0.55 0.15 152);"></span></span>
+        </div>
+        <div style="display:flex; justify-content:space-between; font-size:12px; align-items:center;">
+          <span style="text-transform:uppercase; letter-spacing:0.04em; color:oklch(0.18 0.01 60/0.65);">Antioxidante</span>
+          <span style="width:120px; height:6px; background:oklch(0.18 0.01 60/0.12); position:relative;"><span style="position:absolute;inset:0; width:8%; background:oklch(0.55 0.19 29);"></span></span>
+        </div>
+        <div style="display:flex; justify-content:space-between; font-size:12px; align-items:center;">
+          <span style="text-transform:uppercase; letter-spacing:0.04em; color:oklch(0.18 0.01 60/0.65);">Qualidade do sono</span>
+          <span style="width:120px; height:6px; background:oklch(0.18 0.01 60/0.12); position:relative;"><span style="position:absolute;inset:0; width:30%; background:oklch(0.55 0.19 29);"></span></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MARQUEE STRIP -->
+  <div class="marquee-strip" style="border-top:1px solid oklch(0.18 0.01 60/0.15); border-bottom:1px solid oklch(0.18 0.01 60/0.15); background: oklch(0.18 0.01 60); color: oklch(0.96 0.01 80); padding:14px 0; overflow:hidden;">
+    <div style="display:flex; gap:48px; white-space:nowrap; font-size:13px; letter-spacing:0.08em; text-transform:uppercase; font-weight:700; width:max-content; animation: marquee-scroll 22s linear infinite;">
+      <span>ARROZ E FEIJÃO</span><span style="color:oklch(0.62 0.19 41);">•</span>
+      <span>CUSCUZ</span><span style="color:oklch(0.62 0.19 41);">•</span>
+      <span>TAPIOCA</span><span style="color:oklch(0.62 0.19 41);">•</span>
+      <span>CARNE DE SOL</span><span style="color:oklch(0.62 0.19 41);">•</span>
+      <span>NÃO SÓ SALMÃO E QUINOA</span><span style="color:oklch(0.62 0.19 41);">•</span>
+      <span>90+ ALIMENTOS BRASILEIROS</span><span style="color:oklch(0.62 0.19 41);">•</span>
+      <span>ARROZ E FEIJÃO</span><span style="color:oklch(0.62 0.19 41);">•</span>
+      <span>CUSCUZ</span><span style="color:oklch(0.62 0.19 41);">•</span>
+      <span>TAPIOCA</span><span style="color:oklch(0.62 0.19 41);">•</span>
+      <span>CARNE DE SOL</span><span style="color:oklch(0.62 0.19 41);">•</span>
+      <span>NÃO SÓ SALMÃO E QUINOA</span><span style="color:oklch(0.62 0.19 41);">•</span>
+      <span>90+ ALIMENTOS BRASILEIROS</span>
+    </div>
+  </div>
+
+  <!-- COMO FUNCIONA -->
+  <div id="how-it-works" style="padding:110px 56px; max-width:1240px; margin:0 auto;">
+    <div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom:60px; flex-wrap:wrap; gap:16px;">
+      <h2 style="font-family:'Space Grotesk', sans-serif; font-size:42px; font-weight:700; margin:0;">COMO FUNCIONA</h2>
+      <span style="font-size:13px; letter-spacing:0.08em; text-transform:uppercase; color:oklch(0.18 0.01 60/0.5);">[ 3 PASSOS ]</span>
+    </div>
+    <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:oklch(0.18 0.01 60/0.2); border:1px solid oklch(0.18 0.01 60/0.2);">
+      <div style="background:oklch(0.96 0.01 80); padding:40px 32px;">
+        <div style="font-family:'Space Grotesk',sans-serif; font-size:56px; font-weight:700; color:oklch(0.62 0.19 41); margin-bottom:24px;">01</div>
+        <div style="font-size:18px; font-weight:700; margin-bottom:12px; text-transform:uppercase; letter-spacing:0.02em;">Selecione</div>
+        <p style="font-size:14.5px; line-height:1.6; color:oklch(0.18 0.01 60/0.7); margin:0;">
+          Marque o que comeu — ou o que vai comer. Ajuste quantidade em gramas, ml, colheres ou unidades. Escolha o preparo.
+        </p>
+      </div>
+      <div style="background:oklch(0.96 0.01 80); padding:40px 32px;">
+        <div style="font-family:'Space Grotesk',sans-serif; font-size:56px; font-weight:700; color:oklch(0.62 0.19 41); margin-bottom:24px;">02</div>
+        <div style="font-size:18px; font-weight:700; margin-bottom:12px; text-transform:uppercase; letter-spacing:0.02em;">Veja a nota</div>
+        <p style="font-size:14.5px; line-height:1.6; color:oklch(0.18 0.01 60/0.7); margin:0;">
+          O sistema cruza tudo com os 5 pilares de desempenho e devolve uma nota de 0 a 10 para o dia.
+        </p>
+      </div>
+      <div style="background:oklch(0.96 0.01 80); padding:40px 32px;">
+        <div style="font-family:'Space Grotesk',sans-serif; font-size:56px; font-weight:700; color:oklch(0.62 0.19 41); margin-bottom:24px;">03</div>
+        <div style="font-size:18px; font-weight:700; margin-bottom:12px; text-transform:uppercase; letter-spacing:0.02em;">Siga o veredito</div>
+        <p style="font-size:14.5px; line-height:1.6; color:oklch(0.18 0.01 60/0.7); margin:0;">
+          Um diagnóstico sem paternalismo: o que faltou, o que sabotou, e o que fazer amanhã.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5 PILARES -->
+  <div id="pillars-section" style="background:oklch(0.18 0.01 60); color:oklch(0.96 0.01 80); padding:110px 56px;">
+    <div style="max-width:1240px; margin:0 auto;">
+      <div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom:60px; flex-wrap:wrap; gap:16px;">
+        <h2 style="font-family:'Space Grotesk', sans-serif; font-size:42px; font-weight:700; margin:0;">OS 5 PILARES</h2>
+        <span style="font-size:13px; letter-spacing:0.08em; text-transform:uppercase; color:oklch(0.96 0.01 80/0.5);">[ CRITÉRIOS DE AVALIAÇÃO ]</span>
+      </div>
+      <div style="display:grid; grid-template-columns:repeat(5,1fr); gap:1px; background:oklch(0.96 0.01 80/0.15);">
+        <div style="padding:32px 22px; display:flex; flex-direction:column; gap:14px;">
+          <span style="width:34px;height:34px;border:1px solid oklch(0.96 0.01 80/0.4); display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:700;">01</span>
+          <div style="font-size:14.5px; font-weight:700; letter-spacing:0.02em; text-transform:uppercase; line-height:1.3;">Saúde<br>cardíaca</div>
+        </div>
+        <div style="padding:32px 22px; display:flex; flex-direction:column; gap:14px;">
+          <span style="width:34px;height:34px;border:1px solid oklch(0.96 0.01 80/0.4); display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:700;">02</span>
+          <div style="font-size:14.5px; font-weight:700; letter-spacing:0.02em; text-transform:uppercase; line-height:1.3;">Energia<br>aeróbica</div>
+        </div>
+        <div style="padding:32px 22px; display:flex; flex-direction:column; gap:14px;">
+          <span style="width:34px;height:34px;border:1px solid oklch(0.96 0.01 80/0.4); display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:700;">03</span>
+          <div style="font-size:14.5px; font-weight:700; letter-spacing:0.02em; text-transform:uppercase; line-height:1.3;">Antioxidante</div>
+        </div>
+        <div style="padding:32px 22px; display:flex; flex-direction:column; gap:14px;">
+          <span style="width:34px;height:34px;border:1px solid oklch(0.96 0.01 80/0.4); display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:700;">04</span>
+          <div style="font-size:14.5px; font-weight:700; letter-spacing:0.02em; text-transform:uppercase; line-height:1.3;">Anti-<br>inflamatório</div>
+        </div>
+        <div style="padding:32px 22px; display:flex; flex-direction:column; gap:14px;">
+          <span style="width:34px;height:34px;border:1px solid oklch(0.96 0.01 80/0.4); display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:700;">05</span>
+          <div style="font-size:14.5px; font-weight:700; letter-spacing:0.02em; text-transform:uppercase; line-height:1.3;">Qualidade<br>do sono</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DIFERENCIAIS -->
+  <div id="differentiators" style="padding:110px 56px; max-width:1240px; margin:0 auto;">
+    <div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom:60px; flex-wrap:wrap; gap:16px;">
+      <h2 style="font-family:'Space Grotesk', sans-serif; font-size:42px; font-weight:700; margin:0;">DIFERENCIAIS</h2>
+      <span style="font-size:13px; letter-spacing:0.08em; text-transform:uppercase; color:oklch(0.18 0.01 60/0.5);">[ DETALHE QUE FAZ DIFERENÇA ]</span>
+    </div>
+
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:24px; margin-bottom:24px;">
+      <div style="border:1px solid oklch(0.18 0.01 60/0.2); padding:32px;">
+        <div style="font-size:12px; letter-spacing:0.08em; text-transform:uppercase; color:oklch(0.62 0.19 41); font-weight:700; margin-bottom:20px;">O PREPARO MUDA A NOTA</div>
+        <div style="display:flex; flex-direction:column; gap:0;">
+          <div style="display:flex; justify-content:space-between; padding:12px 0; border-bottom:1px dashed oklch(0.18 0.01 60/0.2); font-size:14.5px;">
+            <span>Ovo cozido</span><span style="font-weight:700; color:oklch(0.55 0.15 152);">+2.0</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; padding:12px 0; border-bottom:1px dashed oklch(0.18 0.01 60/0.2); font-size:14.5px;">
+            <span>Ovo mexido no azeite</span><span style="font-weight:700; color:oklch(0.55 0.15 152);">+1.6</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; padding:12px 0; border-bottom:1px dashed oklch(0.18 0.01 60/0.2); font-size:14.5px;">
+            <span>Ovo frito na manteiga</span><span style="font-weight:700; color:oklch(0.7 0.15 85);">+0.4</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; padding:12px 0; font-size:14.5px;">
+            <span>Ovo frito no óleo de soja</span><span style="font-weight:700; color:oklch(0.55 0.19 29);">−0.8</span>
+          </div>
+        </div>
+      </div>
+
+      <div style="border:1px solid oklch(0.18 0.01 60/0.2); padding:32px;">
+        <div style="font-size:12px; letter-spacing:0.08em; text-transform:uppercase; color:oklch(0.62 0.19 41); font-weight:700; margin-bottom:20px;">TAMBÉM AVALIAMOS O QUE DERRUBA</div>
+        <div style="display:flex; flex-direction:column; gap:0;">
+          <div style="display:flex; justify-content:space-between; padding:12px 0; border-bottom:1px dashed oklch(0.18 0.01 60/0.2); font-size:14.5px;">
+            <span>Whopper</span><span style="font-weight:700; color:oklch(0.55 0.19 29);">−3.2</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; padding:12px 0; border-bottom:1px dashed oklch(0.18 0.01 60/0.2); font-size:14.5px;">
+            <span>Refrigerante (350ml)</span><span style="font-weight:700; color:oklch(0.55 0.19 29);">−1.5</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; padding:12px 0; border-bottom:1px dashed oklch(0.18 0.01 60/0.2); font-size:14.5px;">
+            <span>Salgadinho (pacote)</span><span style="font-weight:700; color:oklch(0.55 0.19 29);">−1.8</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; padding:12px 0; font-size:14.5px;">
+            <span>Cerveja (lata)</span><span style="font-weight:700; color:oklch(0.55 0.19 29);">−2.1</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:24px;">
+      <div style="border:1px solid oklch(0.18 0.01 60/0.2); padding:32px;">
+        <div style="font-size:12px; letter-spacing:0.08em; text-transform:uppercase; color:oklch(0.62 0.19 41); font-weight:700; margin-bottom:20px;">CONTROLE DE QUANTIDADE</div>
+        <p style="font-size:14.5px; line-height:1.6; color:oklch(0.18 0.01 60/0.75); margin:0 0 18px;">
+          Gramas, ml, colheres ou unidades — a nota reflete a quantidade real, não só o alimento.
+        </p>
+        <div style="display:flex; gap:10px; flex-wrap:wrap;">
+          <span style="border:1px solid oklch(0.18 0.01 60/0.3); padding:8px 14px; font-size:13px;">150g</span>
+          <span style="border:1px solid oklch(0.18 0.01 60/0.3); padding:8px 14px; font-size:13px;">300ml</span>
+          <span style="border:1px solid oklch(0.18 0.01 60/0.3); padding:8px 14px; font-size:13px;">2 colheres</span>
+          <span style="border:1px solid oklch(0.18 0.01 60/0.3); padding:8px 14px; font-size:13px;">1 unidade</span>
+        </div>
+      </div>
+
+      <div style="border:1px solid oklch(0.18 0.01 60/0.2); padding:32px;">
+        <div style="font-size:12px; letter-spacing:0.08em; text-transform:uppercase; color:oklch(0.62 0.19 41); font-weight:700; margin-bottom:20px;">MONTADOR DE SUCO</div>
+        <p style="font-size:14.5px; line-height:1.6; color:oklch(0.18 0.01 60/0.75); margin:0 0 18px;">
+          Escolha ingredientes, base e adoçante — o sistema calcula o impacto do suco nos 5 pilares.
+        </p>
+        <div style="display:flex; align-items:center; gap:10px; font-size:13px; flex-wrap:wrap;">
+          <span style="background:oklch(0.18 0.01 60); color:oklch(0.96 0.01 80); padding:8px 14px;">Beterraba</span>
+          <span>+</span>
+          <span style="background:oklch(0.18 0.01 60); color:oklch(0.96 0.01 80); padding:8px 14px;">Água de coco</span>
+          <span>+</span>
+          <span style="background:oklch(0.18 0.01 60); color:oklch(0.96 0.01 80); padding:8px 14px;">Sem adoçante</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODOS -->
+  <div id="modes-section" style="padding:0 56px 110px; max-width:1240px; margin:0 auto;">
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:24px;">
+      <div style="border:1px solid oklch(0.18 0.01 60/0.2); background:oklch(0.985 0.005 80); padding:36px;">
+        <div style="font-size:12px; letter-spacing:0.08em; text-transform:uppercase; color:oklch(0.18 0.01 60/0.5); margin-bottom:10px;">MODO 01</div>
+        <div style="font-family:'Space Grotesk',sans-serif; font-size:26px; font-weight:700; margin-bottom:12px;">COMI HOJE</div>
+        <p style="font-size:14.5px; line-height:1.6; color:oklch(0.18 0.01 60/0.7); margin:0;">
+          Registre retroativamente e receba a nota e o veredito do dia — o que já foi, foi.
+        </p>
+      </div>
+      <div style="border:1px solid oklch(0.18 0.01 60/0.2); background:oklch(0.985 0.005 80); padding:36px;">
+        <div style="font-size:12px; letter-spacing:0.08em; text-transform:uppercase; color:oklch(0.18 0.01 60/0.5); margin-bottom:10px;">MODO 02</div>
+        <div style="font-family:'Space Grotesk',sans-serif; font-size:26px; font-weight:700; margin-bottom:12px;">PLANEJAR</div>
+        <p style="font-size:14.5px; line-height:1.6; color:oklch(0.18 0.01 60/0.7); margin:0;">
+          Monte o cardápio de amanhã antes do treino longo e exporte em PDF.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- APP INTERATIVO -->
+  <div id="app" style="max-width:1240px; margin:0 auto; padding:0 56px 140px; scroll-margin-top:100px;">
+    <div style="border-top:1px solid oklch(0.18 0.01 60/0.15); padding-top:70px; margin-bottom:16px; display:flex; justify-content:space-between; align-items:baseline; flex-wrap:wrap; gap:16px;">
+      <h2 style="font-family:'Space Grotesk', sans-serif; font-size:42px; font-weight:700; margin:0;">TESTE AGORA</h2>
+      <span style="font-size:13px; letter-spacing:0.08em; text-transform:uppercase; color:oklch(0.18 0.01 60/0.5);">[ PROTÓTIPO — BASE DE DEMONSTRAÇÃO, 33 ALIMENTOS ]</span>
+    </div>
+
+    <div style="display:flex; gap:0; margin-bottom:40px; border:1px solid oklch(0.18 0.01 60); width:fit-content;">
+      <div onClick="{{ setModeComi }}" style="padding:12px 26px; font-size:13px; letter-spacing:0.05em; text-transform:uppercase; font-weight:700; cursor:pointer; background:{{ comiModeBg }}; color:{{ comiModeColor }};">Comi hoje</div>
+      <div onClick="{{ setModePlanejar }}" style="padding:12px 26px; font-size:13px; letter-spacing:0.05em; text-transform:uppercase; font-weight:700; cursor:pointer; background:{{ planejarModeBg }}; color:{{ planejarModeColor }};">Planejar</div>
+    </div>
+
+    <div style="display:grid; grid-template-columns:1.3fr 1fr; gap:32px; align-items:start;">
+      <div id="catalog-col">
+        <sc-for list="{{ categories }}" as="cat" hint-placeholder-count="5">
+          <div style="margin-bottom:36px;">
+            <div style="font-size:13px; letter-spacing:0.06em; text-transform:uppercase; font-weight:700; color:oklch(0.62 0.19 41); margin-bottom:14px;">{{ cat.label }}</div>
+            <div style="display:flex; flex-wrap:wrap; gap:10px;">
+              <sc-for list="{{ cat.foods }}" as="food" hint-placeholder-count="6">
+                <div onClick="{{ food.add }}" style="border:1px solid {{ food.borderColor }}; padding:10px 16px; font-size:13.5px; cursor:pointer; display:flex; align-items:center; gap:8px; background:oklch(0.985 0.005 80);">
+                  <span>{{ food.name }}</span>
+                  <span style="opacity:0.5;">+</span>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+        </sc-for>
+
+        <div style="border:1px solid oklch(0.18 0.01 60/0.2); padding:28px; margin-top:8px;">
+          <div style="font-size:13px; letter-spacing:0.06em; text-transform:uppercase; font-weight:700; color:oklch(0.62 0.19 41); margin-bottom:16px;">Montador de suco</div>
+          <div style="font-size:12px; text-transform:uppercase; letter-spacing:0.04em; color:oklch(0.18 0.01 60/0.5); margin-bottom:8px;">Ingredientes</div>
+          <div style="display:flex; flex-wrap:wrap; gap:8px; margin-bottom:18px;">
+            <sc-for list="{{ juiceIngredients }}" as="ing" hint-placeholder-count="7">
+              <div onClick="{{ ing.toggle }}" style="border:1px solid oklch(0.18 0.01 60/0.3); padding:8px 14px; font-size:13px; cursor:pointer; background:{{ ing.bg }}; color:{{ ing.fg }};">{{ ing.label }}</div>
+            </sc-for>
+          </div>
+          <div style="font-size:12px; text-transform:uppercase; letter-spacing:0.04em; color:oklch(0.18 0.01 60/0.5); margin-bottom:8px;">Base</div>
+          <div style="display:flex; flex-wrap:wrap; gap:8px; margin-bottom:18px;">
+            <sc-for list="{{ juiceBases }}" as="b" hint-placeholder-count="3">
+              <div onClick="{{ b.select }}" style="border:1px solid oklch(0.18 0.01 60/0.3); padding:8px 14px; font-size:13px; cursor:pointer; background:{{ b.bg }}; color:{{ b.fg }};">{{ b.label }}</div>
+            </sc-for>
+          </div>
+          <div style="font-size:12px; text-transform:uppercase; letter-spacing:0.04em; color:oklch(0.18 0.01 60/0.5); margin-bottom:8px;">Adoçante</div>
+          <div style="display:flex; flex-wrap:wrap; gap:8px; margin-bottom:22px;">
+            <sc-for list="{{ juiceSweeteners }}" as="s" hint-placeholder-count="3">
+              <div onClick="{{ s.select }}" style="border:1px solid oklch(0.18 0.01 60/0.3); padding:8px 14px; font-size:13px; cursor:pointer; background:{{ s.bg }}; color:{{ s.fg }};">{{ s.label }}</div>
+            </sc-for>
+          </div>
+          <div onClick="{{ addJuiceToLog }}" style="background:oklch(0.62 0.19 41); color:white; padding:12px 20px; font-size:13px; letter-spacing:0.05em; text-transform:uppercase; font-weight:700; text-align:center; cursor:pointer; width:fit-content;">Adicionar suco ao dia →</div>
+        </div>
+      </div>
+
+      <div style="position:sticky; top:100px;">
+        <div style="border:1px solid oklch(0.18 0.01 60/0.2); background:oklch(0.985 0.005 80); padding:28px; margin-bottom:24px;">
+          <div style="font-size:12px; letter-spacing:0.08em; text-transform:uppercase; color:oklch(0.18 0.01 60/0.5); margin-bottom:16px;">{{ selectedCountLabel }}</div>
+          <sc-if value="{{ hasItems }}" hint-placeholder-val="{{ false }}">
+            <div style="display:flex; align-items:baseline; gap:14px; margin-bottom:14px;">
+              <span style="font-family:'Space Grotesk',sans-serif; font-size:56px; font-weight:700; line-height:1;">{{ overallDisplay }}</span>
+              <span style="font-size:13px; font-weight:700; text-transform:uppercase; letter-spacing:0.04em; color:{{ verdictColor }};">{{ verdictLabel }}</span>
+            </div>
+            <div style="font-size:13.5px; line-height:1.6; color:oklch(0.18 0.01 60/0.8); border-left:3px solid {{ verdictColor }}; padding-left:14px; margin-bottom:22px;">{{ verdictText }}</div>
+            <div style="display:flex; flex-direction:column; gap:10px;">
+              <sc-for list="{{ pillarScores }}" as="p" hint-placeholder-count="5">
+                <div style="display:flex; justify-content:space-between; font-size:12px; align-items:center; gap:10px;">
+                  <span style="text-transform:uppercase; letter-spacing:0.04em; color:oklch(0.18 0.01 60/0.65); white-space:nowrap;">{{ p.label }}</span>
+                  <span style="flex:1; height:6px; background:oklch(0.18 0.01 60/0.12); position:relative;"><span style="position:absolute; inset:0; width:{{ p.pctStr }}; background:{{ p.color }};"></span></span>
+                  <span style="font-size:11px; color:oklch(0.18 0.01 60/0.5); width:28px; text-align:right;">{{ p.valueStr }}</span>
+                </div>
+              </sc-for>
+            </div>
+          </sc-if>
+          <sc-if value="{{ noItems }}" hint-placeholder-val="{{ true }}">
+            <p style="font-size:14px; color:oklch(0.18 0.01 60/0.55); margin:0;">Adicione alimentos ao lado para ver a nota do dia.</p>
+          </sc-if>
+        </div>
+
+        <div style="border:1px solid oklch(0.18 0.01 60/0.2); padding:24px;">
+          <div style="font-size:12px; letter-spacing:0.08em; text-transform:uppercase; color:oklch(0.18 0.01 60/0.5); margin-bottom:16px;">Itens do dia</div>
+          <sc-for list="{{ selectedList }}" as="item" hint-placeholder-count="0">
+            <div style="display:flex; align-items:center; gap:10px; padding:10px 0; border-bottom:1px dashed oklch(0.18 0.01 60/0.15); font-size:13.5px;">
+              <span style="flex:1;">{{ item.name }}</span>
+              <input type="number" value="{{ item.qty }}" onChange="{{ item.onQtyChange }}" style="width:56px; border:1px solid oklch(0.18 0.01 60/0.3); background:transparent; font-family:'Space Mono',monospace; font-size:13px; padding:4px 6px; color:inherit;">
+              <span style="color:oklch(0.18 0.01 60/0.5); font-size:12px; width:36px;">{{ item.unitLabel }}</span>
+              <span onClick="{{ item.onRemove }}" style="cursor:pointer; color:oklch(0.55 0.19 29); font-weight:700;">×</span>
+            </div>
+          </sc-for>
+          <sc-if value="{{ isPlanejar }}" hint-placeholder-val="{{ false }}">
+            <div onClick="{{ exportPdf }}" style="margin-top:20px; background:oklch(0.18 0.01 60); color:oklch(0.96 0.01 80); padding:14px 24px; font-size:13px; letter-spacing:0.05em; text-transform:uppercase; font-weight:700; text-align:center; cursor:pointer;">Exportar cardápio em PDF →</div>
+          </sc-if>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CTA FINAL -->
+  <div id="cta-final" style="background:oklch(0.62 0.19 41); color:oklch(0.98 0.01 60); padding:120px 56px; text-align:center;">
+    <div style="font-size:13px; letter-spacing:0.1em; text-transform:uppercase; margin-bottom:24px; font-weight:700; opacity:0.85;">[ SEM PATERNALISMO. SÓ DADOS. ]</div>
+    <h2 style="font-family:'Space Grotesk', sans-serif; font-size:clamp(38px,5.5vw,64px); font-weight:700; margin:0 0 40px; line-height:1.05;">
+      QUER SABER O QUE<br>SUA COMIDA FAZ COM VOCÊ?
+    </h2>
+    <a href="#app" style="display:inline-flex; background:oklch(0.18 0.01 60); color:oklch(0.98 0.01 60); padding:20px 44px; font-size:15px; letter-spacing:0.06em; text-transform:uppercase; font-weight:700; text-decoration:none;">
+      Avaliar meu dia agora →
+    </a>
+  </div>
+
+  <!-- FOOTER -->
+  <div id="site-footer" style="padding:32px 56px; display:flex; justify-content:space-between; align-items:center; font-size:12px; letter-spacing:0.04em; text-transform:uppercase; color:oklch(0.18 0.01 60/0.5);">
+    <span>NUTRIPLANNER — 2026</span>
+    <span>PLANEJAMENTO NUTRICIONAL PARA CORREDORES</span>
+  </div>
+
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+const RUIM = oklch_ruim();
+function oklch_ruim(){ return 'oklch(0.55 0.19 29 / 0.6)'; }
+const BORDER_DEFAULT = 'oklch(0.18 0.01 60 / 0.2)';
+
+const FOODS = [
+  {id:'arroz', name:'Arroz branco', unit:'g', refQty:100, cat:'carb', pillars:{cardio:0.3,aerobic:0.8,antiox:0.1,antiinf:0.2,sleep:0.2}},
+  {id:'feijao', name:'Feijão carioca', unit:'g', refQty:100, cat:'carb', pillars:{cardio:0.6,aerobic:0.6,antiox:0.4,antiinf:0.3,sleep:0.2}},
+  {id:'cuscuz', name:'Cuscuz', unit:'g', refQty:100, cat:'carb', pillars:{cardio:0.3,aerobic:0.7,antiox:0.2,antiinf:0.2,sleep:0.2}},
+  {id:'tapioca', name:'Tapioca', unit:'g', refQty:100, cat:'carb', pillars:{cardio:0.2,aerobic:0.9,antiox:0.1,antiinf:0.1,sleep:0.1}},
+  {id:'batata_doce', name:'Batata doce', unit:'g', refQty:100, cat:'carb', pillars:{cardio:0.5,aerobic:0.9,antiox:0.5,antiinf:0.4,sleep:0.2}},
+  {id:'pao_frances', name:'Pão francês', unit:'unidade', refQty:1, cat:'carb', pillars:{cardio:0.1,aerobic:0.4,antiox:0.0,antiinf:-0.1,sleep:0.0}},
+  {id:'aveia', name:'Aveia em flocos', unit:'colher', refQty:1, cat:'carb', pillars:{cardio:0.6,aerobic:0.5,antiox:0.3,antiinf:0.3,sleep:0.5}},
+
+  {id:'carne_sol', name:'Carne de sol', unit:'g', refQty:100, cat:'prot', pillars:{cardio:-0.2,aerobic:0.4,antiox:0.0,antiinf:-0.1,sleep:0.1}},
+  {id:'frango', name:'Frango grelhado', unit:'g', refQty:100, cat:'prot', pillars:{cardio:0.4,aerobic:0.6,antiox:0.1,antiinf:0.2,sleep:0.2}},
+  {id:'ovo_cozido', name:'Ovo cozido', unit:'unidade', refQty:1, cat:'prot', pillars:{cardio:0.5,aerobic:0.3,antiox:0.2,antiinf:0.3,sleep:0.3}},
+  {id:'ovo_azeite', name:'Ovo mexido no azeite', unit:'unidade', refQty:1, cat:'prot', pillars:{cardio:0.4,aerobic:0.3,antiox:0.3,antiinf:0.4,sleep:0.3}},
+  {id:'ovo_manteiga', name:'Ovo frito na manteiga', unit:'unidade', refQty:1, cat:'prot', pillars:{cardio:0.1,aerobic:0.2,antiox:0.1,antiinf:0.0,sleep:0.2}},
+  {id:'ovo_oleo', name:'Ovo frito no óleo de soja', unit:'unidade', refQty:1, cat:'prot', pillars:{cardio:-0.5,aerobic:0.1,antiox:0.0,antiinf:-0.6,sleep:0.0}},
+  {id:'salmao', name:'Salmão assado', unit:'g', refQty:100, cat:'prot', pillars:{cardio:0.9,aerobic:0.5,antiox:0.2,antiinf:0.9,sleep:0.4}},
+  {id:'tofu', name:'Tofu grelhado', unit:'g', refQty:100, cat:'prot', pillars:{cardio:0.4,aerobic:0.3,antiox:0.2,antiinf:0.3,sleep:0.1}},
+
+  {id:'brocolis', name:'Brócolis', unit:'g', refQty:100, cat:'veg', pillars:{cardio:0.4,aerobic:0.2,antiox:0.8,antiinf:0.7,sleep:0.1}},
+  {id:'espinafre', name:'Espinafre', unit:'g', refQty:100, cat:'veg', pillars:{cardio:0.4,aerobic:0.2,antiox:0.7,antiinf:0.6,sleep:0.4}},
+  {id:'beterraba', name:'Beterraba', unit:'g', refQty:100, cat:'veg', pillars:{cardio:0.6,aerobic:0.9,antiox:0.5,antiinf:0.4,sleep:0.1}},
+  {id:'banana', name:'Banana', unit:'unidade', refQty:1, cat:'veg', pillars:{cardio:0.3,aerobic:0.7,antiox:0.3,antiinf:0.2,sleep:0.5}},
+  {id:'laranja', name:'Laranja', unit:'unidade', refQty:1, cat:'veg', pillars:{cardio:0.2,aerobic:0.4,antiox:0.7,antiinf:0.3,sleep:0.1}},
+  {id:'mamao', name:'Mamão', unit:'g', refQty:100, cat:'veg', pillars:{cardio:0.2,aerobic:0.3,antiox:0.6,antiinf:0.3,sleep:0.2}},
+  {id:'abacate', name:'Abacate', unit:'g', refQty:100, cat:'veg', pillars:{cardio:0.7,aerobic:0.3,antiox:0.4,antiinf:0.5,sleep:0.2}},
+  {id:'tomate', name:'Tomate', unit:'g', refQty:100, cat:'veg', pillars:{cardio:0.3,aerobic:0.1,antiox:0.6,antiinf:0.4,sleep:0.0}},
+
+  {id:'azeite', name:'Azeite de oliva', unit:'colher', refQty:1, cat:'gord', pillars:{cardio:0.6,aerobic:0.1,antiox:0.4,antiinf:0.6,sleep:0.1}},
+  {id:'castanha', name:'Castanha do pará', unit:'unidade', refQty:1, cat:'gord', pillars:{cardio:0.3,aerobic:0.1,antiox:0.3,antiinf:0.3,sleep:0.2}},
+  {id:'amendoas', name:'Amêndoas', unit:'colher', refQty:1, cat:'gord', pillars:{cardio:0.3,aerobic:0.1,antiox:0.3,antiinf:0.3,sleep:0.2}},
+
+  {id:'whopper', name:'Whopper', unit:'unidade', refQty:1, cat:'ruim', negative:true, pillars:{cardio:-1.8,aerobic:-0.6,antiox:-0.8,antiinf:-1.6,sleep:-0.6}},
+  {id:'refri', name:'Refrigerante (350ml)', unit:'ml', refQty:350, cat:'ruim', negative:true, pillars:{cardio:-0.6,aerobic:-0.3,antiox:-0.2,antiinf:-0.6,sleep:-0.8}},
+  {id:'salgadinho', name:'Salgadinho (pacote)', unit:'g', refQty:50, cat:'ruim', negative:true, pillars:{cardio:-0.9,aerobic:-0.3,antiox:-0.3,antiinf:-0.9,sleep:-0.3}},
+  {id:'cerveja', name:'Cerveja (lata)', unit:'ml', refQty:350, cat:'ruim', negative:true, pillars:{cardio:-0.4,aerobic:-0.4,antiox:-0.1,antiinf:-0.5,sleep:-1.2}},
+  {id:'pizza', name:'Pizza (fatia)', unit:'unidade', refQty:1, cat:'ruim', negative:true, pillars:{cardio:-0.5,aerobic:-0.2,antiox:-0.2,antiinf:-0.7,sleep:-0.3}},
+  {id:'bacon', name:'Bacon', unit:'g', refQty:30, cat:'ruim', negative:true, pillars:{cardio:-1.0,aerobic:-0.2,antiox:-0.1,antiinf:-0.8,sleep:-0.2}},
+  {id:'sorvete', name:'Sorvete', unit:'g', refQty:100, cat:'ruim', negative:true, pillars:{cardio:-0.4,aerobic:-0.2,antiox:-0.1,antiinf:-0.5,sleep:-0.7}},
+];
+
+const CATEGORY_DEFS = [
+  {key:'carb', label:'Carboidratos'},
+  {key:'prot', label:'Proteínas'},
+  {key:'veg', label:'Vegetais & Frutas'},
+  {key:'gord', label:'Gorduras boas'},
+  {key:'ruim', label:'Ultraprocessados'},
+];
+
+const PILLAR_DEFS = [
+  {key:'cardio', label:'Saúde cardíaca'},
+  {key:'aerobic', label:'Energia aeróbica'},
+  {key:'antiox', label:'Antioxidante'},
+  {key:'antiinf', label:'Anti-inflamatório'},
+  {key:'sleep', label:'Qualidade do sono'},
+];
+
+const PILLAR_MESSAGES = {
+  cardio: 'Zero reforço para saúde cardíaca — sem folhas, azeite ou peixe hoje.',
+  aerobic: 'Pouca energia aeróbica no prato — faltou carboidrato de qualidade pro treino.',
+  antiox: 'Zero fonte de antioxidante até agora.',
+  antiinf: 'Perfil anti-inflamatório fraco — o ultraprocessado pesou mais que o resto.',
+  sleep: 'Sono comprometido — cafeína, álcool ou açúcar tarde demais no dia.',
+};
+
+const JUICE_INGREDIENT_DEFS = [
+  {key:'beterraba', label:'Beterraba', pillars:{cardio:0.3,aerobic:0.5,antiox:0.3,antiinf:0.2,sleep:0.0}},
+  {key:'laranja', label:'Laranja', pillars:{cardio:0.1,aerobic:0.2,antiox:0.4,antiinf:0.2,sleep:0.0}},
+  {key:'couve', label:'Couve', pillars:{cardio:0.3,aerobic:0.1,antiox:0.5,antiinf:0.4,sleep:0.1}},
+  {key:'gengibre', label:'Gengibre', pillars:{cardio:0.1,aerobic:0.1,antiox:0.2,antiinf:0.5,sleep:0.1}},
+  {key:'limao', label:'Limão', pillars:{cardio:0.1,aerobic:0.1,antiox:0.4,antiinf:0.2,sleep:0.0}},
+  {key:'maca', label:'Maçã', pillars:{cardio:0.2,aerobic:0.2,antiox:0.3,antiinf:0.2,sleep:0.1}},
+  {key:'abacaxi', label:'Abacaxi', pillars:{cardio:0.1,aerobic:0.2,antiox:0.3,antiinf:0.3,sleep:0.0}},
+];
+
+const JUICE_BASE_DEFS = [
+  {key:'agua', label:'Água', pillars:{}},
+  {key:'agua_coco', label:'Água de coco', pillars:{cardio:0.2,aerobic:0.3,sleep:0.1}},
+  {key:'leite', label:'Leite integral', pillars:{cardio:-0.1,antiinf:-0.2,sleep:0.1}},
+];
+
+const JUICE_SWEETENER_DEFS = [
+  {key:'sem', label:'Sem adoçante', pillars:{}},
+  {key:'mel', label:'Mel', pillars:{antiinf:-0.1,sleep:0.1}},
+  {key:'acucar', label:'Açúcar', pillars:{cardio:-0.3,antiinf:-0.4,sleep:-0.3}},
+];
+
+function clamp(x, min, max) { return Math.max(min, Math.min(max, x)); }
+function round1(x) { return Math.round(x * 10) / 10; }
+function unitSuffix(unit) {
+  if (unit === 'g') return 'g';
+  if (unit === 'ml') return 'ml';
+  if (unit === 'colher') return 'colh.';
+  return 'un.';
+}
+
+class Component extends DCLogic {
+  state = {
+    mode: 'comi',
+    items: [],
+    nextUid: 1,
+    juiceSelected: {},
+    juiceBase: 'agua',
+    juiceSweetener: 'sem',
+  };
+
+  addFood(foodId) {
+    const food = FOODS.find(f => f.id === foodId);
+    if (!food) return;
+    this.setState(s => ({
+      items: [...s.items, { uid: s.nextUid, foodId, qty: food.refQty }],
+      nextUid: s.nextUid + 1,
+    }));
+  }
+
+  removeItem(uid) {
+    this.setState(s => ({ items: s.items.filter(i => i.uid !== uid) }));
+  }
+
+  updateQty(uid, value) {
+    const qty = Math.max(0, parseFloat(value) || 0);
+    this.setState(s => ({ items: s.items.map(i => i.uid === uid ? { ...i, qty } : i) }));
+  }
+
+  toggleJuiceIngredient(key) {
+    this.setState(s => ({ juiceSelected: { ...s.juiceSelected, [key]: !s.juiceSelected[key] } }));
+  }
+
+  setJuiceBase(key) { this.setState({ juiceBase: key }); }
+  setJuiceSweetener(key) { this.setState({ juiceSweetener: key }); }
+
+  addJuiceToLog() {
+    const s = this.state;
+    const ingredients = JUICE_INGREDIENT_DEFS.filter(i => s.juiceSelected[i.key]);
+    if (ingredients.length === 0) return;
+    const base = JUICE_BASE_DEFS.find(b => b.key === s.juiceBase);
+    const sweetener = JUICE_SWEETENER_DEFS.find(sw => sw.key === s.juiceSweetener);
+    const pillars = { cardio: 0, aerobic: 0, antiox: 0, antiinf: 0, sleep: 0 };
+    [...ingredients, base, sweetener].forEach(src => {
+      if (!src) return;
+      Object.keys(pillars).forEach(k => { pillars[k] += (src.pillars[k] || 0); });
+    });
+    const name = 'Suco (' + ingredients.map(i => i.label).join(', ') + ')';
+    this.setState(prev => ({
+      items: [...prev.items, { uid: prev.nextUid, foodId: null, qty: 1, isJuice: true, name, pillars }],
+      nextUid: prev.nextUid + 1,
+      juiceSelected: {},
+      juiceBase: 'agua',
+      juiceSweetener: 'sem',
+    }));
+  }
+
+  setMode(mode) { this.setState({ mode }); }
+  exportPdf() { window.print(); }
+
+  renderVals() {
+    const s = this.state;
+
+    const categories = CATEGORY_DEFS.map(cd => ({
+      label: cd.label,
+      foods: FOODS.filter(f => f.cat === cd.key).map(f => ({
+        name: f.name,
+        borderColor: f.negative ? 'oklch(0.55 0.19 29 / 0.5)' : BORDER_DEFAULT,
+        add: () => this.addFood(f.id),
+      })),
+    }));
+
+    const selectedList = s.items.map(item => {
+      const food = item.foodId ? FOODS.find(f => f.id === item.foodId) : null;
+      return {
+        uid: item.uid,
+        name: food ? food.name : item.name,
+        qty: item.qty,
+        unitLabel: food ? unitSuffix(food.unit) : 'un.',
+        onQtyChange: (e) => this.updateQty(item.uid, e.target.value),
+        onRemove: () => this.removeItem(item.uid),
+        food, item,
+      };
+    });
+
+    const rawTotals = { cardio: 0, aerobic: 0, antiox: 0, antiinf: 0, sleep: 0 };
+    let worstNegative = null, worstNegativeScore = 0;
+    selectedList.forEach(({ food, item }) => {
+      const pillars = food ? food.pillars : item.pillars;
+      const factor = food ? (item.qty / food.refQty) : 1;
+      let itemImpact = 0;
+      Object.keys(rawTotals).forEach(k => {
+        const v = (pillars[k] || 0) * factor;
+        rawTotals[k] += v;
+        itemImpact += v;
+      });
+      if ((food && food.negative) && itemImpact < worstNegativeScore) {
+        worstNegativeScore = itemImpact;
+        worstNegative = food.name;
+      }
+    });
+
+    const hasItems = selectedList.length > 0;
+    const pillarScores = PILLAR_DEFS.map(p => {
+      const value = hasItems ? clamp(5 + rawTotals[p.key] * 0.9, 0, 10) : 0;
+      const color = value >= 7 ? 'oklch(0.55 0.15 152)' : value >= 5 ? 'oklch(0.7 0.15 85)' : 'oklch(0.55 0.19 29)';
+      return { label: p.label, key: p.key, value, valueStr: round1(value).toFixed(1), pctStr: (value * 10) + '%', color };
+    });
+
+    let overall = 0;
+    if (hasItems) {
+      overall = round1(pillarScores.reduce((a, p) => a + p.value, 0) / pillarScores.length);
+    }
+    const verdictLabel = !hasItems ? '' : overall >= 7 ? 'Bom' : overall >= 5 ? 'Regular' : 'Insuficiente';
+    const verdictColor = overall >= 7 ? 'oklch(0.55 0.15 152)' : overall >= 5 ? 'oklch(0.7 0.15 85)' : 'oklch(0.55 0.19 29)';
+
+    let verdictText = '';
+    if (hasItems) {
+      if (overall >= 8 && !worstNegative) {
+        verdictText = 'Nada te derrubou hoje. Mantenha esse padrão amanhã.';
+      } else {
+        const lowest = pillarScores.reduce((a, b) => a.value <= b.value ? a : b);
+        const parts = [PILLAR_MESSAGES[lowest.key]];
+        if (worstNegative) parts.push('O ' + worstNegative + ' pesou contra sua nota.');
+        verdictText = parts.join(' ');
+      }
+    }
+
+    const juiceIngredients = JUICE_INGREDIENT_DEFS.map(i => ({
+      label: i.label,
+      bg: s.juiceSelected[i.key] ? 'oklch(0.18 0.01 60)' : 'transparent',
+      fg: s.juiceSelected[i.key] ? 'oklch(0.96 0.01 80)' : 'inherit',
+      toggle: () => this.toggleJuiceIngredient(i.key),
+    }));
+    const juiceBases = JUICE_BASE_DEFS.map(b => ({
+      label: b.label,
+      bg: s.juiceBase === b.key ? 'oklch(0.18 0.01 60)' : 'transparent',
+      fg: s.juiceBase === b.key ? 'oklch(0.96 0.01 80)' : 'inherit',
+      select: () => this.setJuiceBase(b.key),
+    }));
+    const juiceSweeteners = JUICE_SWEETENER_DEFS.map(sw => ({
+      label: sw.label,
+      bg: s.juiceSweetener === sw.key ? 'oklch(0.18 0.01 60)' : 'transparent',
+      fg: s.juiceSweetener === sw.key ? 'oklch(0.96 0.01 80)' : 'inherit',
+      select: () => this.setJuiceSweetener(sw.key),
+    }));
+
+    return {
+      categories,
+      selectedList,
+      hasItems,
+      noItems: !hasItems,
+      selectedCountLabel: selectedList.length + (selectedList.length === 1 ? ' ITEM REGISTRADO' : ' ITENS REGISTRADOS'),
+      overallDisplay: hasItems ? overall.toFixed(1) : '—',
+      verdictLabel,
+      verdictColor,
+      verdictText,
+      pillarScores,
+      juiceIngredients,
+      juiceBases,
+      juiceSweeteners,
+      addJuiceToLog: () => this.addJuiceToLog(),
+      mode: s.mode,
+      isPlanejar: s.mode === 'planejar',
+      setModeComi: () => this.setMode('comi'),
+      setModePlanejar: () => this.setMode('planejar'),
+      comiModeBg: s.mode === 'comi' ? 'oklch(0.18 0.01 60)' : 'transparent',
+      comiModeColor: s.mode === 'comi' ? 'oklch(0.96 0.01 80)' : 'inherit',
+      planejarModeBg: s.mode === 'planejar' ? 'oklch(0.18 0.01 60)' : 'transparent',
+      planejarModeColor: s.mode === 'planejar' ? 'oklch(0.96 0.01 80)' : 'inherit',
+      exportPdf: () => this.exportPdf(),
+    };
+  }
+}
+
+</script>
+</body>
+</html>
