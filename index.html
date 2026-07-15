@@ -161,21 +161,48 @@ html,body{background:var(--bg);color:var(--text);font-family:var(--font-mono);mi
 .feed-tag.timing{background:var(--orange-dim);color:var(--orange)}
 .feed-title{font-family:var(--font-display);font-size:16px;font-weight:700;margin-bottom:8px;line-height:1.3}
 .feed-body{font-size:13.5px;line-height:1.6;color:var(--muted)}
-/* prova (parte 1 — só teste da lógica, sem UI final) */
-.prova-note{padding:0 16px 10px;font-size:12px;color:var(--muted);line-height:1.5}
-.prova-form{padding:0 16px;display:flex;flex-direction:column;gap:10px;margin-bottom:16px}
+/* prova — plano de corrida */
+.prova-note{padding:0 16px 12px;font-size:12px;color:var(--muted);line-height:1.5}
+.prova-form{padding:0 16px;display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px}
 .prova-form label{display:flex;flex-direction:column;gap:4px;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.03em}
 .prova-form input{font-family:var(--font-mono);font-size:14px;padding:9px 10px;border:1px solid var(--border-strong);border-radius:var(--r);background:var(--surface);color:var(--text)}
-.prova-form button{font-family:var(--font-mono);font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;padding:12px;border:1px solid var(--border-strong);background:var(--border-strong);color:var(--bg);cursor:pointer;border-radius:var(--r)}
-.prova-result{padding:0 16px 24px;font-size:13.5px;line-height:1.6}
-.prova-result h3{font-size:12px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin:16px 0 6px}
-.prova-result ul{margin:0 0 4px 18px}
-.prova-fases li{margin-bottom:8px}
-.cardapio-block{margin-top:6px;padding:8px 0 2px 10px;border-left:2px solid var(--border);font-size:12.5px}
-.cardapio-nota{color:var(--muted);font-style:italic;margin-bottom:4px}
-.cardapio-linha{margin-bottom:3px}
-.cardapio-extras ul{margin:3px 0 0 16px}
-.cardapio-extras li{margin-bottom:3px}
+.prova-form button{grid-column:1/-1;font-family:var(--font-mono);font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;padding:13px;border:1px solid var(--border-strong);background:var(--border-strong);color:var(--bg);cursor:pointer;border-radius:var(--r)}
+.prova-result{padding:0 16px 24px}
+.prova-summary{background:var(--surface);border:1px solid var(--border-strong);border-radius:var(--r);padding:16px;margin-bottom:14px}
+.prova-summary-top{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;margin-bottom:14px;flex-wrap:wrap}
+.prova-int-label{font-size:10.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;margin-bottom:2px}
+.prova-int-val{font-family:var(--font-display);font-size:26px;font-weight:700;text-transform:uppercase}
+.prova-int-sub{font-size:11.5px;color:var(--muted);margin-top:2px}
+.prova-pdf-btn{font-family:var(--font-mono);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.03em;padding:10px 14px;border:1px solid var(--border-strong);background:transparent;color:var(--text);cursor:pointer;border-radius:var(--r);white-space:nowrap}
+.nivel-chips{display:flex;flex-wrap:wrap;gap:6px}
+.nivel-chip{display:flex;flex-direction:column;gap:2px;padding:6px 10px;border:1px solid var(--border);border-radius:var(--r);font-size:10px}
+.nivel-chip span{text-transform:uppercase;letter-spacing:.03em;color:var(--muted)}
+.nivel-chip strong{font-size:12px;text-transform:capitalize}
+.nivel-chip.nivel-baixo strong{color:var(--muted)}
+.nivel-chip.nivel-medio strong{color:var(--amber)}
+.nivel-chip.nivel-alto strong{color:var(--terracota)}
+.dia-list{display:flex;flex-direction:column;gap:12px}
+.dia-card{background:var(--surface);border:1px solid var(--border-strong);border-radius:var(--r);padding:16px}
+.dia-card.bloco{background:var(--surface2)}
+.dia-card-head{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px}
+.dia-card-fase{font-family:var(--font-display);font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.02em;padding:3px 10px;border-radius:var(--r)}
+.fase-prova{background:var(--terracota-dim);color:var(--terracota)}
+.fase-vespera{background:var(--amber-dim);color:var(--amber)}
+.fase-abastecimento{background:var(--blue-dim);color:var(--blue)}
+.fase-construcao{background:var(--teal-dim);color:var(--teal)}
+.fase-base{background:var(--purple-dim);color:var(--purple)}
+.dia-card-date{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.03em}
+.dia-card-focus{font-size:12.5px;color:var(--muted);line-height:1.5;margin-bottom:10px}
+.dia-card-nota{font-size:12px;color:var(--text);font-style:italic;margin-bottom:10px;padding:8px 10px;background:var(--surface2);border-radius:var(--r)}
+.refeicao-block{margin-bottom:10px}
+.refeicao-label{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--terracota);margin-bottom:6px}
+.refeicao-itens{display:flex;flex-wrap:wrap;gap:6px}
+.food-swap{font-family:var(--font-mono);font-size:12px;padding:6px 8px;border:1px solid var(--border-strong);border-radius:var(--r);background:var(--surface2);color:var(--text);cursor:pointer;max-width:100%}
+.food-swap-fixed{display:inline-block;font-family:var(--font-mono);font-size:12px;padding:6px 8px;border:1px solid var(--border);border-radius:var(--r);background:var(--surface2);color:var(--muted)}
+.extras-block{margin-top:12px;padding-top:10px;border-top:1px dashed var(--border)}
+.extra-item{font-size:12px;line-height:1.5;margin-bottom:8px;padding-left:10px;border-left:2px solid var(--terracota)}
+.extra-item strong{display:block;margin-bottom:1px}
+.usar-dia-btn{width:100%;margin-top:14px;padding:11px;font-family:var(--font-mono);font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;border:1px solid var(--border-strong);background:transparent;color:var(--text);cursor:pointer;border-radius:var(--r)}
 </style>
 </head>
 <body>
@@ -497,7 +524,8 @@ const MEAL_POOLS = {
   proteinaAntiInflam: ['salmao','sardinha'],
 };
 function foodById(id){ return FOODS.find(f=>f.id===id); }
-function mealItem(food){ return food?{id:food.id,name:food.name}:null; }
+// role = de qual MEAL_POOL esse item veio (usado pra oferecer substituições equivalentes na UI)
+function mealItem(food, role){ return food?{id:food.id,name:food.name,role:role||null}:null; }
 
 // roda o pool (embaralhado uma vez por plano+papel) e escolhe pelo offset — garante que dias
 // vizinhos (offset e offset+1) quase sempre caem em itens diferentes, e o ciclo se repete só
@@ -539,7 +567,7 @@ function buildCardapioDia(item, niveis){
   if(phase==='prova'){
     const preTreino=rotatePick('lanchePreTreino',offset);
     return {
-      cafe:[mealItem(preTreino)].filter(Boolean),
+      cafe:[mealItem(preTreino,'lanchePreTreino')].filter(Boolean),
       almoco:[],jantar:[],lanches:[],
       extras:buildExtras(phase,niveis),
       nota:'Dia da prova: só o pré-treino importa. Carboidrato leve e de fácil digestão — nada pesado, nada novo.',
@@ -547,10 +575,10 @@ function buildCardapioDia(item, niveis){
   }
   if(phase==='vespera'){
     return {
-      cafe:[mealItem(foodById('pao_int')),mealItem(foodById('banana'))].filter(Boolean),
-      almoco:[mealItem(foodById('frango')),mealItem(foodById('arroz_br')),mealItem(foodById('batata_doce'))].filter(Boolean),
-      jantar:[mealItem(foodById('macarrao')),mealItem(foodById('frango'))].filter(Boolean),
-      lanches:[mealItem(foodById('banana'))].filter(Boolean),
+      cafe:[mealItem(foodById('pao_int'),'cafeCarbo'),mealItem(foodById('banana'),'cafeFruta')].filter(Boolean),
+      almoco:[mealItem(foodById('frango'),'almocoProteina'),mealItem(foodById('arroz_br'),'almocoCarbo'),mealItem(foodById('batata_doce'),'almocoCarbo')].filter(Boolean),
+      jantar:[mealItem(foodById('macarrao'),'jantarCarbo'),mealItem(foodById('frango'),'jantarProteina')].filter(Boolean),
+      lanches:[mealItem(foodById('banana'),'lanchePreTreino')].filter(Boolean),
       extras:buildExtras(phase,niveis),
       nota:'Véspera: comida leve, testada e sem novidade — nada de fibra em excesso, fritura ou tempero pesado.',
     };
@@ -559,24 +587,25 @@ function buildCardapioDia(item, niveis){
   const carboBoost=phase==='abastecimento';
   const antiInflamBoost=phase==='base';
 
-  const cafe=[mealItem(rotatePick('cafeCarbo',offset)),mealItem(rotatePick('cafeFruta',offset))].filter(Boolean);
-  if(antiInflamBoost) cafe.push(mealItem(foodById('ovo')));
+  const cafe=[mealItem(rotatePick('cafeCarbo',offset),'cafeCarbo'),mealItem(rotatePick('cafeFruta',offset),'cafeFruta')].filter(Boolean);
+  if(antiInflamBoost) cafe.push(mealItem(foodById('ovo'),'almocoProteina'));
 
+  const almocoProtRole=antiInflamBoost?'proteinaAntiInflam':'almocoProteina';
   const almoco=[
-    mealItem(antiInflamBoost?(rotatePick('proteinaAntiInflam',offset)||rotatePick('almocoProteina',offset)):rotatePick('almocoProteina',offset)),
-    mealItem(rotatePick('almocoCarbo',offset)),
-    mealItem(rotatePick('almocoVegetal',offset)),
+    mealItem(antiInflamBoost?(rotatePick('proteinaAntiInflam',offset)||rotatePick('almocoProteina',offset)):rotatePick('almocoProteina',offset), almocoProtRole),
+    mealItem(rotatePick('almocoCarbo',offset),'almocoCarbo'),
+    mealItem(rotatePick('almocoVegetal',offset),'almocoVegetal'),
   ].filter(Boolean);
-  if(antiInflamBoost) almoco.push(mealItem(rotatePick('antiInflamBooster',offset)));
+  if(antiInflamBoost) almoco.push(mealItem(rotatePick('antiInflamBooster',offset),'antiInflamBooster'));
 
   const jantar=[
-    mealItem(rotatePick('jantarProteina',offset)),
-    mealItem(rotatePick('jantarCarbo',offset)),
-    mealItem(rotatePick('jantarVegetal',offset)),
+    mealItem(rotatePick('jantarProteina',offset),'jantarProteina'),
+    mealItem(rotatePick('jantarCarbo',offset),'jantarCarbo'),
+    mealItem(rotatePick('jantarVegetal',offset),'jantarVegetal'),
   ].filter(Boolean);
-  if(carboBoost) jantar.push(mealItem(rotatePick('almocoCarbo',offset+1)));
+  if(carboBoost) jantar.push(mealItem(rotatePick('almocoCarbo',offset+1),'almocoCarbo'));
 
-  const lanches=[mealItem(rotatePick('lanchePreTreino',offset)),mealItem(rotatePick('lanchePosTreino',offset))].filter(Boolean);
+  const lanches=[mealItem(rotatePick('lanchePreTreino',offset),'lanchePreTreino'),mealItem(rotatePick('lanchePosTreino',offset),'lanchePosTreino')].filter(Boolean);
 
   return {cafe,almoco,jantar,lanches,extras:buildExtras(phase,niveis)};
 }
@@ -630,54 +659,193 @@ function calcularProva(){
   render();
 }
 
-function renderCardapioDia(c){
-  if(!c) return '';
-  const linha=(rotulo,arr)=>arr&&arr.length?`<div class="cardapio-linha"><strong>${rotulo}:</strong> ${arr.map(x=>x.name).join(', ')}</div>`:'';
-  const extras=c.extras&&c.extras.length?`<div class="cardapio-linha cardapio-extras"><strong>Extras do dia:</strong><ul>${c.extras.map(e=>`<li>${e.item} — ${e.timing}. <span style="color:var(--muted)">${e.motivo}</span></li>`).join('')}</ul></div>`:'';
-  return `<div class="cardapio-block">
-    ${c.nota?`<div class="cardapio-nota">${c.nota}</div>`:''}
-    ${linha('Café da manhã',c.cafe)}
-    ${linha('Almoço',c.almoco)}
-    ${linha('Jantar',c.jantar)}
-    ${linha('Lanches',c.lanches)}
-    ${extras}
+// troca um alimento de uma refeição de um dia específico por outro do mesmo papel (MEAL_POOL)
+function trocarAlimento(offset, refeicao, idx, novoId){
+  if(!provaState.resultado) return;
+  const dia=provaState.resultado.fases.find(f=>f.kind==='dia'&&f.offset===offset);
+  if(!dia||!dia.cardapio||!dia.cardapio[refeicao]) return;
+  const atual=dia.cardapio[refeicao][idx];
+  const novo=foodById(novoId);
+  if(!novo||!atual) return;
+  dia.cardapio[refeicao][idx]={id:novo.id,name:novo.name,role:atual.role};
+  render();
+}
+
+// joga os alimentos daquele dia do plano como itens selecionados na aba "Comi hoje"
+function usarDiaComiHoje(offset){
+  if(!provaState.resultado) return;
+  const dia=provaState.resultado.fases.find(f=>f.kind==='dia'&&f.offset===offset);
+  if(!dia||!dia.cardapio) return;
+  const c=dia.cardapio;
+  const itens=[...c.cafe,...c.almoco,...c.jantar,...c.lanches];
+  if(!itens.length){ alert('Esse dia não tem refeições pra usar (só o pré-treino).'); }
+  if(selected.size>0){
+    const ok=confirm('Isso vai substituir os itens já marcados em "Comi hoje". Continuar?');
+    if(!ok) return;
+  }
+  selected.clear();
+  itens.forEach(it=>{
+    const f=foodById(it.id);
+    if(f) selected.set(f.id,{prep:0,qty:f.ref});
+  });
+  updateCount();
+  setMode('hoje');
+}
+
+function exportProvaPDF(){
+  const r=provaState.resultado;
+  if(!r||!r.fases.length){ alert('Gere um plano primeiro.'); return; }
+  if(!window.jspdf||!window.jspdf.jsPDF){
+    alert('O gerador de PDF não carregou (pode ser a conexão). Tente novamente em instantes.');
+    return;
+  }
+  const{jsPDF}=window.jspdf;const doc=new jsPDF({unit:'mm',format:'a4'});
+  let y=18;const L=16;const W=178;
+  doc.setFontSize(18);doc.setFont(undefined,'bold');doc.text('Plano de Prova',L,y);y+=6;
+  doc.setFontSize(10);doc.setFont(undefined,'normal');doc.setTextColor(120);
+  doc.text(`NutriPlanner · ${r.distancia}km · pace ${r.pace}min/km · ${new Date().toLocaleDateString('pt-BR')}`,L,y);y+=10;
+  doc.setTextColor(20);doc.setFontSize(13);doc.setFont(undefined,'bold');
+  doc.text(`Intensidade: ${r.intensidade}  ·  ${r.daysUntil} dias até a prova`,L,y);y+=7;
+  doc.setFontSize(10);doc.setFont(undefined,'normal');
+  const nivelLine=`Carboidrato: ${r.niveis.carboidrato} · Proteína: ${r.niveis.proteina} · Hidratação: ${r.niveis.hidratacao} · Anti-inflam: ${r.niveis.antiinflamatorio} · Sono: ${r.niveis.sono}`;
+  const nivelSplit=doc.splitTextToSize(nivelLine,W);doc.text(nivelSplit,L,y);y+=5*nivelSplit.length+6;
+
+  r.fases.forEach(f=>{
+    if(y>270){doc.addPage();y=18;}
+    doc.setFontSize(12);doc.setFont(undefined,'bold');
+    const header=f.kind==='bloco'?`${f.label} — ${f.numDays} dias (${f.dateRange})`:`${f.date} — ${f.label}`;
+    doc.text(header,L,y);y+=6;
+    doc.setFontSize(9);doc.setFont(undefined,'normal');doc.setTextColor(90);
+    const focusSplit=doc.splitTextToSize(f.focus,W);doc.text(focusSplit,L,y);y+=5*focusSplit.length+2;
+    doc.setTextColor(20);
+    if(f.kind==='dia'&&f.cardapio){
+      const c=f.cardapio;
+      const mealLine=(label,arr)=>{
+        if(!arr||!arr.length) return;
+        if(y>275){doc.addPage();y=18;}
+        doc.setFont(undefined,'bold');doc.setFontSize(9);doc.text(label+':',L+2,y);
+        doc.setFont(undefined,'normal');
+        const split=doc.splitTextToSize(arr.map(x=>x.name).join(', '),W-32);
+        doc.text(split,L+32,y);
+        y+=5*Math.max(split.length,1);
+      };
+      mealLine('Café',c.cafe);mealLine('Almoço',c.almoco);mealLine('Jantar',c.jantar);mealLine('Lanches',c.lanches);
+      if(c.extras&&c.extras.length){
+        y+=1;
+        c.extras.forEach(e=>{
+          if(y>278){doc.addPage();y=18;}
+          const split=doc.splitTextToSize(`• ${e.item} — ${e.timing}`,W-4);
+          doc.text(split,L+2,y);y+=5*split.length;
+        });
+      }
+    }
+    y+=5;
+  });
+  try{
+    doc.save('plano_prova_nutriplanner.pdf');
+  }catch(e){
+    try{
+      const blob=doc.output('blob');const url=URL.createObjectURL(blob);window.open(url,'_blank');
+    }catch(e2){
+      alert('Não foi possível salvar o PDF neste navegador.');
+    }
+  }
+}
+
+// dropdown de substituição: oferece o item atual + os outros membros do mesmo MEAL_POOL
+function poolOptionsHtml(role, currentId){
+  const pool=MEAL_POOLS[role]||[];
+  const ids=[...new Set([currentId,...pool])];
+  return ids.map(id=>{
+    const f=foodById(id);
+    if(!f) return '';
+    return `<option value="${id}"${id===currentId?' selected':''}>${f.name}</option>`;
+  }).join('');
+}
+function renderFoodSwap(offset,refeicao,idx,it){
+  if(!it) return '';
+  if(!it.role) return `<span class="food-swap food-swap-fixed">${it.name}</span>`;
+  return `<select class="food-swap" onchange="trocarAlimento(${offset},'${refeicao}',${idx},this.value)">${poolOptionsHtml(it.role,it.id)}</select>`;
+}
+function renderRefeicaoRow(label,arr,offset,refeicao){
+  if(!arr||!arr.length) return '';
+  return `<div class="refeicao-block">
+    <div class="refeicao-label">${label}</div>
+    <div class="refeicao-itens">${arr.map((it,idx)=>renderFoodSwap(offset,refeicao,idx,it)).join('')}</div>
+  </div>`;
+}
+function renderExtrasBlock(extras){
+  if(!extras||!extras.length) return '';
+  return `<div class="extras-block">
+    <div class="refeicao-label">Extras do dia</div>
+    ${extras.map(e=>`<div class="extra-item"><strong>${e.item}</strong> — ${e.timing}<br><span style="color:var(--muted)">${e.motivo}</span></div>`).join('')}
+  </div>`;
+}
+function renderDiaCard(f){
+  const c=f.cardapio||{};
+  return `<div class="dia-card">
+    <div class="dia-card-head">
+      <span class="dia-card-fase fase-${f.phase}">${f.label}</span>
+      <span class="dia-card-date">${f.date}</span>
+    </div>
+    <div class="dia-card-focus">${f.focus}</div>
+    ${c.nota?`<div class="dia-card-nota">${c.nota}</div>`:''}
+    ${renderRefeicaoRow('Café da manhã',c.cafe,f.offset,'cafe')}
+    ${renderRefeicaoRow('Almoço',c.almoco,f.offset,'almoco')}
+    ${renderRefeicaoRow('Jantar',c.jantar,f.offset,'jantar')}
+    ${renderRefeicaoRow('Lanches',c.lanches,f.offset,'lanches')}
+    ${renderExtrasBlock(c.extras)}
+    <button class="usar-dia-btn" onclick="usarDiaComiHoje(${f.offset})">usar este dia no Comi hoje →</button>
+  </div>`;
+}
+function renderBlocoCard(f){
+  return `<div class="dia-card bloco">
+    <div class="dia-card-head">
+      <span class="dia-card-fase fase-${f.phase}">${f.label}</span>
+      <span class="dia-card-date">${f.numDays} dias · ${f.dateRange}</span>
+    </div>
+    <div class="dia-card-focus">${f.focus}</div>
   </div>`;
 }
 
 function renderProva(){
   const s=provaState;
-  let html=`<div class="section-label">motor de cálculo — parte 1 (teste)</div>
-    <div class="prova-note">Só a lógica por enquanto: intensidade, níveis por pilar e fases até a prova. Cardápio e UI final vêm depois.</div>
+  let html=`<div class="section-label">plano de prova</div>
+    <div class="prova-note">Monte o plano de alimentação até o dia da corrida — refeições, timing e suplementação, tudo ajustável.</div>
     <div class="prova-form">
       <label>Distância (km)<input type="number" id="provaDist" value="${s.distancia}" step="0.1" min="0"></label>
       <label>Pace (min/km)<input type="number" id="provaPace" value="${s.pace}" step="0.1" min="0"></label>
       <label>Data da prova<input type="date" id="provaData" value="${s.data}"></label>
       <label>Peso (kg)<input type="number" id="provaPeso" value="${s.peso}" step="1" min="0"></label>
-      <button onclick="calcularProva()">calcular</button>
+      <button onclick="calcularProva()">gerar plano</button>
     </div>`;
   if(s.resultado){
     const r=s.resultado;
     if(r.daysUntil<0){
       html+=`<div class="prova-result">Data da prova já passou — ajuste a data acima.</div>`;
     } else {
+      const nivelChip=(label,val)=>`<div class="nivel-chip nivel-${normalize(val)}"><span>${label}</span><strong>${val}</strong></div>`;
       html+=`<div class="prova-result">
-        <p><strong>Intensidade da prova:</strong> ${r.intensidade} <span style="color:var(--muted)">(${r.distCat} · pace ${r.paceCat})</span></p>
-        <p><strong>Dias até a prova:</strong> ${r.daysUntil}</p>
-        <h3>Necessidades por pilar</h3>
-        <ul>
-          <li>Carboidrato: <strong>${r.niveis.carboidrato}</strong></li>
-          <li>Proteína: <strong>${r.niveis.proteina}</strong></li>
-          <li>Hidratação: <strong>${r.niveis.hidratacao}</strong></li>
-          <li>Anti-inflamatório: <strong>${r.niveis.antiinflamatorio}</strong></li>
-          <li>Foco no sono: <strong>${r.niveis.sono}</strong></li>
-        </ul>
-        <h3>Linha do tempo (fases até a prova)</h3>
-        <ul class="prova-fases">
-          ${r.fases.map(f=>f.kind==='bloco'
-            ?`<li><strong>${f.label}</strong> — ${f.numDays} dias (${f.dateRange})<br>${f.focus}</li>`
-            :`<li><strong>${f.date} — ${f.label}</strong><br>${f.focus}${renderCardapioDia(f.cardapio)}</li>`
-          ).join('')}
-        </ul>
+        <div class="prova-summary">
+          <div class="prova-summary-top">
+            <div>
+              <div class="prova-int-label">intensidade da prova</div>
+              <div class="prova-int-val">${r.intensidade}</div>
+              <div class="prova-int-sub">${r.distCat} · pace ${r.paceCat} · ${r.daysUntil} dias até a prova</div>
+            </div>
+            <button class="prova-pdf-btn" onclick="exportProvaPDF()">baixar PDF</button>
+          </div>
+          <div class="nivel-chips">
+            ${nivelChip('carboidrato',r.niveis.carboidrato)}
+            ${nivelChip('proteína',r.niveis.proteina)}
+            ${nivelChip('hidratação',r.niveis.hidratacao)}
+            ${nivelChip('anti-inflam.',r.niveis.antiinflamatorio)}
+            ${nivelChip('sono',r.niveis.sono)}
+          </div>
+        </div>
+        <div class="dia-list">
+          ${r.fases.map(f=>f.kind==='bloco'?renderBlocoCard(f):renderDiaCard(f)).join('')}
+        </div>
       </div>`;
     }
   }
