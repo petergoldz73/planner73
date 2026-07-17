@@ -1252,5 +1252,35 @@ function exportPDF(){
 document.getElementById('search').addEventListener('input',render);
 renderCats();setMode('inicio');
 </script>
+
+<script type="module">
+// Fundação Supabase (Onda 7) — só conexão/leitura, sem auth/UX ainda.
+// Preencha com os valores do seu projeto em Settings > API no painel Supabase.
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+
+const SUPABASE_URL = 'https://SEU-PROJETO.supabase.co';
+const SUPABASE_ANON_KEY = 'SUA_SUPABASE_ANON_KEY_AQUI';
+
+export const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+window.supabaseClient = supabaseClient;
+
+async function sanityCheckFeedContent(){
+  try{
+    const { data, error } = await supabaseClient
+      .from('feed_content')
+      .select('*')
+      .eq('active', true)
+      .order('sort_order', { ascending: true });
+    if(error){
+      console.warn('[supabase] sanity check falhou:', error.message);
+      return;
+    }
+    console.log('[supabase] feed_content OK —', (data||[]).length, 'itens ativos', data);
+  }catch(e){
+    console.warn('[supabase] sanity check erro inesperado:', e);
+  }
+}
+sanityCheckFeedContent();
+</script>
 </body>
 </html>

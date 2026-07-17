@@ -1,0 +1,12 @@
+{
+  "name": "planner73",
+  "private": true,
+  "version": "0.0.0",
+  "description": "NutriPlanner — app single-file, sem build step. Deps abaixo são só para testes.",
+  "scripts": {
+    "test": "playwright test"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.40.0"
+  }
+}
