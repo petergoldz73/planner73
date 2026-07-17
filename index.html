@@ -1368,7 +1368,7 @@ function showApp(session){
 document.getElementById('loginBtn').addEventListener('click', async () => {
   await supabaseClient.auth.signInWithOAuth({
     provider: 'google',
-    options: { redirectTo: window.location.origin }
+    options: { redirectTo: 'https://petergoldz73.github.io/planner73/' }
   });
 });
 
