@@ -78,6 +78,14 @@ html,body{background:var(--bg);color:var(--text);font-family:var(--font-mono);mi
 .b-sono{background:var(--purple)}.t-sono{color:var(--purple)}
 .b-inflam{background:var(--orange)}.t-inflam{color:var(--orange)}
 .empty{padding:40px 16px;text-align:center;color:var(--muted);font-size:14px}
+.hist-list{display:flex;flex-direction:column;gap:10px;padding:0 16px 16px}
+.hist-card{background:var(--surface);border:1px solid var(--border-strong);border-radius:var(--r);padding:14px;cursor:pointer}
+.hist-card-head{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.hist-date{font-size:14px;font-weight:700;color:var(--text);text-transform:uppercase;letter-spacing:.03em}
+.hist-score{font-size:20px;font-weight:700;flex-shrink:0}
+.hist-meta{font-size:12px;color:var(--muted);margin-top:6px;letter-spacing:.02em}
+.hist-detail{margin-top:12px;padding-top:12px;border-top:1px solid var(--border)}
+.hist-items{font-size:13px;color:var(--text);line-height:1.6}
 /* juice builder */
 .juice-wrap{padding:0 16px}
 .juice-box{background:var(--surface);border:1px solid var(--border-strong);border-radius:var(--r);padding:16px;margin-bottom:10px}
@@ -248,6 +256,7 @@ html,body{background:var(--bg);color:var(--text);font-family:var(--font-mono);mi
       <div class="tab" id="tabHoje" onclick="setMode('hoje')">Comi hoje<span class="tab-sub">avaliar o dia</span></div>
       <div class="tab" id="tabAmanha" onclick="setMode('amanha')">Planejar<span class="tab-sub">montar cardápio</span></div>
       <div class="tab" id="tabProva" onclick="setMode('prova')">Prova<span class="tab-sub">plano da corrida</span></div>
+      <div class="tab" id="tabHist" onclick="setMode('hist')">Histórico<span class="tab-sub">últimos dias</span></div>
     </div>
   </div>
   <div class="mode-banner hoje" id="modeBanner" style="display:none">Selecione tudo que você comeu hoje pra ver o veredito</div>
@@ -912,10 +921,11 @@ function setMode(m){
   document.getElementById('tabHoje').classList.toggle('active',m==='hoje');
   document.getElementById('tabAmanha').classList.toggle('active',m==='amanha');
   document.getElementById('tabProva').classList.toggle('active',m==='prova');
+  document.getElementById('tabHist').classList.toggle('active',m==='hist');
   const b=document.getElementById('modeBanner');
   const sc=document.getElementById('stickyControls');
   const bb=document.getElementById('bottomBar');
-  if(m==='inicio'||m==='prova'){
+  if(m==='inicio'||m==='prova'||m==='hist'){
     b.style.display='none';
     sc.style.display='none';
     bb.style.display='none';
@@ -940,6 +950,7 @@ function render(){
   const el=document.getElementById('mainContent');
   if(mode==='inicio'){ el.innerHTML=renderFeed(); return; }
   if(mode==='prova'){ el.innerHTML=renderProva(); return; }
+  if(mode==='hist'){ loadHistory(); return; }
   const q=normalize(document.getElementById('search').value.toLowerCase().trim());
   if(activeFilter==='suco (montar)'){ el.innerHTML=renderJuiceBuilder(); return; }
   const list=FOODS.filter(f=>{const mc=activeFilter==='todos'||f.cat===activeFilter;const mq=!q||normalize(f.name.toLowerCase()).includes(q)||normalize(f.cat).includes(q)||normalize(f.desc.toLowerCase()).includes(q);return mc&&mq;});
@@ -1024,9 +1035,9 @@ function delJuice(id){customJuices=customJuices.filter(j=>j.id!==id);selected.de
 function toggleJuice(id){if(selected.has(id))selected.delete(id);else selected.set(id,{prep:0,qty:1});updateCount();render();}
 
 function setPrep(id,i){const st=selected.get(id)||{prep:0,qty:FOODS.find(f=>f.id===id).ref};st.prep=i;selected.set(id,st);render();updateCount();}
-function chgQty(id,dir){const f=FOODS.find(x=>x.id===id);const st=selected.get(id);if(!st)return;const step=qtyStep(f.unit);st.qty=Math.max(step,st.qty+dir*step);selected.set(id,st);render();}
+function chgQty(id,dir){const f=FOODS.find(x=>x.id===id);const st=selected.get(id);if(!st)return;const step=qtyStep(f.unit);st.qty=Math.max(step,st.qty+dir*step);selected.set(id,st);render();scheduleDailyLogSave();}
 function toggle(id){const f=FOODS.find(x=>x.id===id);if(selected.has(id))selected.delete(id);else selected.set(id,{prep:0,qty:f.ref});updateCount();render();}
-function updateCount(){document.getElementById('countNum').textContent=selected.size;document.getElementById('verBtn').disabled=selected.size===0;}
+function updateCount(){document.getElementById('countNum').textContent=selected.size;document.getElementById('verBtn').disabled=selected.size===0;scheduleDailyLogSave();}
 
 function getJuiceById(id){return customJuices.find(j=>j.id===id);}
 
@@ -1283,6 +1294,198 @@ function exportPDF(){
   }
 }
 
+// ============================================================
+// Persistência do "Comi hoje" no Supabase (daily_log)
+// ============================================================
+let dailyLogReady = false;      // vira true após a carga inicial; evita salvar durante a hidratação
+let dailyLogSaveTimer = null;   // timer do debounce
+
+function todayISO(){
+  const d = new Date();
+  const y = d.getFullYear();
+  const m = String(d.getMonth()+1).padStart(2,'0');
+  const day = String(d.getDate()).padStart(2,'0');
+  return `${y}-${m}-${day}`;
+}
+
+// serializa os itens marcados num formato reconstruível (inclui o objeto do suco caseiro)
+function serializeSelectedItems(){
+  const items = [];
+  for(const [id,st] of selected.entries()){
+    if(id.startsWith('juice_')){
+      const j = getJuiceById(id);
+      items.push({ id, name: j ? j.name : id, isJuice: true, prep: st.prep||0, qty: st.qty||1, juice: j || null });
+    } else {
+      const f = FOODS.find(x=>x.id===id);
+      items.push({ id, name: f ? f.name : id, prep: st.prep||0, qty: st.qty });
+    }
+  }
+  return items;
+}
+
+// resumo compacto do veredito para gravar em daily_log.score (sem referências circulares)
+function currentDailyScoreSummary(){
+  if(!selected.size) return null;
+  const r = calcScore();
+  const { nota } = notaInfo(r.pct);
+  return {
+    pct:r.pct, nota, qualidade:r.qualidade, completude:r.completude,
+    groupsCovered:r.groupsCovered, groupsMissing:r.groupsMissing, itemCount:r.itemCount,
+    cardio:r.cardio, energia:r.energia, anti:r.anti, sono:r.sono, inflam:r.inflam, negCount:r.negCount
+  };
+}
+
+function scheduleDailyLogSave(){
+  if(!dailyLogReady) return;   // ainda não carregou o dia — não sobrescreve
+  if(mode!=='hoje') return;    // só persiste o "Comi hoje"
+  if(dailyLogSaveTimer) clearTimeout(dailyLogSaveTimer);
+  dailyLogSaveTimer = setTimeout(saveDailyLogNow, 1200);
+}
+
+async function saveDailyLogNow(){
+  const client = window.supabaseClient;
+  if(!client) return;
+  try{
+    const { data:{ user } } = await client.auth.getUser();
+    if(!user) return;
+    const payload = {
+      user_id: user.id,
+      log_date: todayISO(),
+      items: serializeSelectedItems(),
+      score: currentDailyScoreSummary()
+    };
+    const { error } = await client.from('daily_log').upsert(payload, { onConflict: 'user_id,log_date' });
+    if(error) console.warn('[daily_log] erro ao salvar:', error.message);
+  }catch(e){
+    console.warn('[daily_log] erro inesperado ao salvar:', e);
+  }
+}
+
+// hidrata `selected`/`customJuices` a partir dos itens salvos (sem disparar save)
+function hydrateSelectedFromItems(items){
+  selected.clear();
+  customJuices = [];
+  for(const it of (items||[])){
+    if(!it || !it.id) continue;
+    if(it.id.startsWith('juice_') && it.juice){
+      customJuices.push(it.juice);
+      selected.set(it.id, { prep: it.prep||0, qty: it.qty||1 });
+    } else {
+      const f = FOODS.find(x=>x.id===it.id);
+      if(!f) continue;
+      selected.set(it.id, { prep: it.prep||0, qty: (it.qty!=null ? it.qty : f.ref) });
+    }
+  }
+  updateCount();
+  if(mode==='hoje') render();
+}
+
+// carrega o log de hoje ao entrar no app e pré-preenche o "Comi hoje"
+async function loadTodayLog(){
+  const client = window.supabaseClient;
+  try{
+    if(!client) return;
+    const { data:{ user } } = await client.auth.getUser();
+    if(!user) return;
+    const { data, error } = await client
+      .from('daily_log')
+      .select('items')
+      .eq('user_id', user.id)
+      .eq('log_date', todayISO())
+      .maybeSingle();
+    if(error){ console.warn('[daily_log] erro ao carregar hoje:', error.message); return; }
+    if(data && Array.isArray(data.items) && data.items.length){
+      hydrateSelectedFromItems(data.items);
+    }
+  }catch(e){
+    console.warn('[daily_log] erro inesperado ao carregar hoje:', e);
+  }finally{
+    dailyLogReady = true;   // a partir daqui, mudanças do usuário passam a ser salvas
+    window.__dailyLogReady = true;   // sinal determinístico para testes
+  }
+}
+window.loadTodayLog = loadTodayLog;
+
+// ============================================================
+// Aba Histórico — últimos 30 dias (somente visualização)
+// ============================================================
+let historyData = null;
+
+function histDateLabel(iso){
+  const p = iso.split('-');
+  const d = new Date(+p[0], +p[1]-1, +p[2]);
+  if(iso === todayISO()) return 'hoje';
+  const y = new Date(); y.setDate(y.getDate()-1);
+  const yISO = `${y.getFullYear()}-${String(y.getMonth()+1).padStart(2,'0')}-${String(y.getDate()).padStart(2,'0')}`;
+  if(iso === yISO) return 'ontem';
+  const wd = ['dom','seg','ter','qua','qui','sex','sáb'][d.getDay()];
+  return `${p[2]}/${p[1]} · ${wd}`;
+}
+
+function renderHistory(){
+  const el = document.getElementById('mainContent');
+  if(!el) return;
+  if(!historyData || !historyData.length){
+    el.innerHTML = '<div class="section-label">histórico — últimos 30 dias</div><div class="empty">Nenhum dia registrado ainda. Marque o que comeu na aba "Comi hoje".</div>';
+    return;
+  }
+  let html = '<div class="section-label">histórico — últimos 30 dias</div><div class="hist-list">';
+  html += historyData.map((row,i)=>{
+    const sc = row.score || {};
+    const hasPct = sc.pct!=null;
+    const pct = hasPct ? sc.pct+'%' : '—';
+    const { cor } = notaInfo(hasPct ? sc.pct : 0);
+    const cov = (sc.groupsCovered!=null) ? sc.groupsCovered : '?';
+    const items = Array.isArray(row.items) ? row.items : [];
+    const nItems = items.length;
+    const itemNames = items.map(it=>it.name||it.id).join(', ');
+    const grupos = Array.isArray(sc.groupsMissing) && sc.groupsMissing.length
+      ? `faltou: ${sc.groupsMissing.join(', ')}` : (sc.groupsCovered===5 ? 'todos os grupos cobertos' : '');
+    return `<div class="hist-card" onclick="toggleHistCard(${i})">
+      <div class="hist-card-head">
+        <div class="hist-date">${histDateLabel(row.log_date)}</div>
+        <div class="hist-score" style="color:${cor}">${pct}</div>
+      </div>
+      <div class="hist-meta">${cov}/5 grupos · ${nItems} ${nItems===1?'item':'itens'}${sc.nota?' · '+sc.nota:''}</div>
+      <div class="hist-detail" id="histDetail${i}" style="display:none">
+        ${grupos?`<div class="hist-meta" style="margin-top:0;margin-bottom:8px">${grupos}</div>`:''}
+        <div class="hist-items">${itemNames||'sem itens'}</div>
+      </div>
+    </div>`;
+  }).join('');
+  html += '</div>';
+  el.innerHTML = html;
+}
+
+function toggleHistCard(i){
+  const d = document.getElementById('histDetail'+i);
+  if(d) d.style.display = (d.style.display==='none') ? 'block' : 'none';
+}
+
+async function loadHistory(){
+  const el = document.getElementById('mainContent');
+  const client = window.supabaseClient;
+  if(!el) return;
+  el.innerHTML = '<div class="section-label">histórico — últimos 30 dias</div><div class="empty">carregando…</div>';
+  try{
+    if(!client){ el.innerHTML = '<div class="section-label">histórico</div><div class="empty">indisponível</div>'; return; }
+    const { data:{ user } } = await client.auth.getUser();
+    if(!user){ el.innerHTML = '<div class="section-label">histórico</div><div class="empty">faça login para ver o histórico</div>'; return; }
+    const { data, error } = await client
+      .from('daily_log')
+      .select('log_date,items,score')
+      .eq('user_id', user.id)
+      .order('log_date', { ascending: false })
+      .limit(30);
+    if(error){ el.innerHTML = `<div class="section-label">histórico</div><div class="empty">erro ao carregar: ${error.message}</div>`; return; }
+    historyData = data || [];
+    if(mode==='hist') renderHistory();
+  }catch(e){
+    console.warn('[daily_log] erro inesperado ao carregar histórico:', e);
+    el.innerHTML = '<div class="section-label">histórico</div><div class="empty">erro inesperado ao carregar</div>';
+  }
+}
+
 document.getElementById('search').addEventListener('input',render);
 renderCats();
 // setMode('inicio') só roda após confirmar sessão — ver script de auth abaixo.
@@ -1356,6 +1559,8 @@ function showApp(session){
     if(!appRendered){
       appRendered = true;
       setMode('inicio');
+      // carrega o "Comi hoje" salvo e pré-preenche antes de habilitar o auto-save
+      if(typeof window.loadTodayLog === 'function') window.loadTodayLog();
     }
   } else {
     loginScreen.style.display = '';
@@ -1368,7 +1573,7 @@ function showApp(session){
 document.getElementById('loginBtn').addEventListener('click', async () => {
   await supabaseClient.auth.signInWithOAuth({
     provider: 'google',
-    options: { redirectTo: 'https://petergoldz73.github.io/planner73/' }
+    options: { redirectTo: window.location.origin + window.location.pathname }
   });
 });
 
